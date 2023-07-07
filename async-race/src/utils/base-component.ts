@@ -1,4 +1,4 @@
-import type { IParams, IBaseComponent } from '../../types/types';
+import type { IParams, IBaseComponent } from '../types/types';
 
 export class BaseComponent implements IBaseComponent {
   private readonly element: HTMLElement;

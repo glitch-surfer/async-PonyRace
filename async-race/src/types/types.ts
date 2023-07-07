@@ -17,3 +17,9 @@ export interface IBaseComponent {
 export interface IApp {
   header: IHeader
 }
+
+export interface ICarResponse {
+  id: number
+  name: string
+  color: string
+}

@@ -1,5 +1,4 @@
-// import { IBaseComponent } from '../../../types/types';
-import { BaseComponent } from '../../util/base-component';
+import { BaseComponent } from '../../../utils/base-component';
 import type { IControls, IControlsParams } from './types/controls-types';
 
 export class Controls extends BaseComponent implements IControls {

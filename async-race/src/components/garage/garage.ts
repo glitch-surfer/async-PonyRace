@@ -1,7 +1,6 @@
-import { BaseComponent } from '../util/base-component';
+import { BaseComponent } from '../../utils/base-component';
 import { Controls } from './controls-component/controls';
 import { Track } from './track-component/track';
-// import type { ITrack } from './track-component/types/track-types';
 import type { IGarage, IGarageParams } from './types/garage-types';
 
 export class Garage extends BaseComponent implements IGarage {

@@ -1,5 +1,5 @@
 import type { IHeader, IHeaderParams } from './types/header-types';
-import { BaseComponent } from '../util/base-component';
+import { BaseComponent } from '../../utils/base-component';
 
 export class Header extends BaseComponent implements IHeader {
   nav: HTMLElement;

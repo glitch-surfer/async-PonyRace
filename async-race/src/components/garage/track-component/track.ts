@@ -1,4 +1,6 @@
-import { BaseComponent } from '../../util/base-component';
+import { getCars } from '../../../utils/api/get-cars';
+import { BaseComponent } from '../../../utils/base-component';
+import { Car } from './car/car';
 import type { ITrack, ITrackParams } from './types/track-types';
 
 export class Track extends BaseComponent implements ITrack {
@@ -7,6 +9,8 @@ export class Track extends BaseComponent implements ITrack {
   public subtitle: HTMLElement;
 
   public trackList: HTMLElement;
+
+  private readonly carsList: Car[] = [];
 
   public prevBtn: HTMLElement;
 
@@ -21,6 +25,11 @@ export class Track extends BaseComponent implements ITrack {
     this.prevBtn = new BaseComponent(params.prevBtn).getElement();
     this.nextBtn = new BaseComponent(params.nextBtn).getElement();
 
+    this.fillTrackList().catch(() => {
+      this.trackList.textContent = 'no cars in garage';
+      Error('no cars');
+    });
+
     this.getElement().append(
       this.title,
       this.subtitle,
@@ -28,5 +37,14 @@ export class Track extends BaseComponent implements ITrack {
       this.prevBtn,
       this.nextBtn,
     );
+  }
+
+  private async fillTrackList(): Promise<void> {
+    const cars = await getCars();
+    cars.forEach((car) => {
+      const newCar = new Car(car);
+      this.carsList.push(newCar);
+      this.trackList.append(newCar.getElement());
+    });
   }
 }
