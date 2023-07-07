@@ -23,6 +23,9 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-inferrable-types': 'off',
     'import/prefer-default-export': 'off',
+    'max-lines-per-function': ['error', {
+      max: 40
+    }],
   },
   root: true
 }

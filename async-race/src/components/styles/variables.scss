@@ -3,37 +3,37 @@
 //Constants
 
 // placeholders
-%button {
-  display: block;
-  margin: auto;
-  background-color: transparent;
-  color: $main-btn-color;
-  cursor: pointer;
-  @extend %transition;
-}
+// %button {
+//   display: block;
+//   margin: auto;
+//   background-color: transparent;
+//   color: $main-btn-color;
+//   cursor: pointer;
+//   @extend %transition;
+// }
 
-%burger__line {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 3px;
-  background-color: $main-btn-color;
+// %burger__line {
+//   content: '';
+//   position: absolute;
+//   width: 100%;
+//   height: 3px;
+//   background-color: $main-btn-color;
 
-  &:hover {
-    background-color: $main-hover-color;
-  }
-}
+//   &:hover {
+//     background-color: $main-hover-color;
+//   }
+// }
 
 // mixins
 
-@mixin media-mobile-big {
-  @media (max-width: 830px) {
-    @content;
-  }
-}
+// @mixin media-mobile-big {
+//   @media (max-width: 830px) {
+//     @content;
+//   }
+// }
 
-@mixin media-mobile-small {
-  @media (max-width: 600px) {
-    @content;
-  }
-}
+// @mixin media-mobile-small {
+//   @media (max-width: 600px) {
+//     @content;
+//   }
+// }
