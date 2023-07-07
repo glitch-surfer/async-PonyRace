@@ -2,16 +2,18 @@ import type { IGarageParams } from '../types/garage-types';
 
 export const garageView: IGarageParams = {
   garage: {
-    tag: 'main',
+    tag: 'section',
+    className: ['garage'],
   },
   sectionControls: {
     wrapper: {
-      tag: 'section',
+      tag: 'div',
+      className: ['controls'],
       children:
         [
           {
             tag: 'h2',
-            className: ['title'],
+            className: ['controls__title'],
             text: 'Controls',
           },
         ],
@@ -22,36 +24,66 @@ export const garageView: IGarageParams = {
     },
     createCarInput: {
       tag: 'input',
-      className: ['create-car-input'],
+      className: ['controls__create-input'],
     },
     createCarBtn: {
       tag: 'button',
-      className: ['create-car-btn'],
+      className: ['controls__create-btn'],
       text: 'Create Car',
     },
     upgradeCarInput: {
       tag: 'input',
-      className: ['upgrade-car-input'],
+      className: ['controls__upgrade-input'],
     },
     upgradeCarBtn: {
       tag: 'button',
-      className: ['upgrade-car-btn'],
+      className: ['controls__upgrade-btn'],
       text: 'Upgrade Car',
     },
     raceBtn: {
       tag: 'button',
-      className: ['race-btn'],
+      className: ['controls__race-btn'],
       text: 'Race',
     },
     resetBtn: {
       tag: 'button',
-      className: ['reset-btn'],
+      className: ['controls__reset-btn'],
       text: 'Reset',
     },
     generateCarsBtn: {
       tag: 'button',
-      className: ['generate-cars-btn'],
+      className: ['controls__generate-btn'],
       text: 'Generate Cars',
+    },
+  },
+  track: {
+    wrapper: {
+      tag: 'div',
+      className: ['track'],
+    },
+    title: {
+      tag: 'h2',
+      className: ['track__title'],
+      text: 'Garage',
+    },
+    subtitle: {
+      tag: 'h3',
+      className: ['track__subtitle'],
+      text: 'Page #1',
+    },
+    trackList: {
+      tag: 'ul',
+      className: ['track__list'],
+    },
+    prevBtn: {
+      tag: 'button',
+      className: ['track__prev-btn'],
+      text: 'Prev',
+    },
+    nextBtn: {
+      tag: 'button',
+      className: ['track__next-btn'],
+      text: 'Next',
     },
   },
 };
