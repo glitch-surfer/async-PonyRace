@@ -1,14 +1,20 @@
 import type { IApp } from '../types/types';
-import { headerView } from './header/config/header-view';
+import { Garage } from './garage/garage';
+import { headerView } from './header/view/header-view';
 import { Header } from './header/header';
 import './styles/base.scss';
+import { garageView } from './garage/view/garage-view';
 
 export class App implements IApp {
   constructor(
     public header = new Header(headerView),
-  ) { }
+    private readonly main = document.createElement('main'),
+    public garage = new Garage(garageView),
+  ) {
+    this.main.append(this.garage.getElement());
+  }
 
   public createView(): void {
-    document.body.append(this.header.getElement());
+    document.body.append(this.header.getElement(), this.main);
   }
 }

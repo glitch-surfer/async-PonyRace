@@ -1,4 +1,4 @@
-import type { IHeader, IHeaderParams } from '../../types/types';
+import type { IHeader, IHeaderParams } from './types/header-types';
 import { BaseComponent } from '../util/base-component';
 
 export class Header extends BaseComponent implements IHeader {

@@ -1,4 +1,4 @@
-import type { IHeaderParams } from '../../../types/types';
+import type { IHeaderParams } from '../types/header-types';
 
 export const headerView: IHeaderParams = {
   header: {
