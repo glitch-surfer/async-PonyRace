@@ -1,4 +1,6 @@
+import type { IGarage } from '../components/garage/types/garage-types';
 import type { IHeader } from '../components/header/types/header-types';
+import type { IWinners } from '../components/winners/types/winners-types';
 
 export interface IParams {
   tag: string
@@ -16,6 +18,8 @@ export interface IBaseComponent {
 
 export interface IApp {
   header: IHeader
+  garage: IGarage
+  winners: IWinners
 }
 
 export interface ICarResponse {
