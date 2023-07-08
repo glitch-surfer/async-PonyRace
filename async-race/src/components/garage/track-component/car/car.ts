@@ -48,6 +48,7 @@ export class Car extends BaseComponent implements ICar {
       this.stopBtn,
       this.car,
     );
+    this.addRemoveCarHandler();
   }
 
   private setColor(color: string): void {
@@ -56,5 +57,17 @@ export class Car extends BaseComponent implements ICar {
 
   private setName(name: string): void {
     this.title.textContent = name;
+  }
+
+  private addRemoveCarHandler(): void {
+    const removeCarHandler = (): void => {
+      fetch(`http://127.0.0.1:3000/garage/${this.id}`, {
+        method: 'DELETE',
+      }).catch((error) => {
+        Error(error.message);
+      });
+      this.getElement().remove();
+    };
+    this.removeBtn.addEventListener('click', removeCarHandler);
   }
 }
