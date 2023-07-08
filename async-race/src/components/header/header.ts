@@ -1,3 +1,4 @@
+import './styles/header.scss';
 import type { IHeader, IHeaderParams } from './types/header-types';
 import { BaseComponent } from '../../utils/base-component';
 

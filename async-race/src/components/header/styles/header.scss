@@ -1,0 +1,17 @@
+@import '../../styles/variables.scss';
+
+.header {
+  @extend %container-padding;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.garage-btn,
+.winners-btn {
+  @extend %button;
+}

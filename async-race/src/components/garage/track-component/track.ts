@@ -10,7 +10,7 @@ export class Track extends BaseComponent implements ITrack {
 
   public trackList: HTMLElement;
 
-  private readonly carsList: Car[] = [];
+  public carsList: Car[] = [];
 
   public prevBtn: HTMLElement;
 
