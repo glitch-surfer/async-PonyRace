@@ -1,7 +1,6 @@
 import type { ICarResponse } from '../../types/types';
 import { BaseComponent } from '../../utils/base-component';
 import { Controls } from './controls-component/controls';
-import { Car } from './track-component/car/car';
 import { Track } from './track-component/track';
 import type { IGarage, IGarageParams } from './types/garage-types';
 
@@ -32,17 +31,17 @@ export class Garage extends BaseComponent implements IGarage {
         color: newCarColor,
       };
 
-      const newCar = new Car(newCarParams);
-      this.track.trackList.append(newCar.getElement());
       fetch('http://127.0.0.1:3000/garage', {
         method: 'POST',
         body: JSON.stringify(newCarParams),
         headers: {
           'Content-Type': 'application/json',
         },
-      }).catch((error) => {
-        Error(error.message);
-      });
+      })
+        .then(async () => this.track.fillTrackList())
+        .catch((error) => {
+          Error(error.message);
+        });
     };
 
     this.controls.createCarBtn.addEventListener('click', createCarHandler);

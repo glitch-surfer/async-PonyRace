@@ -40,12 +40,41 @@ export class Track extends BaseComponent implements ITrack {
     );
   }
 
-  private async fillTrackList(): Promise<void> {
+  public async fillTrackList(): Promise<void> {
     const cars = await getCars();
+    this.clearTrack();
     cars.forEach((car) => {
       const newCar = new Car(car);
       this.carsList.push(newCar);
       this.trackList.append(newCar.getElement());
+      newCar.removeBtn.addEventListener('click', this.removeCarHandler.bind(this));
     });
+    this.setCarsCount();
+  }
+
+  private setCarsCount(): void {
+    this.title.textContent = `Garage (${this.carsList.length})`;
+  }
+
+  private clearTrack(): void {
+    this.carsList = []; // there can be probles
+    while (this.trackList.firstChild !== null) {
+      this.trackList.firstChild.remove();
+    }
+  }
+
+  private removeCarHandler(event: MouseEvent): void {
+    const removeBtn = event.target;
+    if (removeBtn === null || !(removeBtn instanceof HTMLElement)) throw new Error('not button');
+    const id = this.carsList.find((car) => car.removeBtn === removeBtn)?.id;
+    if (id === undefined) return;
+
+    fetch(`http://127.0.0.1:3000/garage/${id}`, {
+      method: 'DELETE',
+    })
+      .then(async () => this.fillTrackList())
+      .catch(() => {
+        this.trackList.textContent = 'no cars in garage';
+      });
   }
 }
