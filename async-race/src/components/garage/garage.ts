@@ -17,6 +17,8 @@ export class Garage extends BaseComponent implements IGarage {
 
     this.getElement().append(this.controls.getElement(), this.track.getElement());
     this.addCreateCarHandler();
+    this.addEnableUpgradeCarHandler();
+    this.addUpgradeCarHandler();
   }
 
   private addCreateCarHandler(): void {
@@ -25,6 +27,7 @@ export class Garage extends BaseComponent implements IGarage {
       const newCarName = this.controls.createCarInput.value;
       const newCarId = Math.max(...this.track.carsList.map((car) => car.id)) + 1;
       const newCarColor = '#fff';
+
       const newCarParams: ICarResponse = {
         id: newCarId,
         name: newCarName,
@@ -45,5 +48,48 @@ export class Garage extends BaseComponent implements IGarage {
     };
 
     this.controls.createCarBtn.addEventListener('click', createCarHandler);
+  }
+
+  private addEnableUpgradeCarHandler(): void {
+    const enableUpgradeCar = (event: Event): void => {
+      if (!(this.controls.upgradeCarInput instanceof HTMLInputElement)
+        || !(event instanceof CustomEvent)) throw new Error('not input');
+
+      this.controls.upgradeCarInput.removeAttribute('disabled');
+      this.controls.upgradeCarBtn.removeAttribute('disabled');
+
+      const { car } = event.detail;
+      this.controls.upgradeCarInput.value = car.title.textContent;
+    };
+    this.getElement().addEventListener('selectCar', enableUpgradeCar);
+  }
+
+  private addUpgradeCarHandler(): void {
+    const upgradeCarHandler = (): void => {
+      if (!(this.controls.upgradeCarInput instanceof HTMLInputElement)) throw new Error('not input');
+      const newCarName = this.controls.upgradeCarInput.value;
+      const newCarColor = '#fff';
+      const id = this.track.carsList.find((car) => car.selected)?.id;
+      if (id === undefined) return;
+
+      fetch(`http://127.0.0.1:3000/garage/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ name: newCarName, color: newCarColor }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(async () => this.track.fillTrackList())
+        .catch((error) => {
+          Error(error.message);
+        })
+        .finally(() => {
+          if (!(this.controls.upgradeCarInput instanceof HTMLInputElement)) throw new Error('not input');
+          this.controls.upgradeCarInput.value = '';
+          this.controls.upgradeCarInput.setAttribute('disabled', '');
+          this.controls.upgradeCarBtn.setAttribute('disabled', '');
+        });
+    };
+    this.controls.upgradeCarBtn.addEventListener('click', upgradeCarHandler);
   }
 }

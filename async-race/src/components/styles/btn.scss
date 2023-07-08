@@ -12,4 +12,9 @@
   &:active {
     transform: scale(0.97);
   }
+
+  &:disabled {
+    background-color: cadetblue;
+    pointer-events: none;
+  }
 }

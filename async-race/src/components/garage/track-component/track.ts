@@ -48,6 +48,7 @@ export class Track extends BaseComponent implements ITrack {
       this.carsList.push(newCar);
       this.trackList.append(newCar.getElement());
       newCar.removeBtn.addEventListener('click', this.removeCarHandler.bind(this));
+      newCar.selectBtn.addEventListener('click', this.selectCarHandler.bind(this));
     });
     this.setCarsCount();
   }
@@ -76,5 +77,28 @@ export class Track extends BaseComponent implements ITrack {
       .catch(() => {
         this.trackList.textContent = 'no cars in garage';
       });
+  }
+
+  private selectCarHandler(event: MouseEvent): void {
+    const selectBtn = event.target;
+    if (selectBtn === null || !(selectBtn instanceof HTMLElement)) throw new Error('not button');
+    const selectedCar = this.carsList.find((car) => car.selectBtn === selectBtn);
+
+    this.carsList.forEach((car) => {
+      const erasedCar = car;
+      erasedCar.selected = false;
+    });
+
+    if (selectedCar === undefined) return;
+    selectedCar.selected = true;
+
+    const selectEvent = new CustomEvent('selectCar', {
+      bubbles: true,
+      cancelable: true,
+      detail: {
+        car: selectedCar,
+      },
+    });
+    selectBtn.dispatchEvent(selectEvent);
   }
 }

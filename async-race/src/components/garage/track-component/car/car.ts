@@ -5,23 +5,25 @@ import type { ICar } from './types/car-types';
 import { carView } from './view/car-view';
 
 export class Car extends BaseComponent implements ICar {
-  id: number;
+  public id: number;
 
-  name: string;
+  public name: string;
 
-  color: string;
+  public color: string;
 
-  public selectBtn: HTMLElement;
+  public selected: boolean = false;
 
-  public removeBtn: HTMLElement;
+  public selectBtn: HTMLElement = new BaseComponent(carView.selectBtn).getElement();
 
-  public title: HTMLElement;
+  public removeBtn: HTMLElement = new BaseComponent(carView.removeBtn).getElement();
 
-  public startBtn: HTMLElement;
+  public title: HTMLElement = new BaseComponent(carView.title).getElement();
 
-  public stopBtn: HTMLElement;
+  public startBtn: HTMLElement = new BaseComponent(carView.startBtn).getElement();
 
-  public car: HTMLElement;
+  public stopBtn: HTMLElement = new BaseComponent(carView.stopBtn).getElement();
+
+  public car: HTMLElement = new BaseComponent(carView.car).getElement();
 
   constructor(carParams: ICarResponse) {
     super(carView.wrapper);
@@ -29,13 +31,6 @@ export class Car extends BaseComponent implements ICar {
     this.id = carParams.id;
     this.name = carParams.name;
     this.color = carParams.color;
-
-    this.selectBtn = new BaseComponent(carView.selectBtn).getElement();
-    this.removeBtn = new BaseComponent(carView.removeBtn).getElement();
-    this.title = new BaseComponent(carView.title).getElement();
-    this.startBtn = new BaseComponent(carView.startBtn).getElement();
-    this.stopBtn = new BaseComponent(carView.stopBtn).getElement();
-    this.car = new BaseComponent(carView.car).getElement();
 
     this.setColor(this.color);
     this.setName(this.name);

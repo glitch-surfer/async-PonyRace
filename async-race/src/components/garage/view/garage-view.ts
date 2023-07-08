@@ -34,11 +34,17 @@ export const garageView: IGarageParams = {
     upgradeCarInput: {
       tag: 'input',
       className: ['controls__upgrade-input'],
+      attributes: {
+        disabled: 'true',
+      },
     },
     upgradeCarBtn: {
       tag: 'button',
       className: ['controls__upgrade-btn', 'btn'],
       text: 'Upgrade',
+      attributes: {
+        disabled: 'true',
+      },
     },
     raceBtn: {
       tag: 'button',

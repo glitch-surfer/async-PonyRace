@@ -14,6 +14,7 @@ export interface ICar {
   id: number
   name: string
   color: string
+  selected: boolean
   selectBtn: HTMLElement
   removeBtn: HTMLElement
   title: HTMLElement
