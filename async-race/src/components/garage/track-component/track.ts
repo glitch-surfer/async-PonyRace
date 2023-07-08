@@ -1,3 +1,4 @@
+import './styles/track.scss';
 import { getCars } from '../../../utils/api/get-cars';
 import { BaseComponent } from '../../../utils/base-component';
 import { Car } from './car/car';

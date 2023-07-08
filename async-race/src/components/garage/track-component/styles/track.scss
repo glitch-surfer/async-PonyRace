@@ -1,0 +1,45 @@
+@import '../../../styles/variables.scss';
+
+.track {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 0.5rem;
+}
+
+.track__title {
+  grid-column: span 2;
+  text-align: center;
+  border-bottom: 2px solid $main-text-color;
+}
+
+.track__subtitle {
+  grid-column: span 2;
+  text-align: center;
+}
+
+.track__list {
+  grid-column: span 2;
+
+  & > li {
+    position: relative;
+    list-style: none;
+    padding: 0.3rem;
+    border-bottom: 2px dashed $main-text-color;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 20%;
+      right: 5%;
+      width: 3rem;
+      height: 3rem;
+      background: url('../img/finish-flag.svg') center no-repeat transparent;
+      background-size: contain;
+    }
+  }
+}
+
+.track__prev-btn,
+.track__next-btn {
+  justify-self: center;
+}

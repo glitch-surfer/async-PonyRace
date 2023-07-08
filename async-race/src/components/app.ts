@@ -1,9 +1,9 @@
 import './styles/base.scss';
 import type { IApp } from '../types/types';
-import { Garage } from './garage/garage';
 import { headerView } from './header/view/header-view';
 import { Header } from './header/header';
 import { garageView } from './garage/view/garage-view';
+import { Garage } from './garage/garage';
 
 export class App implements IApp {
   constructor(
