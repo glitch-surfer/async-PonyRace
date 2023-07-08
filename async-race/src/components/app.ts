@@ -15,9 +15,27 @@ export class App implements IApp {
     public winners = new Winners(winnersView),
   ) {
     this.main.append(this.garage.getElement(), this.winners.getElement());
+    this.addGarageBtnHandler();
+    this.addWinnersBtnHandler();
   }
 
   public createView(): void {
     document.body.append(this.header.getElement(), this.main);
+  }
+
+  private addGarageBtnHandler(): void {
+    const garageBtnHandler = (): void => {
+      this.garage.getElement().style.display = 'block';
+      this.winners.getElement().style.display = 'none';
+    };
+    this.header.garageBtn.addEventListener('click', garageBtnHandler);
+  }
+
+  private addWinnersBtnHandler(): void {
+    const winnersBtnHandler = (): void => {
+      this.winners.getElement().style.display = 'block';
+      this.garage.getElement().style.display = 'none';
+    };
+    this.header.winnersBtn.addEventListener('click', winnersBtnHandler);
   }
 }

@@ -1,3 +1,4 @@
+import './styles/winners.scss';
 import { BaseComponent } from '../../utils/base-component';
 import type { IWinners, IWinnersParams } from './types/winners-types';
 
