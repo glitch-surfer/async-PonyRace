@@ -1,23 +1,21 @@
 // Colors
-$background-color: rgb(7, 68, 70);
-$btn-color: rgb(16, 55, 57);
-$btn-background-color: rgb(51, 191, 196);
+$background-color: rgb(206, 30, 159);
+$main-text-color: darken($background-color, 20%);
+$btn-color: $main-text-color;
+$btn-background-color: rgb(155, 203, 109);
+$btn-special-background-color: rgb(51, 191, 196);
 
 // Constants
 $border-radius: 5px;
 
 // placeholders
-%button {
-  padding: 0.3rem 0.6rem;
-  background-color: $btn-background-color;
-  color: $btn-color;
-  cursor: pointer;
-  border: 1px solid darken($btn-background-color, 20%);
-  border-radius: $border-radius;
-}
-
 %container-padding {
   padding: 0.5rem;
+}
+
+%border {
+  border: 1px solid $main-text-color;
+  border-radius: $border-radius;
 }
 
 // %burger__line {

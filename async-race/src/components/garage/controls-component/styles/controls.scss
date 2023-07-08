@@ -1,0 +1,28 @@
+@import '../../../styles/variables.scss';
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  @extend %container-padding;
+}
+
+.controls__title {
+  grid-column: span 3;
+  text-align: center;
+}
+
+.controls__create-input,
+.controls__upgrade-input {
+  grid-column: span 2;
+  align-self: stretch;
+  @extend %border;
+}
+
+.controls__create-btn, 
+.controls__upgrade-btn,
+.controls__generate-btn {
+  background-color: $btn-special-background-color;
+}

@@ -1,3 +1,4 @@
+import './styles/controls.scss';
 import { BaseComponent } from '../../../utils/base-component';
 import type { IControls, IControlsParams } from './types/controls-types';
 

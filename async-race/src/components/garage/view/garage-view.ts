@@ -28,8 +28,8 @@ export const garageView: IGarageParams = {
     },
     createCarBtn: {
       tag: 'button',
-      className: ['controls__create-btn'],
-      text: 'Create Car',
+      className: ['controls__create-btn', 'btn'],
+      text: 'Create',
     },
     upgradeCarInput: {
       tag: 'input',
@@ -37,23 +37,23 @@ export const garageView: IGarageParams = {
     },
     upgradeCarBtn: {
       tag: 'button',
-      className: ['controls__upgrade-btn'],
-      text: 'Upgrade Car',
+      className: ['controls__upgrade-btn', 'btn'],
+      text: 'Upgrade',
     },
     raceBtn: {
       tag: 'button',
-      className: ['controls__race-btn'],
+      className: ['controls__race-btn', 'btn'],
       text: 'Race',
     },
     resetBtn: {
       tag: 'button',
-      className: ['controls__reset-btn'],
+      className: ['controls__reset-btn', 'btn'],
       text: 'Reset',
     },
     generateCarsBtn: {
       tag: 'button',
-      className: ['controls__generate-btn'],
-      text: 'Generate Cars',
+      className: ['controls__generate-btn', 'btn'],
+      text: 'Generate',
     },
   },
   track: {
@@ -77,12 +77,12 @@ export const garageView: IGarageParams = {
     },
     prevBtn: {
       tag: 'button',
-      className: ['track__prev-btn'],
+      className: ['track__prev-btn', 'btn'],
       text: 'Prev',
     },
     nextBtn: {
       tag: 'button',
-      className: ['track__next-btn'],
+      className: ['track__next-btn', 'btn'],
       text: 'Next',
     },
   },

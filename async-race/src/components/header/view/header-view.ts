@@ -11,12 +11,12 @@ export const headerView: IHeaderParams = {
   },
   garageBtn: {
     tag: 'button',
-    className: ['garage-btn'],
+    className: ['garage-btn', 'btn'],
     text: 'Garage',
   },
   winnersBtn: {
     tag: 'button',
-    className: ['winners-btn'],
+    className: ['winners-btn', 'btn'],
     text: 'Winners',
   },
 };
