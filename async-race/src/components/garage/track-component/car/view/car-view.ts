@@ -7,12 +7,12 @@ export const carView: ICarParams = {
   },
   selectBtn: {
     tag: 'button',
-    className: ['car__select-btn'],
+    className: ['car__select-btn', 'btn'],
     text: 'Select',
   },
   removeBtn: {
     tag: 'button',
-    className: ['car__remove-btn'],
+    className: ['car__remove-btn', 'btn'],
     text: 'Remove',
   },
   title: {

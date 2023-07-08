@@ -1,9 +1,11 @@
 // Colors
-$background-color: rgb(206, 30, 159);
+$background-color: rgb(192, 36, 150);
 $main-text-color: darken($background-color, 20%);
 $btn-color: $main-text-color;
 $btn-background-color: rgb(155, 203, 109);
 $btn-special-background-color: rgb(51, 191, 196);
+$start-btn-color: lighten($btn-background-color, 10%);
+$stop-btn-color: rgb(219, 50, 50);
 
 // Constants
 $border-radius: 5px;

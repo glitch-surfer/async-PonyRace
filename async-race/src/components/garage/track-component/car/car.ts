@@ -1,3 +1,4 @@
+import './styles/car.scss';
 import type { ICarResponse } from '../../../../types/types';
 import { BaseComponent } from '../../../../utils/base-component';
 import type { ICar } from './types/car-types';

@@ -4,4 +4,12 @@
   color: $btn-color;
   cursor: pointer;
   @extend %border;
+
+  &:hover {
+    transform: scale(1.03);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
 }
