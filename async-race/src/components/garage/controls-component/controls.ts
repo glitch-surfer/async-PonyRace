@@ -4,6 +4,9 @@ import type { IControls } from './types/controls-types';
 import { controlsView } from './view/controls-view';
 import { Urls } from '../../../enums/urls';
 import type { INewCar } from '../../../types/types';
+import { Numbers } from '../../../enums/numbers';
+import { getRandomName } from '../../../utils/get-random-name';
+import { getRandomColor } from '../../../utils/get-random-color';
 
 export class Controls extends BaseComponent implements IControls {
   constructor(
@@ -37,6 +40,7 @@ export class Controls extends BaseComponent implements IControls {
     this.addEnableUpgradeCarHandler();
     this.addUpgradeCarHandler();
     this.addCreateCarHandler();
+    this.addGenerateBtnHandler();
   }
 
   private addEnableUpgradeCarHandler(): void {
@@ -125,5 +129,41 @@ export class Controls extends BaseComponent implements IControls {
     };
 
     this.createCarBtn.addEventListener('click', createCarHandler);
+  }
+
+  private addGenerateBtnHandler(): void {
+    const generateNewCars = (): void => {
+      const newCars = [];
+      for (let i = 0; i < Numbers.GENERATE_CAR_COUNT; i += 1) {
+        const newCarParams: INewCar = {
+          name: getRandomName(),
+          color: getRandomColor(),
+        };
+
+        const newCar = fetch(Urls.GARAGE, {
+          method: 'POST',
+          body: JSON.stringify(newCarParams),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .catch((error) => {
+            Error(error.message);
+          });
+
+        newCars.push(newCar);
+      }
+      Promise.all(newCars).then(() => {
+        const updateTrackEvent = new CustomEvent('updateTrack', {
+          bubbles: true,
+          cancelable: true,
+        });
+        this.getElement().dispatchEvent(updateTrackEvent);
+      })
+        .catch((error) => {
+          Error(error.message);
+        });
+    };
+    this.generateCarsBtn.addEventListener('click', generateNewCars);
   }
 }
