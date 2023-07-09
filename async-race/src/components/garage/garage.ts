@@ -1,4 +1,4 @@
-import type { ICarResponse } from '../../types/types';
+import type { INewCar } from '../../types/types';
 import { BaseComponent } from '../../utils/base-component';
 import { Controls } from './controls-component/controls';
 import { Track } from './track-component/track';
@@ -26,12 +26,10 @@ export class Garage extends BaseComponent implements IGarage {
       if (!(this.controls.createCarInput instanceof HTMLInputElement)
         || this.controls.createCarInput.value.trim() === '') return;
       const newCarName = this.controls.createCarInput.value;
-      const newCarId = Math.max(...this.track.carsList.map((car) => car.id)) + 1;
       const newCarColor = '#fff';
       this.controls.createCarInput.value = '';
 
-      const newCarParams: ICarResponse = {
-        id: newCarId,
+      const newCarParams: INewCar = {
         name: newCarName,
         color: newCarColor,
       };

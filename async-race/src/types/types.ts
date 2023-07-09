@@ -27,3 +27,8 @@ export interface ICarResponse {
   name: string
   color: string
 }
+
+export interface INewCar {
+  name: string
+  color: string
+}
