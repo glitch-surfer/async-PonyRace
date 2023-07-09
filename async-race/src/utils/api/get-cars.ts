@@ -1,7 +1,8 @@
+import { Urls } from '../../enums/urls';
 import type { ICarResponse } from '../../types/types';
 
-export const getCars = async (path: string = '/garage'): Promise<ICarResponse[]> => {
-  const response = await fetch(`http://127.0.0.1:3000${path}`);
+export const getCars = async (): Promise<ICarResponse[]> => {
+  const response = await fetch(`${Urls.GARAGE}`);
   const data = await response.json();
   return data;
 };

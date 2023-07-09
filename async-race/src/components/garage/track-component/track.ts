@@ -3,6 +3,11 @@ import { getCars } from '../../../utils/api/get-cars';
 import { BaseComponent } from '../../../utils/base-component';
 import { Car } from './car/car';
 import type { ITrack, ITrackParams } from './types/track-types';
+import { clearElement } from '../../../utils/clear-element';
+import { setCount } from '../../../utils/set-count';
+import { Titles } from '../../../enums/titles';
+import { Numbers } from '../../../enums/numbers';
+import { Urls } from '../../../enums/urls';
 
 export class Track extends BaseComponent implements ITrack {
   public title: HTMLElement;
@@ -45,23 +50,24 @@ export class Track extends BaseComponent implements ITrack {
 
   public async fillTrackList(): Promise<void> {
     const cars = await getCars();
-    this.clearTrack();
+    this.carsList = [];
+
     cars.forEach((car) => {
       const newCar = new Car(car);
       this.carsList.push(newCar);
-      this.trackList.append(newCar.getElement());
     });
-    this.setCarsCount();
+    this.title.textContent = setCount(Titles.GARAGE, this.carsList);
+    this.renderTrack(1);
   }
 
-  private setCarsCount(): void {
-    this.title.textContent = `Garage (${this.carsList.length})`;
-  }
+  private renderTrack(page: number): void {
+    const carsOnPage = Numbers.CARS_ON_PAGE;
 
-  private clearTrack(): void {
-    this.carsList = []; // there can be probles
-    while (this.trackList.firstChild !== null) {
-      this.trackList.firstChild.remove();
+    clearElement(this.trackList);
+
+    for (let i = (page * carsOnPage) - carsOnPage; i < (page * carsOnPage); i += 1) {
+      if (this.carsList[i] === undefined) break;
+      this.trackList.append(this.carsList[i].getElement());
     }
   }
 
@@ -74,7 +80,7 @@ export class Track extends BaseComponent implements ITrack {
       const id = this.carsList.find((car) => car.removeBtn === removeBtn)?.id;
       if (id === undefined) return;
 
-      fetch(`http://127.0.0.1:3000/garage/${id}`, {
+      fetch(`${Urls.GARAGE}/${id}`, {
         method: 'DELETE',
       })
         .then(async () => this.fillTrackList())

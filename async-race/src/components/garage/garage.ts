@@ -1,3 +1,4 @@
+import { Urls } from '../../enums/urls';
 import type { INewCar } from '../../types/types';
 import { BaseComponent } from '../../utils/base-component';
 import { Controls } from './controls-component/controls';
@@ -34,7 +35,7 @@ export class Garage extends BaseComponent implements IGarage {
         color: newCarColor,
       };
 
-      fetch('http://127.0.0.1:3000/garage', {
+      fetch(Urls.GARAGE, {
         method: 'POST',
         body: JSON.stringify(newCarParams),
         headers: {
@@ -73,7 +74,7 @@ export class Garage extends BaseComponent implements IGarage {
       const id = this.track.carsList.find((car) => car.selected)?.id;
       if (id === undefined) return;
 
-      fetch(`http://127.0.0.1:3000/garage/${id}`, {
+      fetch(`${Urls.GARAGE}/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ name: newCarName, color: newCarColor }),
         headers: {
