@@ -9,6 +9,7 @@ import { Titles } from '../../../enums/titles';
 import { Numbers } from '../../../enums/numbers';
 import { Urls } from '../../../enums/urls';
 import { trackView } from './view/track-view';
+import { Pagination } from '../../pagination/pagination';
 
 export class Track extends BaseComponent implements ITrack {
   public carsList: Car[] = [];
@@ -17,6 +18,7 @@ export class Track extends BaseComponent implements ITrack {
     public title: HTMLElement = new BaseComponent(trackView.title).getElement(),
     public subtitle: HTMLElement = new BaseComponent(trackView.subtitle).getElement(),
     public trackList: HTMLElement = new BaseComponent(trackView.trackList).getElement(),
+    public pagination = new Pagination(),
   ) {
     super(trackView.wrapper);
 
@@ -30,10 +32,12 @@ export class Track extends BaseComponent implements ITrack {
       this.title,
       this.subtitle,
       this.trackList,
+      this.pagination.getElement(),
     );
 
     this.addRemoveCarHandler();
     this.addSelectCarHandler();
+    this.addPaginationHandler();
   }
 
   public async fillTrackList(): Promise<void> {
@@ -45,7 +49,7 @@ export class Track extends BaseComponent implements ITrack {
       this.carsList.push(newCar);
     });
     this.title.textContent = setCount(Titles.GARAGE, this.carsList);
-    this.renderTrack(1);
+    this.renderTrack(this.pagination.currentPage);
   }
 
   public renderTrack(page: number): void {
@@ -105,5 +109,26 @@ export class Track extends BaseComponent implements ITrack {
       selectBtn.dispatchEvent(selectEvent);
     };
     this.getElement().addEventListener('click', selectCarHandler);
+  }
+
+  private addPaginationHandler(): void {
+    const paginationNextHandler = (): void => {
+      if (
+        this.pagination.currentPage < Math.ceil(this.carsList.length / Numbers.CARS_ON_PAGE)
+      ) {
+        this.pagination.currentPage += 1;
+        this.renderTrack(this.pagination.currentPage);
+        this.subtitle.textContent = this.pagination.setPage();
+      }
+    };
+    this.pagination.nextBtn.addEventListener('click', paginationNextHandler);
+    const paginationPrevHandler = (): void => {
+      if (this.pagination.currentPage > 1) {
+        this.pagination.currentPage -= 1;
+        this.renderTrack(this.pagination.currentPage);
+        this.subtitle.textContent = this.pagination.setPage();
+      }
+    };
+    this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
   }
 }
