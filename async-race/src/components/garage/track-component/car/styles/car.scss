@@ -43,6 +43,11 @@ $stop-btn-border-color: darken($stop-btn-color, 20%);
   background-color: $start-btn-background-color;
   border: 2px solid $start-btn-border-color;
   color: $start-btn-border-color;
+
+  &:disabled {
+    background-color: cadetblue;
+    pointer-events: none;
+  }
 }
 
 .car__stop-btn {
@@ -50,6 +55,11 @@ $stop-btn-border-color: darken($stop-btn-color, 20%);
   background-color: $stop-btn-background-color;
   border: 2px solid $stop-btn-border-color;
   color: $stop-btn-border-color;
+
+  &:disabled {
+    background-color: cadetblue;
+    pointer-events: none;
+  }
 }
 
 .car__img {

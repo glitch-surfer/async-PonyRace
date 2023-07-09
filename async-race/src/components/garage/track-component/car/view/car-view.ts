@@ -28,6 +28,9 @@ export const carView: ICarParams = {
     tag: 'button',
     className: ['car__stop-btn'],
     text: 'B',
+    attributes: {
+      disabled: '',
+    },
   },
   car: {
     tag: 'div',

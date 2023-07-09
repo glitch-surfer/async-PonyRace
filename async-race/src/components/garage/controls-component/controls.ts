@@ -64,7 +64,7 @@ export class Controls extends BaseComponent implements IControls {
       if (!(this.upgradeCarInput instanceof HTMLInputElement)
         || this.upgradeCarInput.value.trim() === '') return;
       const newCarName = this.upgradeCarInput.value;
-      const newCarColor = '#fff';
+      const newCarColor = '#fff'; // todo
       const id = this.upgradeCarBtn.getAttribute('data-id');
       if (id === null) return;
 

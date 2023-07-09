@@ -33,8 +33,6 @@ export class Car extends BaseComponent implements ICar {
     this.name = carParams.name;
     this.color = carParams.color;
 
-    this.getElement().setAttribute('data-id', `${this.id}`);
-
     this.setColor(this.color);
     this.setName(this.name);
 
@@ -49,6 +47,7 @@ export class Car extends BaseComponent implements ICar {
 
     this.addRemoveCarHandler();
     this.addSelectCarHandler();
+    this.addStartCarHandler();
   }
 
   private setColor(color: string): void {
@@ -60,13 +59,8 @@ export class Car extends BaseComponent implements ICar {
   }
 
   private addRemoveCarHandler(): void {
-    const removeCarHandler = (event: MouseEvent): void => {
-      const btn = event.target;
-      if (!(btn instanceof HTMLElement)) return;
-      const id = btn.closest('.car')?.getAttribute('data-id');
-      if (id === null || id === undefined) return;
-
-      fetch(`${Urls.GARAGE}/${id}`, {
+    const removeCarHandler = (): void => {
+      fetch(`${Urls.GARAGE}/${this.id}`, {
         method: 'DELETE',
       })
         .then(async () => {
@@ -84,21 +78,16 @@ export class Car extends BaseComponent implements ICar {
   }
 
   private addSelectCarHandler(): void {
-    const selectCarHandler = (event: MouseEvent): void => {
-      const selectBtn = event.target;
-      if (!(selectBtn instanceof HTMLElement)) return;
-      const id = selectBtn.closest('.car')?.getAttribute('data-id');
-      const carName = selectBtn.nextElementSibling?.nextElementSibling?.textContent;
-
+    const selectCarHandler = (): void => {
       const selectEvent = new CustomEvent('selectCar', {
         bubbles: true,
         cancelable: true,
         detail: {
-          id,
-          carName,
+          id: this.id,
+          carName: this.name,
         },
       });
-      selectBtn.dispatchEvent(selectEvent);
+      this.getElement().dispatchEvent(selectEvent);
     };
     this.selectBtn.addEventListener('click', selectCarHandler);
   }
