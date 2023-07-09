@@ -91,4 +91,42 @@ export class Car extends BaseComponent implements ICar {
     };
     this.selectBtn.addEventListener('click', selectCarHandler);
   }
+
+  private addStartCarHandler(): void {
+    const startCarHandler = async (): Promise<void> => {
+      this.startBtn.setAttribute('disabled', '');
+      this.stopBtn.removeAttribute('disabled');
+
+      fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, {
+        method: 'PATCH',
+      }).then(async (response) => response.json())
+        .then((data) => {
+          const { velocity, distance } = data;
+          const distanceLength = window.innerWidth;
+          const animationDuration = distance / velocity;
+          const animation = this.car.animate([
+            { transform: `translateX(${(distanceLength * 0.9) - 140}px)` },
+          ], {
+            duration: animationDuration,
+            fill: 'forwards',
+          });
+          return animation;
+        })
+        .then((animation) => {
+          fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, {
+            method: 'PATCH',
+          }).then((response) => {
+            if (response.status === 500) {
+              animation.pause();
+            }
+          }).catch(() => {
+            Error('trouble starting car');
+          });
+        })
+        .catch(() => {
+          Error('some trouble');
+        });
+    };
+    this.startBtn.addEventListener('click', startCarHandler);
+  }
 }
