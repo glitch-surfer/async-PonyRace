@@ -1,9 +1,7 @@
 @import '../../../styles/variables.scss';
 
-.track {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  gap: 0.5rem;
+.track > * {
+  margin-bottom: 0.5rem;
 }
 
 .track__title {
@@ -37,9 +35,4 @@
       background-size: contain;
     }
   }
-}
-
-.track__prev-btn,
-.track__next-btn {
-  justify-self: center;
 }

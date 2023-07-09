@@ -4,8 +4,6 @@ export interface ITrack {
   title: HTMLElement
   subtitle: HTMLElement
   trackList: HTMLElement
-  prevBtn: HTMLElement
-  nextBtn: HTMLElement
 }
 
 export interface ITrackParams {
@@ -13,6 +11,4 @@ export interface ITrackParams {
   title: IParams
   subtitle: IParams
   trackList: IParams
-  prevBtn: IParams
-  nextBtn: IParams
 }

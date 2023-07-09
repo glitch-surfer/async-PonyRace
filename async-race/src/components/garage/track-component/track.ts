@@ -2,46 +2,34 @@ import './styles/track.scss';
 import { getCars } from '../../../utils/api/get-cars';
 import { BaseComponent } from '../../../utils/base-component';
 import { Car } from './car/car';
-import type { ITrack, ITrackParams } from './types/track-types';
+import type { ITrack } from './types/track-types';
 import { clearElement } from '../../../utils/clear-element';
 import { setCount } from '../../../utils/set-count';
 import { Titles } from '../../../enums/titles';
 import { Numbers } from '../../../enums/numbers';
 import { Urls } from '../../../enums/urls';
+import { trackView } from './view/track-view';
 
 export class Track extends BaseComponent implements ITrack {
-  public title: HTMLElement;
-
-  public subtitle: HTMLElement;
-
-  public trackList: HTMLElement;
-
   public carsList: Car[] = [];
 
-  public prevBtn: HTMLElement;
+  constructor(
+    public title: HTMLElement = new BaseComponent(trackView.title).getElement(),
+    public subtitle: HTMLElement = new BaseComponent(trackView.subtitle).getElement(),
+    public trackList: HTMLElement = new BaseComponent(trackView.trackList).getElement(),
+  ) {
+    super(trackView.wrapper);
 
-  public nextBtn: HTMLElement;
-
-  constructor(params: ITrackParams) {
-    super(params.wrapper);
-
-    this.title = new BaseComponent(params.title).getElement();
-    this.subtitle = new BaseComponent(params.subtitle).getElement();
-    this.trackList = new BaseComponent(params.trackList).getElement();
-    this.prevBtn = new BaseComponent(params.prevBtn).getElement();
-    this.nextBtn = new BaseComponent(params.nextBtn).getElement();
-
-    this.fillTrackList().catch(() => {
-      this.trackList.textContent = 'no cars in garage';
-      Error('no cars');
-    });
+    this.fillTrackList()
+      .catch(() => {
+        this.trackList.textContent = 'no cars in garage';
+        Error('no cars');
+      });
 
     this.getElement().append(
       this.title,
       this.subtitle,
       this.trackList,
-      this.prevBtn,
-      this.nextBtn,
     );
 
     this.addRemoveCarHandler();
@@ -60,7 +48,7 @@ export class Track extends BaseComponent implements ITrack {
     this.renderTrack(1);
   }
 
-  private renderTrack(page: number): void {
+  public renderTrack(page: number): void {
     const carsOnPage = Numbers.CARS_ON_PAGE;
 
     clearElement(this.trackList);
