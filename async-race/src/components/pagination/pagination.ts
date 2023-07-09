@@ -16,4 +16,8 @@ export class Pagination extends BaseComponent implements IPagination {
       this.nextBtn,
     );
   }
+
+  public setPage(): string {
+    return `Page #${this.currentPage}`;
+  }
 }

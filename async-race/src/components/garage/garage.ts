@@ -1,3 +1,4 @@
+import { Numbers } from '../../enums/numbers';
 import { Urls } from '../../enums/urls';
 import type { INewCar } from '../../types/types';
 import { BaseComponent } from '../../utils/base-component';
@@ -24,6 +25,7 @@ export class Garage extends BaseComponent implements IGarage {
     this.addCreateCarHandler();
     this.addEnableUpgradeCarHandler();
     this.addUpgradeCarHandler();
+    this.addPaginationHandler();
   }
 
   private addCreateCarHandler(): void {
@@ -97,5 +99,26 @@ export class Garage extends BaseComponent implements IGarage {
         });
     };
     this.controls.upgradeCarBtn.addEventListener('click', upgradeCarHandler);
+  }
+
+  private addPaginationHandler(): void {
+    const paginationNextHandler = (): void => {
+      if (
+        this.pagination.currentPage < Math.ceil(this.track.carsList.length / Numbers.CARS_ON_PAGE)
+      ) {
+        this.pagination.currentPage += 1;
+        this.track.renderTrack(this.pagination.currentPage);
+        this.track.subtitle.textContent = this.pagination.setPage();
+      }
+    };
+    this.pagination.nextBtn.addEventListener('click', paginationNextHandler);
+    const paginationPrevHandler = (): void => {
+      if (this.pagination.currentPage > 1) {
+        this.pagination.currentPage -= 1;
+        this.track.renderTrack(this.pagination.currentPage);
+        this.track.subtitle.textContent = this.pagination.setPage();
+      }
+    };
+    this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
   }
 }
