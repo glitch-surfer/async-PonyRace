@@ -34,7 +34,6 @@ export class Track extends BaseComponent implements ITrack {
       this.pagination.getElement(),
     );
 
-    this.addSelectCarHandler();
     this.addPaginationHandler();
     this.addUpdateTrackHandler();
   }
@@ -62,34 +61,6 @@ export class Track extends BaseComponent implements ITrack {
     }
   }
 
-  private addSelectCarHandler(): void {
-    const selectCarHandler = (event: MouseEvent): void => {
-      const selectBtn = event.target;
-      if (selectBtn === null
-        || !(selectBtn instanceof HTMLElement)
-        || !selectBtn.classList.contains('car__select-btn')) return;
-      const selectedCar = this.carsList.find((car) => car.selectBtn === selectBtn);
-
-      this.carsList.forEach((car) => {
-        const erasedCar = car;
-        erasedCar.selected = false;
-      });
-
-      if (selectedCar === undefined) return;
-      selectedCar.selected = true;
-
-      const selectEvent = new CustomEvent('selectCar', {
-        bubbles: true,
-        cancelable: true,
-        detail: {
-          car: selectedCar,
-        },
-      });
-      selectBtn.dispatchEvent(selectEvent);
-    };
-    this.getElement().addEventListener('click', selectCarHandler);
-  }
-
   private addPaginationHandler(): void {
     const paginationNextHandler = (): void => {
       if (
@@ -101,6 +72,7 @@ export class Track extends BaseComponent implements ITrack {
       }
     };
     this.pagination.nextBtn.addEventListener('click', paginationNextHandler);
+
     const paginationPrevHandler = (): void => {
       if (this.pagination.currentPage > 1) {
         this.pagination.currentPage -= 1;
@@ -119,6 +91,6 @@ export class Track extends BaseComponent implements ITrack {
           Error('no cars');
         });
     };
-    this.getElement().addEventListener('updateTrack', updateTrack);
+    document.addEventListener('updateTrack', updateTrack);
   }
 }

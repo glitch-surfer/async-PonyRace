@@ -48,6 +48,7 @@ export class Car extends BaseComponent implements ICar {
     );
 
     this.addRemoveCarHandler();
+    this.addSelectCarHandler();
   }
 
   private setColor(color: string): void {
@@ -80,5 +81,25 @@ export class Car extends BaseComponent implements ICar {
         });
     };
     this.removeBtn.addEventListener('click', removeCarHandler);
+  }
+
+  private addSelectCarHandler(): void {
+    const selectCarHandler = (event: MouseEvent): void => {
+      const selectBtn = event.target;
+      if (!(selectBtn instanceof HTMLElement)) return;
+      const id = selectBtn.closest('.car')?.getAttribute('data-id');
+      const carName = selectBtn.nextElementSibling?.nextElementSibling?.textContent;
+
+      const selectEvent = new CustomEvent('selectCar', {
+        bubbles: true,
+        cancelable: true,
+        detail: {
+          id,
+          carName,
+        },
+      });
+      selectBtn.dispatchEvent(selectEvent);
+    };
+    this.selectBtn.addEventListener('click', selectCarHandler);
   }
 }
