@@ -23,10 +23,12 @@ export class Garage extends BaseComponent implements IGarage {
 
   private addCreateCarHandler(): void {
     const createCarHandler = (): void => {
-      if (!(this.controls.createCarInput instanceof HTMLInputElement)) throw new Error('not input');
+      if (!(this.controls.createCarInput instanceof HTMLInputElement)
+        || this.controls.createCarInput.value.trim() === '') return;
       const newCarName = this.controls.createCarInput.value;
       const newCarId = Math.max(...this.track.carsList.map((car) => car.id)) + 1;
       const newCarColor = '#fff';
+      this.controls.createCarInput.value = '';
 
       const newCarParams: ICarResponse = {
         id: newCarId,
@@ -66,7 +68,8 @@ export class Garage extends BaseComponent implements IGarage {
 
   private addUpgradeCarHandler(): void {
     const upgradeCarHandler = (): void => {
-      if (!(this.controls.upgradeCarInput instanceof HTMLInputElement)) throw new Error('not input');
+      if (!(this.controls.upgradeCarInput instanceof HTMLInputElement)
+        || this.controls.upgradeCarInput.value.trim() === '') return;
       const newCarName = this.controls.upgradeCarInput.value;
       const newCarColor = '#fff';
       const id = this.track.carsList.find((car) => car.selected)?.id;
