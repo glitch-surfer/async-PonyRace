@@ -1,32 +1,26 @@
 import './styles/controls.scss';
 import { BaseComponent } from '../../../utils/base-component';
-import type { IControls, IControlsParams } from './types/controls-types';
+import type { IControls } from './types/controls-types';
+import { controlsView } from './view/controls-view';
 
 export class Controls extends BaseComponent implements IControls {
-  public createCarInput: HTMLElement;
-
-  public createCarBtn: HTMLElement;
-
-  public upgradeCarInput: HTMLElement;
-
-  public upgradeCarBtn: HTMLElement;
-
-  public raceBtn: HTMLElement;
-
-  public resetBtn: HTMLElement;
-
-  public generateCarsBtn: HTMLElement;
-
-  constructor(params: IControlsParams) {
-    super(params.wrapper);
-
-    this.createCarInput = new BaseComponent(params.createCarInput).getElement();
-    this.createCarBtn = new BaseComponent(params.createCarBtn).getElement();
-    this.upgradeCarInput = new BaseComponent(params.upgradeCarInput).getElement();
-    this.upgradeCarBtn = new BaseComponent(params.upgradeCarBtn).getElement();
-    this.raceBtn = new BaseComponent(params.raceBtn).getElement();
-    this.resetBtn = new BaseComponent(params.resetBtn).getElement();
-    this.generateCarsBtn = new BaseComponent(params.generateCarsBtn).getElement();
+  constructor(
+    public createCarInput: HTMLElement = new BaseComponent(controlsView.createCarInput)
+      .getElement(),
+    public createCarBtn: HTMLElement = new BaseComponent(controlsView.createCarBtn)
+      .getElement(),
+    public upgradeCarInput: HTMLElement = new BaseComponent(controlsView.upgradeCarInput)
+      .getElement(),
+    public upgradeCarBtn: HTMLElement = new BaseComponent(controlsView.upgradeCarBtn)
+      .getElement(),
+    public raceBtn: HTMLElement = new BaseComponent(controlsView.raceBtn)
+      .getElement(),
+    public resetBtn: HTMLElement = new BaseComponent(controlsView.resetBtn)
+      .getElement(),
+    public generateCarsBtn: HTMLElement = new BaseComponent(controlsView.generateCarsBtn)
+      .getElement(),
+  ) {
+    super(controlsView.wrapper);
 
     this.getElement().append(
       this.createCarInput,
