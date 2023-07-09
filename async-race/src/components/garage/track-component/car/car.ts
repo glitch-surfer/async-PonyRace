@@ -3,6 +3,7 @@ import type { ICarResponse } from '../../../../types/types';
 import { BaseComponent } from '../../../../utils/base-component';
 import type { ICar } from './types/car-types';
 import { carView } from './view/car-view';
+import { Urls } from '../../../../enums/urls';
 
 export class Car extends BaseComponent implements ICar {
   public id: number;
@@ -32,6 +33,8 @@ export class Car extends BaseComponent implements ICar {
     this.name = carParams.name;
     this.color = carParams.color;
 
+    this.getElement().setAttribute('data-id', `${this.id}`);
+
     this.setColor(this.color);
     this.setName(this.name);
 
@@ -43,6 +46,8 @@ export class Car extends BaseComponent implements ICar {
       this.stopBtn,
       this.car,
     );
+
+    this.addRemoveCarHandler();
   }
 
   private setColor(color: string): void {
@@ -51,5 +56,29 @@ export class Car extends BaseComponent implements ICar {
 
   private setName(name: string): void {
     this.title.textContent = name;
+  }
+
+  private addRemoveCarHandler(): void {
+    const removeCarHandler = (event: MouseEvent): void => {
+      const btn = event.target;
+      if (!(btn instanceof HTMLElement)) return;
+      const id = btn.closest('.car')?.getAttribute('data-id');
+      if (id === null || id === undefined) return;
+
+      fetch(`${Urls.GARAGE}/${id}`, {
+        method: 'DELETE',
+      })
+        .then(async () => {
+          const updateTrackEvent = new CustomEvent('updateTrack', {
+            bubbles: true,
+            cancelable: true,
+          });
+          this.getElement().dispatchEvent(updateTrackEvent);
+        })
+        .catch(() => {
+          Error('trouble deleting car');
+        });
+    };
+    this.removeBtn.addEventListener('click', removeCarHandler);
   }
 }

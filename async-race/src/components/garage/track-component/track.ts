@@ -7,7 +7,6 @@ import { clearElement } from '../../../utils/clear-element';
 import { setCount } from '../../../utils/set-count';
 import { Titles } from '../../../enums/titles';
 import { Numbers } from '../../../enums/numbers';
-import { Urls } from '../../../enums/urls';
 import { trackView } from './view/track-view';
 import { Pagination } from '../../pagination/pagination';
 
@@ -35,9 +34,9 @@ export class Track extends BaseComponent implements ITrack {
       this.pagination.getElement(),
     );
 
-    this.addRemoveCarHandler();
     this.addSelectCarHandler();
     this.addPaginationHandler();
+    this.addUpdateTrackHandler();
   }
 
   public async fillTrackList(): Promise<void> {
@@ -61,26 +60,6 @@ export class Track extends BaseComponent implements ITrack {
       if (this.carsList[i] === undefined) break;
       this.trackList.append(this.carsList[i].getElement());
     }
-  }
-
-  private addRemoveCarHandler(): void {
-    const removeCarHandler = (event: MouseEvent): void => {
-      const removeBtn = event.target;
-      if (removeBtn === null
-        || !(removeBtn instanceof HTMLElement)
-        || !removeBtn.classList.contains('car__remove-btn')) return;
-      const id = this.carsList.find((car) => car.removeBtn === removeBtn)?.id;
-      if (id === undefined) return;
-
-      fetch(`${Urls.GARAGE}/${id}`, {
-        method: 'DELETE',
-      })
-        .then(async () => this.fillTrackList())
-        .catch(() => {
-          this.trackList.textContent = 'no cars in garage';
-        });
-    };
-    this.getElement().addEventListener('click', removeCarHandler);
   }
 
   private addSelectCarHandler(): void {
@@ -130,5 +109,16 @@ export class Track extends BaseComponent implements ITrack {
       }
     };
     this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
+  }
+
+  private addUpdateTrackHandler(): void {
+    const updateTrack = (): void => {
+      this.fillTrackList()
+        .catch(() => {
+          this.trackList.textContent = 'no cars in garage';
+          Error('no cars');
+        });
+    };
+    this.getElement().addEventListener('updateTrack', updateTrack);
   }
 }
