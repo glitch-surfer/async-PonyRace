@@ -1,22 +1,26 @@
 import { Urls } from '../../enums/urls';
 import type { INewCar } from '../../types/types';
 import { BaseComponent } from '../../utils/base-component';
+import { Pagination } from '../pagination/pagination';
 import { Controls } from './controls-component/controls';
 import { Track } from './track-component/track';
-import type { IGarage, IGarageParams } from './types/garage-types';
+import type { IGarage } from './types/garage-types';
+import { garageView } from './view/garage-view';
 
 export class Garage extends BaseComponent implements IGarage {
-  public controls;
+  constructor(
+    public controls = new Controls(),
+    public track = new Track(),
+    public pagination = new Pagination(),
+  ) {
+    super(garageView.garage);
 
-  public track;
+    this.getElement().append(
+      this.controls.getElement(),
+      this.track.getElement(),
+      this.pagination.getElement(),
+    );
 
-  constructor(params: IGarageParams) {
-    super(params.garage);
-
-    this.controls = new Controls(params.sectionControls);
-    this.track = new Track(params.track);
-
-    this.getElement().append(this.controls.getElement(), this.track.getElement());
     this.addCreateCarHandler();
     this.addEnableUpgradeCarHandler();
     this.addUpgradeCarHandler();

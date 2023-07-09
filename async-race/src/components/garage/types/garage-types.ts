@@ -1,14 +1,14 @@
 import type { IParams } from '../../../types/types';
-import type { IControls, IControlsParams } from '../controls-component/types/controls-types';
-import type { ITrack, ITrackParams } from '../track-component/types/track-types';
+import type { IPagination } from '../../pagination/types/pagination-types';
+import type { IControls } from '../controls-component/types/controls-types';
+import type { ITrack } from '../track-component/types/track-types';
 
 export interface IGarage {
   controls: IControls
   track: ITrack
+  pagination: IPagination
 }
 
 export interface IGarageParams {
   garage: IParams
-  sectionControls: IControlsParams
-  track: ITrackParams
 }
