@@ -14,6 +14,8 @@ export class Car extends BaseComponent implements ICar {
 
   public selected: boolean = false;
 
+  private animation: Animation | null = null;
+
   public selectBtn: HTMLElement = new BaseComponent(carView.selectBtn).getElement();
 
   public removeBtn: HTMLElement = new BaseComponent(carView.removeBtn).getElement();
@@ -48,6 +50,7 @@ export class Car extends BaseComponent implements ICar {
     this.removeBtn.addEventListener('click', this.removeCarHandler.bind(this));
     this.selectBtn.addEventListener('click', this.selectCarHandler.bind(this));
     this.startBtn.addEventListener('click', this.startCarHandler.bind(this));
+    this.stopBtn.addEventListener('click', this.stopCarHandler.bind(this));
   }
 
   private setColor(color: string): void {
@@ -97,7 +100,7 @@ export class Car extends BaseComponent implements ICar {
           const { velocity, distance } = data;
           const distanceLength = window.innerWidth;
           const animationDuration = distance / velocity;
-          const animation = this.car.animate(
+          this.animation = this.car.animate(
             [
               { transform: `translateX(${(distanceLength * 0.9) - 140}px)` },
             ],
@@ -106,7 +109,7 @@ export class Car extends BaseComponent implements ICar {
               fill: 'forwards',
             },
           );
-          return animation;
+          return this.animation;
         })
         .then((animation) => {
           fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' })
@@ -124,6 +127,27 @@ export class Car extends BaseComponent implements ICar {
     startCar()
       .catch(() => {
         Error('it`s not started');
+      });
+  }
+
+  private stopCarHandler(): void {
+    const stopCar = async (): Promise<void> => {
+      this.stopBtn.setAttribute('disabled', '');
+      this.startBtn.removeAttribute('disabled');
+
+      fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' })
+        .then(() => {
+          this.animation?.cancel();
+          this.animation = null;
+        })
+        .catch(() => {
+          Error('it`s not started');
+        });
+    };
+
+    stopCar()
+      .catch(() => {
+        Error('it`s not stoped');
       });
   }
 }
