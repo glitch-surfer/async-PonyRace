@@ -45,9 +45,9 @@ export class Car extends BaseComponent implements ICar {
       this.car,
     );
 
-    this.addRemoveCarHandler();
-    this.addSelectCarHandler();
-    this.addStartCarHandler();
+    this.removeBtn.addEventListener('click', this.removeCarHandler.bind(this));
+    this.selectBtn.addEventListener('click', this.selectCarHandler.bind(this));
+    this.startBtn.addEventListener('click', this.startCarHandler.bind(this));
   }
 
   private setColor(color: string): void {
@@ -58,75 +58,72 @@ export class Car extends BaseComponent implements ICar {
     this.title.textContent = name;
   }
 
-  private addRemoveCarHandler(): void {
-    const removeCarHandler = (): void => {
-      fetch(`${Urls.GARAGE}/${this.id}`, {
-        method: 'DELETE',
-      })
-        .then(async () => {
-          const updateTrackEvent = new CustomEvent('updateTrack', {
-            bubbles: true,
-            cancelable: true,
-          });
-          this.getElement().dispatchEvent(updateTrackEvent);
-        })
-        .catch(() => {
-          Error('trouble deleting car');
+  private removeCarHandler(): void {
+    fetch(`${Urls.GARAGE}/${this.id}`, {
+      method: 'DELETE',
+    })
+      .then(async () => {
+        const updateTrackEvent = new CustomEvent('updateTrack', {
+          bubbles: true,
+          cancelable: true,
         });
-    };
-    this.removeBtn.addEventListener('click', removeCarHandler);
-  }
-
-  private addSelectCarHandler(): void {
-    const selectCarHandler = (): void => {
-      const selectEvent = new CustomEvent('selectCar', {
-        bubbles: true,
-        cancelable: true,
-        detail: {
-          id: this.id,
-          carName: this.name,
-        },
+        this.getElement().dispatchEvent(updateTrackEvent);
+      })
+      .catch(() => {
+        Error('trouble deleting car');
       });
-      this.getElement().dispatchEvent(selectEvent);
-    };
-    this.selectBtn.addEventListener('click', selectCarHandler);
   }
 
-  private addStartCarHandler(): void {
-    const startCarHandler = async (): Promise<void> => {
+  private selectCarHandler(): void {
+    const selectEvent = new CustomEvent('selectCar', {
+      bubbles: true,
+      cancelable: true,
+      detail: {
+        id: this.id,
+        carName: this.name,
+      },
+    });
+    this.getElement().dispatchEvent(selectEvent);
+  }
+
+  private startCarHandler(): void {
+    const startCar = async (): Promise<void> => {
       this.startBtn.setAttribute('disabled', '');
       this.stopBtn.removeAttribute('disabled');
 
-      fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, {
-        method: 'PATCH',
-      }).then(async (response) => response.json())
+      fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
+        .then(async (response) => response.json())
         .then((data) => {
           const { velocity, distance } = data;
           const distanceLength = window.innerWidth;
           const animationDuration = distance / velocity;
-          const animation = this.car.animate([
-            { transform: `translateX(${(distanceLength * 0.9) - 140}px)` },
-          ], {
-            duration: animationDuration,
-            fill: 'forwards',
-          });
+          const animation = this.car.animate(
+            [
+              { transform: `translateX(${(distanceLength * 0.9) - 140}px)` },
+            ],
+            {
+              duration: animationDuration,
+              fill: 'forwards',
+            },
+          );
           return animation;
         })
         .then((animation) => {
-          fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, {
-            method: 'PATCH',
-          }).then((response) => {
-            if (response.status === 500) {
-              animation.pause();
-            }
-          }).catch(() => {
-            Error('trouble starting car');
-          });
+          fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' })
+            .then((response) => {
+              if (response.status === 500) animation.pause();
+            }).catch(() => {
+              Error('trouble with engine');
+            });
         })
         .catch(() => {
-          Error('some trouble');
+          Error('it`s not started');
         });
     };
-    this.startBtn.addEventListener('click', startCarHandler);
+
+    startCar()
+      .catch(() => {
+        Error('it`s not started');
+      });
   }
 }

@@ -35,7 +35,7 @@ export class Track extends BaseComponent implements ITrack {
     );
 
     this.addPaginationHandler();
-    this.addUpdateTrackHandler();
+    document.addEventListener('updateTrack', this.updateTrackHandler.bind(this));
   }
 
   public async fillTrackList(): Promise<void> {
@@ -83,14 +83,11 @@ export class Track extends BaseComponent implements ITrack {
     this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
   }
 
-  private addUpdateTrackHandler(): void {
-    const updateTrack = (): void => {
-      this.fillTrackList()
-        .catch(() => {
-          this.trackList.textContent = 'no cars in garage';
-          Error('no cars');
-        });
-    };
-    document.addEventListener('updateTrack', updateTrack);
+  private updateTrackHandler(): void {
+    this.fillTrackList()
+      .catch(() => {
+        this.trackList.textContent = 'no cars in garage';
+        Error('no cars');
+      });
   }
 }

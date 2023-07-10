@@ -37,76 +37,101 @@ export class Controls extends BaseComponent implements IControls {
       this.generateCarsBtn,
     );
 
-    this.addEnableUpgradeCarHandler();
-    this.addUpgradeCarHandler();
-    this.addCreateCarHandler();
-    this.addGenerateBtnHandler();
+    document.addEventListener('selectCar', this.enableUpgradeCar.bind(this));
+    this.upgradeCarBtn.addEventListener('click', this.upgradeCarHandler.bind(this));
+    this.createCarBtn.addEventListener('click', this.createCarHandler.bind(this));
+    this.generateCarsBtn.addEventListener('click', this.generateNewCars.bind(this));
   }
 
-  private addEnableUpgradeCarHandler(): void {
-    const enableUpgradeCar = (event: Event): void => {
-      if (!(this.upgradeCarInput instanceof HTMLInputElement)
-        || !(event instanceof CustomEvent)) throw new Error('not input');
+  private enableUpgradeCar(event: Event): void {
+    const input = this.upgradeCarInput;
+    const btn = this.upgradeCarBtn;
+    if (!(input instanceof HTMLInputElement)
+      || !(event instanceof CustomEvent)) throw new Error('not input');
 
-      this.upgradeCarInput.removeAttribute('disabled');
-      this.upgradeCarBtn.removeAttribute('disabled');
+    input.removeAttribute('disabled');
+    btn.removeAttribute('disabled');
 
-      const { id, carName } = event.detail;
+    const { id, carName } = event.detail;
 
-      this.upgradeCarInput.value = carName;
-      this.upgradeCarBtn.setAttribute('data-id', id);
-    };
-    document.addEventListener('selectCar', enableUpgradeCar);
+    input.value = carName;
+    btn.setAttribute('data-id', id);
   }
 
-  private addUpgradeCarHandler(): void {
-    const upgradeCarHandler = (): void => {
-      if (!(this.upgradeCarInput instanceof HTMLInputElement)
-        || this.upgradeCarInput.value.trim() === '') return;
-      const newCarName = this.upgradeCarInput.value;
-      const newCarColor = '#fff'; // todo
-      const id = this.upgradeCarBtn.getAttribute('data-id');
-      if (id === null) return;
+  private upgradeCarHandler(): void {
+    const input = this.upgradeCarInput;
+    if (!(input instanceof HTMLInputElement)
+      || input.value.trim() === '') return;
 
-      fetch(`${Urls.GARAGE}/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ name: newCarName, color: newCarColor }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(async () => {
-          const updateTrackEvent = new CustomEvent('updateTrack', {
-            bubbles: true,
-            cancelable: true,
-          });
-          this.getElement().dispatchEvent(updateTrackEvent);
-        })
-        .catch((error) => {
-          Error(error.message);
-        })
-        .finally(() => {
-          if (!(this.upgradeCarInput instanceof HTMLInputElement)) throw new Error('not input');
-          this.upgradeCarInput.value = '';
-          this.upgradeCarInput.setAttribute('disabled', '');
-          this.upgradeCarBtn.setAttribute('disabled', '');
-          this.upgradeCarBtn.removeAttribute('data-id');
+    const newCarName = input.value;
+    const newCarColor = '#fff'; // todo
+    const id = this.upgradeCarBtn.getAttribute('data-id');
+    if (id === null) return;
+
+    fetch(`${Urls.GARAGE}/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ name: newCarName, color: newCarColor }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(async () => {
+        const updateTrackEvent = new CustomEvent('updateTrack', {
+          bubbles: true,
+          cancelable: true,
         });
-    };
-    this.upgradeCarBtn.addEventListener('click', upgradeCarHandler);
+        this.getElement().dispatchEvent(updateTrackEvent);
+      })
+      .catch((error) => {
+        Error(error.message);
+      })
+      .finally(() => {
+        input.value = '';
+        input.setAttribute('disabled', '');
+        this.upgradeCarBtn.setAttribute('disabled', '');
+        this.upgradeCarBtn.removeAttribute('data-id');
+      });
   }
 
-  private addCreateCarHandler(): void {
-    const createCarHandler = (): void => {
-      if (!(this.createCarInput instanceof HTMLInputElement)
-        || this.createCarInput.value.trim() === '') return;
-      const newCarName = this.createCarInput.value;
-      const newCarColor = '#fff';
-      this.createCarInput.value = '';
+  private createCarHandler(): void {
+    const input = this.createCarInput;
+    if (!(input instanceof HTMLInputElement)
+      || input.value.trim() === '') return;
+    const newCarName = input.value;
+    const newCarColor = '#fff';
+    const newCarParams: INewCar = {
+      name: newCarName,
+      color: newCarColor,
+    };
 
+    fetch(Urls.GARAGE, {
+      method: 'POST',
+      body: JSON.stringify(newCarParams),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(() => {
+        const updateTrackEvent = new CustomEvent('updateTrack', {
+          bubbles: true,
+          cancelable: true,
+        });
+        this.getElement().dispatchEvent(updateTrackEvent);
+      })
+      .catch((error) => {
+        Error(error.message);
+      })
+      .finally(() => {
+        input.value = '';
+      });
+  }
+
+  private generateNewCars(): void {
+    const newCars: Response[] = [];
+    for (let i = 0; i < Numbers.GENERATE_CAR_COUNT; i += 1) {
       const newCarParams: INewCar = {
-        name: newCarName,
-        color: newCarColor,
+        name: getRandomName(),
+        color: getRandomColor(),
       };
 
       fetch(Urls.GARAGE, {
@@ -116,54 +141,20 @@ export class Controls extends BaseComponent implements IControls {
           'Content-Type': 'application/json',
         },
       })
-        .then(async () => {
-          const updateTrackEvent = new CustomEvent('updateTrack', {
-            bubbles: true,
-            cancelable: true,
-          });
-          this.getElement().dispatchEvent(updateTrackEvent);
-        })
+        .then((newCar) => newCars.push(newCar))
         .catch((error) => {
           Error(error.message);
         });
-    };
-
-    this.createCarBtn.addEventListener('click', createCarHandler);
-  }
-
-  private addGenerateBtnHandler(): void {
-    const generateNewCars = (): void => {
-      const newCars = [];
-      for (let i = 0; i < Numbers.GENERATE_CAR_COUNT; i += 1) {
-        const newCarParams: INewCar = {
-          name: getRandomName(),
-          color: getRandomColor(),
-        };
-
-        const newCar = fetch(Urls.GARAGE, {
-          method: 'POST',
-          body: JSON.stringify(newCarParams),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-          .catch((error) => {
-            Error(error.message);
-          });
-
-        newCars.push(newCar);
-      }
-      Promise.all(newCars).then(() => {
-        const updateTrackEvent = new CustomEvent('updateTrack', {
-          bubbles: true,
-          cancelable: true,
-        });
-        this.getElement().dispatchEvent(updateTrackEvent);
-      })
-        .catch((error) => {
-          Error(error.message);
-        });
-    };
-    this.generateCarsBtn.addEventListener('click', generateNewCars);
+    }
+    Promise.all(newCars).then(() => {
+      const updateTrackEvent = new CustomEvent('updateTrack', {
+        bubbles: true,
+        cancelable: true,
+      });
+      this.getElement().dispatchEvent(updateTrackEvent);
+    })
+      .catch((error) => {
+        Error(error.message);
+      });
   }
 }
