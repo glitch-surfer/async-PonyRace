@@ -11,7 +11,9 @@ import { trackView } from './view/track-view';
 import { Pagination } from '../../pagination/pagination';
 
 export class Track extends BaseComponent implements ITrack {
-  public carsList: Car[] = [];
+  public carsInGarage: Car[] = [];
+
+  public carsOnPage: Car[] = [];
 
   constructor(
     public title: HTMLElement = new BaseComponent(trackView.title).getElement(),
@@ -36,17 +38,19 @@ export class Track extends BaseComponent implements ITrack {
 
     this.addPaginationHandler();
     document.addEventListener('updateTrack', this.updateTrackHandler.bind(this));
+    document.addEventListener('startRace', this.startRaceHandler.bind(this));
+    document.addEventListener('resetRace', this.resetRaceHandler.bind(this));
   }
 
   public async fillTrackList(): Promise<void> {
     const cars = await getCars();
-    this.carsList = [];
+    this.carsInGarage = [];
 
     cars.forEach((car) => {
       const newCar = new Car(car);
-      this.carsList.push(newCar);
+      this.carsInGarage.push(newCar);
     });
-    this.title.textContent = setCount(Titles.GARAGE, this.carsList);
+    this.title.textContent = setCount(Titles.GARAGE, this.carsInGarage);
     this.renderTrack(this.pagination.currentPage);
   }
 
@@ -54,17 +58,18 @@ export class Track extends BaseComponent implements ITrack {
     const carsOnPage = Numbers.CARS_ON_PAGE;
 
     clearElement(this.trackList);
-
+    this.carsOnPage = [];
     for (let i = (page * carsOnPage) - carsOnPage; i < (page * carsOnPage); i += 1) {
-      if (this.carsList[i] === undefined) break;
-      this.trackList.append(this.carsList[i].getElement());
+      if (this.carsInGarage[i] === undefined) break;
+      this.trackList.append(this.carsInGarage[i].getElement());
+      this.carsOnPage.push(this.carsInGarage[i]);
     }
   }
 
   private addPaginationHandler(): void {
     const paginationNextHandler = (): void => {
       if (
-        this.pagination.currentPage < Math.ceil(this.carsList.length / Numbers.CARS_ON_PAGE)
+        this.pagination.currentPage < Math.ceil(this.carsInGarage.length / Numbers.CARS_ON_PAGE)
       ) {
         this.pagination.currentPage += 1;
         this.renderTrack(this.pagination.currentPage);
@@ -89,5 +94,18 @@ export class Track extends BaseComponent implements ITrack {
         this.trackList.textContent = 'no cars in garage';
         Error('no cars');
       });
+  }
+
+  private startRaceHandler(): void {
+    this.carsOnPage.forEach((car) => {
+      car.startBtn.click();
+    });
+  }
+
+  private resetRaceHandler(): void {
+    const drivedCars = this.carsInGarage.filter((car) => car.animation !== null);
+    drivedCars.forEach((car) => {
+      car.stopBtn.click();
+    });
   }
 }

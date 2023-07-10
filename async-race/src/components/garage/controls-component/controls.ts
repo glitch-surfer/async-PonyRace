@@ -41,6 +41,8 @@ export class Controls extends BaseComponent implements IControls {
     this.upgradeCarBtn.addEventListener('click', this.upgradeCarHandler.bind(this));
     this.createCarBtn.addEventListener('click', this.createCarHandler.bind(this));
     this.generateCarsBtn.addEventListener('click', this.generateNewCars.bind(this));
+    this.raceBtn.addEventListener('click', this.raceHandler.bind(this));
+    this.resetBtn.addEventListener('click', this.resetBtnHandler.bind(this));
   }
 
   private enableUpgradeCar(event: Event): void {
@@ -156,5 +158,37 @@ export class Controls extends BaseComponent implements IControls {
       .catch((error) => {
         Error(error.message);
       });
+  }
+
+  private raceHandler(): void {
+    const startRaceEvent = new CustomEvent('startRace', {
+      bubbles: true,
+      cancelable: true,
+    });
+    this.getElement().dispatchEvent(startRaceEvent);
+    this.disableBtns();
+  }
+
+  public resetBtnHandler(): void {
+    const resetEvent = new CustomEvent('resetRace', {
+      bubbles: true,
+      cancelable: true,
+    });
+    this.getElement().dispatchEvent(resetEvent);
+    setTimeout(() => {
+      this.enableBtns();
+    }, 2500);
+  }
+
+  public disableBtns(): void {
+    this.raceBtn.setAttribute('disabled', '');
+    this.generateCarsBtn.setAttribute('disabled', '');
+    this.createCarBtn.setAttribute('disabled', '');
+  }
+
+  public enableBtns(): void {
+    this.raceBtn.removeAttribute('disabled');
+    this.generateCarsBtn.removeAttribute('disabled');
+    this.createCarBtn.removeAttribute('disabled');
   }
 }
