@@ -15,5 +15,24 @@ export class Garage extends BaseComponent implements IGarage {
       this.controls.getElement(),
       this.track.getElement(),
     );
+    this.raceBtnHandler();
+  }
+
+  private raceBtnHandler(): void {
+    const btn = this.controls.raceBtn;
+
+    const observer = new MutationObserver(() => {
+      const cars = this.track.carsOnPage;
+      if (cars.some((car) => car.animation !== null)) {
+        btn.setAttribute('disabled', '');
+      } else {
+        btn.removeAttribute('disabled');
+      }
+    });
+    observer.observe(this.track.getElement(), {
+      childList: true,
+      subtree: true,
+      attributeFilter: ['disabled'],
+    });
   }
 }

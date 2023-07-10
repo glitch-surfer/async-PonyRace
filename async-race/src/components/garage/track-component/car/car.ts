@@ -14,7 +14,7 @@ export class Car extends BaseComponent implements ICar {
 
   public selected: boolean = false;
 
-  private animation: Animation | null = null;
+  public animation: Animation | null = null;
 
   public selectBtn: HTMLElement = new BaseComponent(carView.selectBtn).getElement();
 
@@ -91,8 +91,7 @@ export class Car extends BaseComponent implements ICar {
 
   private startCarHandler(): void {
     const startCar = async (): Promise<void> => {
-      this.startBtn.setAttribute('disabled', '');
-      this.stopBtn.removeAttribute('disabled');
+      this.disableBtns();
 
       fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
         .then(async (response) => response.json())
@@ -118,6 +117,7 @@ export class Car extends BaseComponent implements ICar {
             }).catch(() => {
               Error('trouble with engine');
             });
+          this.stopBtn.removeAttribute('disabled');
         })
         .catch(() => {
           Error('it`s not started');
@@ -133,7 +133,6 @@ export class Car extends BaseComponent implements ICar {
   private stopCarHandler(): void {
     const stopCar = async (): Promise<void> => {
       this.stopBtn.setAttribute('disabled', '');
-      this.startBtn.removeAttribute('disabled');
 
       fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' })
         .then(() => {
@@ -142,6 +141,9 @@ export class Car extends BaseComponent implements ICar {
         })
         .catch(() => {
           Error('it`s not started');
+        })
+        .finally(() => {
+          this.enableBtns();
         });
     };
 
@@ -149,5 +151,17 @@ export class Car extends BaseComponent implements ICar {
       .catch(() => {
         Error('it`s not stoped');
       });
+  }
+
+  public disableBtns(): void {
+    this.startBtn.setAttribute('disabled', '');
+    this.selectBtn.setAttribute('disabled', '');
+    this.removeBtn.setAttribute('disabled', '');
+  }
+
+  public enableBtns(): void {
+    this.startBtn.removeAttribute('disabled');
+    this.selectBtn.removeAttribute('disabled');
+    this.removeBtn.removeAttribute('disabled');
   }
 }
