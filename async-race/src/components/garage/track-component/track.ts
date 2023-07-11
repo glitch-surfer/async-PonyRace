@@ -9,6 +9,7 @@ import { Titles } from '../../../enums/titles';
 import { Numbers } from '../../../enums/numbers';
 import { trackView } from './view/track-view';
 import { Pagination } from '../../pagination/pagination';
+import { ModalWindow } from '../../modal/modal';
 
 export class Track extends BaseComponent implements ITrack {
   public carsInGarage: Car[] = [];
@@ -42,13 +43,12 @@ export class Track extends BaseComponent implements ITrack {
     document.addEventListener('updateTrack', this.updateTrackHandler.bind(this));
     document.addEventListener('startRace', this.startRaceHandler.bind(this));
     document.addEventListener('resetRace', this.resetRaceHandler.bind(this));
-    this.getElement().addEventListener('onWheels', (event) => {
-      if (event instanceof CustomEvent) {
-        if (this.winner === null) {
-          this.winner = event.detail.car;
-          console.log(this.winner?.name);
-        }
-      }
+    this.getElement().addEventListener('finishedCar', (event) => {
+      if (!(event instanceof CustomEvent) || this.winner !== null) return;
+      const winner = event.detail.car;
+      this.winner = winner;
+
+      new ModalWindow(winner.name).appendModal();
     });
   }
 
@@ -108,19 +108,19 @@ export class Track extends BaseComponent implements ITrack {
 
   private startRaceHandler(): void {
     this.carsOnPage.forEach((car) => {
-      car.isRace = true;
-      car.startBtn.click();
+      const readyCar = car;
+      readyCar.startBtn.click();
+      readyCar.isRace = true;
     });
   }
 
   private resetRaceHandler(): void {
     this.winner = null;
-    this.carsOnPage.forEach((car) => {
-      car.isRace = false;
-    });
-    const drivedCars = this.carsInGarage.filter((car) => car.animation !== null);
-    drivedCars.forEach((car) => {
-      car.stopBtn.click();
-    });
+    this.carsInGarage.filter((car) => car.animation !== null)
+      .forEach((car) => {
+        const finishedCar = car;
+        finishedCar.stopBtn.click();
+        finishedCar.isRace = false;
+      });
   }
 }

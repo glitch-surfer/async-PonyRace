@@ -1,0 +1,49 @@
+@import '../../styles/variables.scss';
+
+.overlay {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  background-color: $overlay-color;
+}
+
+.modal {
+  position: absolute;
+  z-index: 12;
+  max-width: 85%;
+  max-height: 90%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: $modal-background-color;
+  border-radius: $border-radius;
+  overflow: auto;
+}
+
+.modal__title {
+  text-align: center;
+}
+
+.btn-modal {
+  width: 2.5rem;
+  height: 2.5rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.4rem;
+  color: $btn-color;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+
+  &:hover {
+    color: lighten($btn-color, 10%);
+  }
+}

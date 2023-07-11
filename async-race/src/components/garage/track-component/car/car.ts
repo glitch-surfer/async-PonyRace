@@ -53,10 +53,6 @@ export class Car extends BaseComponent implements ICar {
     this.selectBtn.addEventListener('click', this.selectCarHandler.bind(this));
     this.startBtn.addEventListener('click', this.startCarHandler.bind(this));
     this.stopBtn.addEventListener('click', this.stopCarHandler.bind(this));
-    // this.car.addEventListener('finish', () => {
-    //   console.log('finish');
-    //   console.log(this.animation);
-    // });
   }
 
   private setColor(color: string): void {
@@ -98,10 +94,10 @@ export class Car extends BaseComponent implements ICar {
   public startCarHandler(): void {
     const startCar = async (): Promise<void> => {
       this.disableBtns();
-
       fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
-        .then(async (data) => {
-          const { velocity, distance } = await data.json();
+        .then(async (response) => response.json())
+        .then((data) => {
+          const { velocity, distance } = data;
           const distanceLength = window.innerWidth;
           const animationDuration = distance / velocity;
           this.animation = this.car.animate(
@@ -119,8 +115,7 @@ export class Car extends BaseComponent implements ICar {
                 this.animation?.pause();
               }
               if (response.status === 200 && this.isRace) {
-                this.animation?.finish();
-                const event = new CustomEvent('onWheels', {
+                const event = new CustomEvent('finishedCar', {
                   bubbles: true,
                   cancelable: true,
                   detail: {
@@ -132,15 +127,9 @@ export class Car extends BaseComponent implements ICar {
             }).catch(() => 'error');
           this.stopBtn.removeAttribute('disabled');
         })
-        .catch(() => {
-          Error('it`s not started');
-        });
+        .catch(() => { Error('it`s not started'); });
     };
-
-    startCar()
-      .catch(() => {
-        Error('it`s not started');
-      });
+    startCar().catch(() => { Error('it`s not started'); });
   }
 
   private stopCarHandler(): void {
@@ -153,7 +142,7 @@ export class Car extends BaseComponent implements ICar {
           this.animation = null;
         })
         .catch(() => {
-          Error('it`s not started');
+          Error('it`s not stoped');
         })
         .finally(() => {
           this.enableBtns();
