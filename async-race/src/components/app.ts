@@ -4,14 +4,13 @@ import { headerView } from './header/view/header-view';
 import { Header } from './header/header';
 import { Garage } from './garage/garage';
 import { Winners } from './winners/winners';
-import { winnersView } from './winners/view/winners-view';
 
 export class App implements IApp {
   constructor(
     public header = new Header(headerView),
     private readonly main = document.createElement('main'),
     public garage = new Garage(),
-    public winners = new Winners(winnersView),
+    public winners = new Winners(),
   ) {
     this.main.append(this.garage.getElement(), this.winners.getElement());
     this.addGarageBtnHandler();

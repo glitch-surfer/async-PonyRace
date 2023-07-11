@@ -8,7 +8,6 @@ export const winnersView: IWinnersParams = {
   title: {
     tag: 'h2',
     className: ['winners__title'],
-    text: 'Winners',
   },
   subtitle: {
     tag: 'h3',
@@ -16,17 +15,7 @@ export const winnersView: IWinnersParams = {
     text: 'Page #1',
   },
   table: {
-    tag: 'table',
+    tag: 'div',
     className: ['winners__table'],
-  },
-  btnPrev: {
-    tag: 'button',
-    className: ['winners__btn-prev', 'btn'],
-    text: 'Prev',
-  },
-  btnNext: {
-    tag: 'button',
-    className: ['winners__btn-next', 'btn'],
-    text: 'Next',
   },
 };
