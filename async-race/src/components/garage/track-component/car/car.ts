@@ -16,6 +16,8 @@ export class Car extends BaseComponent implements ICar {
 
   public animation: Animation | null = null;
 
+  public isRace: boolean = false;
+
   public selectBtn: HTMLElement = new BaseComponent(carView.selectBtn).getElement();
 
   public removeBtn: HTMLElement = new BaseComponent(carView.removeBtn).getElement();
@@ -51,6 +53,10 @@ export class Car extends BaseComponent implements ICar {
     this.selectBtn.addEventListener('click', this.selectCarHandler.bind(this));
     this.startBtn.addEventListener('click', this.startCarHandler.bind(this));
     this.stopBtn.addEventListener('click', this.stopCarHandler.bind(this));
+    // this.car.addEventListener('finish', () => {
+    //   console.log('finish');
+    //   console.log(this.animation);
+    // });
   }
 
   private setColor(color: string): void {
@@ -89,14 +95,13 @@ export class Car extends BaseComponent implements ICar {
     this.getElement().dispatchEvent(selectEvent);
   }
 
-  private startCarHandler(): void {
+  public startCarHandler(): void {
     const startCar = async (): Promise<void> => {
       this.disableBtns();
 
       fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
-        .then(async (response) => response.json())
-        .then((data) => {
-          const { velocity, distance } = data;
+        .then(async (data) => {
+          const { velocity, distance } = await data.json();
           const distanceLength = window.innerWidth;
           const animationDuration = distance / velocity;
           this.animation = this.car.animate(
@@ -108,15 +113,23 @@ export class Car extends BaseComponent implements ICar {
               fill: 'forwards',
             },
           );
-          return this.animation;
-        })
-        .then((animation) => {
           fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' })
             .then((response) => {
-              if (response.status === 500) animation.pause();
-            }).catch(() => {
-              Error('trouble with engine');
-            });
+              if (response.status === 500) {
+                this.animation?.pause();
+              }
+              if (response.status === 200 && this.isRace) {
+                this.animation?.finish();
+                const event = new CustomEvent('onWheels', {
+                  bubbles: true,
+                  cancelable: true,
+                  detail: {
+                    car: this,
+                  },
+                });
+                this.getElement().dispatchEvent(event);
+              }
+            }).catch(() => 'error');
           this.stopBtn.removeAttribute('disabled');
         })
         .catch(() => {

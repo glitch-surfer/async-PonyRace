@@ -187,7 +187,6 @@ export class Controls extends BaseComponent implements IControls {
   }
 
   public enableBtns(): void {
-    this.raceBtn.removeAttribute('disabled');
     this.generateCarsBtn.removeAttribute('disabled');
     this.createCarBtn.removeAttribute('disabled');
   }

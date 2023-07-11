@@ -15,6 +15,8 @@ export class Track extends BaseComponent implements ITrack {
 
   public carsOnPage: Car[] = [];
 
+  public winner: Car | null = null;
+
   constructor(
     public title: HTMLElement = new BaseComponent(trackView.title).getElement(),
     public subtitle: HTMLElement = new BaseComponent(trackView.subtitle).getElement(),
@@ -40,6 +42,14 @@ export class Track extends BaseComponent implements ITrack {
     document.addEventListener('updateTrack', this.updateTrackHandler.bind(this));
     document.addEventListener('startRace', this.startRaceHandler.bind(this));
     document.addEventListener('resetRace', this.resetRaceHandler.bind(this));
+    this.getElement().addEventListener('onWheels', (event) => {
+      if (event instanceof CustomEvent) {
+        if (this.winner === null) {
+          this.winner = event.detail.car;
+          console.log(this.winner?.name);
+        }
+      }
+    });
   }
 
   public async fillTrackList(): Promise<void> {
@@ -98,11 +108,16 @@ export class Track extends BaseComponent implements ITrack {
 
   private startRaceHandler(): void {
     this.carsOnPage.forEach((car) => {
+      car.isRace = true;
       car.startBtn.click();
     });
   }
 
   private resetRaceHandler(): void {
+    this.winner = null;
+    this.carsOnPage.forEach((car) => {
+      car.isRace = false;
+    });
     const drivedCars = this.carsInGarage.filter((car) => car.animation !== null);
     drivedCars.forEach((car) => {
       car.stopBtn.click();
