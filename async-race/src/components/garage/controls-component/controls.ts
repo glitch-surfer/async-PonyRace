@@ -37,12 +37,12 @@ export class Controls extends BaseComponent implements IControls {
       this.generateCarsBtn,
     );
 
-    document.addEventListener('selectCar', this.enableUpgradeCar.bind(this));
-    this.upgradeCarBtn.addEventListener('click', this.upgradeCarHandler.bind(this));
-    this.createCarBtn.addEventListener('click', this.createCarHandler.bind(this));
-    this.generateCarsBtn.addEventListener('click', this.generateNewCars.bind(this));
-    this.raceBtn.addEventListener('click', this.raceHandler.bind(this));
-    this.resetBtn.addEventListener('click', this.resetBtnHandler.bind(this));
+    document.addEventListener('selectCar', (event) => { this.enableUpgradeCar(event); });
+    this.upgradeCarBtn.addEventListener('click', () => { this.upgradeCarHandler(); });
+    this.createCarBtn.addEventListener('click', () => { this.createCarHandler(); });
+    this.generateCarsBtn.addEventListener('click', () => { this.generateNewCars(); });
+    this.raceBtn.addEventListener('click', () => { this.raceHandler(); });
+    this.resetBtn.addEventListener('click', () => { this.resetBtnHandler(); });
   }
 
   private enableUpgradeCar(event: Event): void {

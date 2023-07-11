@@ -40,16 +40,10 @@ export class Track extends BaseComponent implements ITrack {
     );
 
     this.addPaginationHandler();
-    document.addEventListener('updateTrack', this.updateTrackHandler.bind(this));
-    document.addEventListener('startRace', this.startRaceHandler.bind(this));
-    document.addEventListener('resetRace', this.resetRaceHandler.bind(this));
-    this.getElement().addEventListener('finishedCar', (event) => {
-      if (!(event instanceof CustomEvent) || this.winner !== null) return;
-      const winner = event.detail.car;
-      this.winner = winner;
-
-      new ModalWindow(winner.name).appendModal();
-    });
+    document.addEventListener('updateTrack', () => { this.updateTrackHandler(); });
+    document.addEventListener('startRace', () => { this.startRaceHandler(); });
+    document.addEventListener('resetRace', () => { this.resetRaceHandler(); });
+    this.getElement().addEventListener('finishedCar', (event: Event) => { this.finishedCarHandler(event); });
   }
 
   public async fillTrackList(): Promise<void> {
@@ -122,5 +116,20 @@ export class Track extends BaseComponent implements ITrack {
         finishedCar.stopBtn.click();
         finishedCar.isRace = false;
       });
+  }
+
+  private finishedCarHandler(event: Event): void {
+    if (!(event instanceof CustomEvent) || this.winner !== null) return;
+    const winner = event.detail.car;
+    this.winner = winner;
+    new ModalWindow(winner.name).appendModal();
+    const observer = new MutationObserver(() => {
+      this.resetRaceHandler();
+      observer.disconnect();
+    });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
   }
 }

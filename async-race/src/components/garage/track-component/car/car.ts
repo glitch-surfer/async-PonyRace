@@ -49,10 +49,10 @@ export class Car extends BaseComponent implements ICar {
       this.car,
     );
 
-    this.removeBtn.addEventListener('click', this.removeCarHandler.bind(this));
-    this.selectBtn.addEventListener('click', this.selectCarHandler.bind(this));
-    this.startBtn.addEventListener('click', this.startCarHandler.bind(this));
-    this.stopBtn.addEventListener('click', this.stopCarHandler.bind(this));
+    this.removeBtn.addEventListener('click', () => { this.removeCarHandler(); });
+    this.selectBtn.addEventListener('click', () => { this.selectCarHandler(); });
+    this.startBtn.addEventListener('click', () => { this.startCarHandler(); });
+    this.stopBtn.addEventListener('click', () => { this.stopCarHandler(); });
   }
 
   private setColor(color: string): void {
