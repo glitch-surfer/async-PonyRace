@@ -1,9 +1,37 @@
+@import '../../styles/variables.scss';
+
+
+%table-border {
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
 .winners {
   display: none;
 }
 
+.winners__title {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  border-bottom: 2px solid $main-text-color;
+}
+
+.winners__subtitle {
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
 .winners__table {
-  // display: flex;
-  // flex-direction: column;
-  // gap: 0.5rem;
+  margin: 0.5rem auto;
+  table-layout: fixed;
+}
+
+.winners__head-row > th {
+  padding: 0.2rem 0.4rem;
+  @extend %table-border;
+}
+
+.winner > td {
+  padding: 0.2rem 0.4rem;
+  @extend %table-border;
 }
