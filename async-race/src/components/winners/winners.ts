@@ -62,14 +62,15 @@ export class Winners extends BaseComponent implements IWinners {
 
   public renderWinners(page: number): void {
     const winnersPerPage = Numbers.WINNERS_ON_PAGE;
+    const tableBody = this.table.getElementsByTagName('tbody')[0];
 
-    clearElement(this.table);
+    clearElement(tableBody);
     this.winnersOnPage = [];
 
     for (let i = (page * winnersPerPage) - winnersPerPage; i < (page * winnersPerPage); i += 1) {
       if (this.winners[i] === undefined) break;
 
-      this.table.append(this.winners[i].getElement());
+      tableBody.append(this.winners[i].getElement());
       this.winnersOnPage.push(this.winners[i]);
     }
   }

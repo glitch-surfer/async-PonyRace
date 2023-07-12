@@ -1,6 +1,5 @@
 import { BaseComponent } from '../../../utils/base-component';
 import type { IWinner } from './types/winner-types';
-import { winnerView } from './view/winner-view';
 
 export class Winner extends BaseComponent implements IWinner {
   position: number;
@@ -16,19 +15,48 @@ export class Winner extends BaseComponent implements IWinner {
   time: number;
 
   constructor(winnerParams: IWinner) {
-    super(winnerView.wrapper);
+    super({
+      tag: 'tr',
+      className: ['winner'],
+    });
+
     this.position = 1;
     this.color = winnerParams.color;
     this.name = winnerParams.name;
     this.id = winnerParams.id;
     this.wins = winnerParams.wins;
     this.time = winnerParams.time;
-    this.getElement().append(
-      this.getWinner(),
-    );
+
+    this.appendWinnerData();
   }
 
-  public getWinner(): string {
-    return `Position: ${this.position}, Color: ${this.color}, Name: ${this.name}, ID: ${this.id}, WinsCount: ${this.wins}, BestTime: ${this.time}`;
+  private appendWinnerData(): void {
+    this.getElement().append(
+      new BaseComponent({
+        tag: 'td',
+        className: ['winner__td_number'],
+        text: `${this.position}`,
+      }).getElement(),
+      new BaseComponent({
+        tag: 'td',
+        className: ['winner__td_car'],
+        text: this.color,
+      }).getElement(),
+      new BaseComponent({
+        tag: 'td',
+        className: ['winner__td_name'],
+        text: this.name,
+      }).getElement(),
+      new BaseComponent({
+        tag: 'td',
+        className: ['winner__td_wins'],
+        text: this.wins.toString(),
+      }).getElement(),
+      new BaseComponent({
+        tag: 'td',
+        className: ['winner__td_time'],
+        text: this.time.toString(),
+      }).getElement(),
+    );
   }
 }
