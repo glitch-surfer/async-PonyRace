@@ -14,6 +14,8 @@ export interface ICar {
   id: number
   name: string
   color: string
+  wins: number
+  bestTime: number
   selected: boolean
   selectBtn: HTMLElement
   removeBtn: HTMLElement

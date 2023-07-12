@@ -10,6 +10,9 @@ import { Numbers } from '../../../enums/numbers';
 import { trackView } from './view/track-view';
 import { Pagination } from '../../pagination/pagination';
 import { ModalWindow } from '../../modal/modal';
+import { createWinner } from '../../../utils/api/create-winner';
+import { updateWinner } from '../../../utils/api/update-winner';
+import { Urls } from '../../../enums/urls';
 
 export class Track extends BaseComponent implements ITrack {
   public carsInGarage: Car[] = [];
@@ -17,6 +20,8 @@ export class Track extends BaseComponent implements ITrack {
   public carsOnPage: Car[] = [];
 
   public winner: Car | null = null;
+
+  private finishedCarCount = 0;
 
   constructor(
     public title: HTMLElement = new BaseComponent(trackView.title).getElement(),
@@ -49,13 +54,34 @@ export class Track extends BaseComponent implements ITrack {
   public async fillTrackList(): Promise<void> {
     const cars = await getCars();
     this.carsInGarage = [];
+    ///
+    Promise.all(cars.map(async (carParams) => {
+      const { wins = 0, time = 0 } = await (await fetch(`${Urls.WINNERS}/${carParams.id}`)).json();
+      console.log(wins, time);
 
-    cars.forEach((car) => {
-      const newCar = new Car(car);
-      this.carsInGarage.push(newCar);
-    });
-    this.title.textContent = setCount(Titles.GARAGE, this.carsInGarage);
-    this.renderTrack(this.pagination.currentPage);
+      return { ...carParams, wins, time };
+    })).then((completedCars) => {
+      completedCars.forEach((car) => {
+        const newCar = new Car(car);
+        this.carsInGarage.push(newCar);
+        console.log(newCar);
+      });
+    })
+      .then(() => {
+        this.renderTrack(this.pagination.currentPage);
+        this.title.textContent = setCount(Titles.WINNERS, this.carsInGarage);
+      })
+      .catch(() => {
+        this.title.textContent = 'no winners';
+      });
+    ///
+
+    // cars.forEach((car) => {
+    //   const newCar = new Car(car);
+    //   this.carsInGarage.push(newCar);
+    // });
+    // this.title.textContent = setCount(Titles.GARAGE, this.carsInGarage);
+    // this.renderTrack(this.pagination.currentPage);
   }
 
   public renderTrack(page: number): void {
@@ -110,6 +136,7 @@ export class Track extends BaseComponent implements ITrack {
 
   private resetRaceHandler(): void {
     this.winner = null;
+    this.finishedCarCount = 0;
     this.carsInGarage.filter((car) => car.animation !== null)
       .forEach((car) => {
         const finishedCar = car;
@@ -119,17 +146,45 @@ export class Track extends BaseComponent implements ITrack {
   }
 
   private finishedCarHandler(event: Event): void {
-    if (!(event instanceof CustomEvent) || this.winner !== null) return;
-    const winner = event.detail.car;
-    this.winner = winner;
-    new ModalWindow(winner.name).appendModal();
-    const observer = new MutationObserver(() => {
-      this.resetRaceHandler();
-      observer.disconnect();
-    });
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+    this.finishedCarCount += 1;
+    if (event instanceof CustomEvent && this.winner === null && event.detail !== null) {
+      const winner = event.detail.car;
+      const bestTime = event.detail.time;
+      this.winner = winner;
+      if (winner.bestTime === 0) {
+        winner.bestTime = bestTime;
+      } else {
+        winner.bestTime = bestTime < winner.bestTime ? bestTime : winner.bestTime;
+      }
+
+      new ModalWindow(this.winner!.name).appendModal();
+
+      // const observer = new MutationObserver(() => {
+      //   this.resetRaceHandler();
+      //   observer.disconnect();
+      // });
+      // observer.observe(document.body, {
+      //   childList: true,
+      //   subtree: true,
+      // });
+    }
+    if (this.finishedCarCount === this.carsOnPage.length && this.winner !== null) {
+      if (this.winner.wins === 0) {
+        this.winner.wins += 1;
+
+        createWinner({
+          id: this.winner.id,
+          wins: this.winner.wins,
+          time: this.winner.bestTime,
+        });
+      } else {
+        this.winner.wins += 1;
+
+        updateWinner({
+          wins: this.winner.wins,
+          time: this.winner.bestTime,
+        }, this.winner.id);
+      }
+    }
   }
 }

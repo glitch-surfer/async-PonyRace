@@ -4,6 +4,8 @@ import { BaseComponent } from '../../../../utils/base-component';
 import type { ICar } from './types/car-types';
 import { carView } from './view/car-view';
 import { Urls } from '../../../../enums/urls';
+import { dispatchUpdateWinnersEvent } from '../../../../utils/dispatch-update-winner-event';
+import { getAnimationDuration } from '../../../../utils/get-animation-duration';
 
 export class Car extends BaseComponent implements ICar {
   public id: number;
@@ -17,6 +19,10 @@ export class Car extends BaseComponent implements ICar {
   public animation: Animation | null = null;
 
   public isRace: boolean = false;
+
+  public wins: number;
+
+  public bestTime: number;
 
   public selectBtn: HTMLElement = new BaseComponent(carView.selectBtn).getElement();
 
@@ -36,6 +42,8 @@ export class Car extends BaseComponent implements ICar {
     this.id = carParams.id;
     this.name = carParams.name;
     this.color = carParams.color;
+    this.wins = carParams.wins;
+    this.bestTime = carParams.time;
 
     this.setColor(this.color);
     this.setName(this.name);
@@ -77,6 +85,8 @@ export class Car extends BaseComponent implements ICar {
       .catch(() => {
         Error('trouble deleting car');
       });
+
+    dispatchUpdateWinnersEvent();
   }
 
   private selectCarHandler(): void {
@@ -89,6 +99,8 @@ export class Car extends BaseComponent implements ICar {
       },
     });
     this.getElement().dispatchEvent(selectEvent);
+
+    dispatchUpdateWinnersEvent();
   }
 
   public startCarHandler(): void {
@@ -97,13 +109,10 @@ export class Car extends BaseComponent implements ICar {
       fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
         .then(async (response) => response.json())
         .then((data) => {
-          const { velocity, distance } = data;
-          const distanceLength = window.innerWidth;
-          const animationDuration = distance / velocity;
+          const animationDuration = getAnimationDuration(data);
+
           this.animation = this.car.animate(
-            [
-              { transform: `translateX(${(distanceLength * 0.9) - 140}px)` },
-            ],
+            [{ transform: `translateX(${(window.innerWidth * 0.9) - 140}px)` }],
             {
               duration: animationDuration,
               fill: 'forwards',
@@ -111,8 +120,13 @@ export class Car extends BaseComponent implements ICar {
           );
           fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' })
             .then((response) => {
-              if (response.status === 500) {
-                this.animation?.pause();
+              if (response.status === 500) this.animation?.pause();
+              if (response.status === 500 && this.isRace) {
+                const event = new CustomEvent('finishedCar', {
+                  bubbles: true,
+                  cancelable: true,
+                });
+                this.getElement().dispatchEvent(event);
               }
               if (response.status === 200 && this.isRace) {
                 const event = new CustomEvent('finishedCar', {
@@ -120,6 +134,7 @@ export class Car extends BaseComponent implements ICar {
                   cancelable: true,
                   detail: {
                     car: this,
+                    time: Math.floor(animationDuration) / 100,
                   },
                 });
                 this.getElement().dispatchEvent(event);

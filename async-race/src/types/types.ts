@@ -26,6 +26,8 @@ export interface ICarResponse {
   id: number
   name: string
   color: string
+  wins: number
+  time: number
 }
 
 export interface INewCar {
