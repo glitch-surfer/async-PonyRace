@@ -23,6 +23,8 @@ export class Car extends BaseComponent implements ICar {
 
   public isRace: boolean = false;
 
+  public isDeleted: boolean = false;
+
   public wins: number;
 
   public bestTime: number;
@@ -78,13 +80,13 @@ export class Car extends BaseComponent implements ICar {
     fetch(`${Urls.GARAGE}/${this.id}`, {
       method: 'DELETE',
     })
-      .then(async () => {
-        const updateTrackEvent = new CustomEvent('updateTrack', {
-          bubbles: true,
-          cancelable: true,
-        });
-        this.getElement().dispatchEvent(updateTrackEvent);
-      })
+      // .then(async () => {
+      //   const updateTrackEvent = new CustomEvent('updateTrack', {
+      //     bubbles: true,
+      //     cancelable: true,
+      //   });
+      //   this.getElement().dispatchEvent(updateTrackEvent);
+      // })
       .catch(() => {
         Error('trouble deleting car');
       });
@@ -93,6 +95,8 @@ export class Car extends BaseComponent implements ICar {
         dispatchUpdateWinnersEvent();
       }).catch((error) => { Error(error.message); });
     }
+    this.getElement().remove();
+    this.isDeleted = true;
   }
 
   private selectCarHandler(): void {
@@ -109,6 +113,7 @@ export class Car extends BaseComponent implements ICar {
 
   public startCarHandler(): void {
     const startCar = async (): Promise<void> => {
+      this.disableBtns();
       dispatchStartCarEvent();
       fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
         .then(async (response) => response.json())
@@ -164,6 +169,7 @@ export class Car extends BaseComponent implements ICar {
           Error('it`s not stoped');
         })
         .finally(() => {
+          this.enableBtns();
           dispatchStopCarEvent();
         });
     };

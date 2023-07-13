@@ -26,9 +26,10 @@ export class Garage extends BaseComponent implements IGarage {
     this.carsOnTrack += 1;
     this.controls.disableBtns();
     this.track.pagination.disableBtns();
-    this.track.carsOnPage.forEach((car) => {
-      car.disableBtns();
-    });
+    
+    // this.track.carsOnPage.forEach((car) => {
+    //   car.disableBtns();
+    // });
   }
 
   private stopCarController(): void {
@@ -36,9 +37,9 @@ export class Garage extends BaseComponent implements IGarage {
     if (this.carsOnTrack === 0) {
       this.controls.enableBtns();
       this.track.pagination.enableBtns();
-      this.track.carsOnPage.forEach((car) => {
-        car.enableBtns();
-      });
+      // this.track.carsOnPage.forEach((car) => {
+      //   car.enableBtns();
+      // });
     }
   }
 }

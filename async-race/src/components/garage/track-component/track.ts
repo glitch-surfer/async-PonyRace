@@ -49,6 +49,7 @@ export class Track extends BaseComponent implements ITrack {
     document.addEventListener('startRace', () => { this.startRaceHandler(); });
     document.addEventListener('resetRace', () => { this.resetRaceHandler(); });
     this.getElement().addEventListener('finishedCar', (event: Event) => { this.finishedCarHandler(event); });
+    this.addCarWatchingHandler();
   }
 
   public async fillTrackList(): Promise<void> {
@@ -117,7 +118,7 @@ export class Track extends BaseComponent implements ITrack {
   private startRaceHandler(): void {
     this.carsOnPage.forEach((car) => {
       const readyCar = car;
-      readyCar.startBtn.click();
+      readyCar.startCarHandler();
       readyCar.isRace = true;
     });
   }
@@ -131,6 +132,7 @@ export class Track extends BaseComponent implements ITrack {
         finishedCar.stopBtn.click();
         finishedCar.isRace = false;
       });
+    this.fillTrackList().catch(() => { Error('no cars'); });
   }
 
   private finishedCarHandler(event: Event): void {
@@ -167,5 +169,13 @@ export class Track extends BaseComponent implements ITrack {
         this.resetRaceHandler();
       }
     }
+  }
+
+  private addCarWatchingHandler(): void {
+    const observer = new MutationObserver(() => {
+      this.carsOnPage = this.carsOnPage.filter((car) => !car.isDeleted);
+      this.carsInGarage = this.carsInGarage.filter((car) => !car.isDeleted);
+    });
+    observer.observe(this.trackList, { childList: true });
   }
 }
