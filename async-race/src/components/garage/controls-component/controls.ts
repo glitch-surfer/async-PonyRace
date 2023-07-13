@@ -8,8 +8,11 @@ import { Numbers } from '../../../enums/numbers';
 import { getRandomName } from '../../../utils/get-random-name';
 import { getRandomColor } from '../../../utils/get-random-color';
 import { dispatchUpdateWinnersEvent } from '../../../utils/dispatch-update-winner-event';
+import type { Car } from '../track-component/car/car';
 
 export class Controls extends BaseComponent implements IControls {
+  private selectedCar: Car | null = null;
+
   constructor(
     public createCarInput: HTMLElement = new BaseComponent(controlsView.createCarInput)
       .getElement(),
@@ -55,10 +58,9 @@ export class Controls extends BaseComponent implements IControls {
     input.removeAttribute('disabled');
     btn.removeAttribute('disabled');
 
-    const { id, carName } = event.detail;
-
-    input.value = carName;
-    btn.setAttribute('data-id', id);
+    this.selectedCar = event.detail.car;
+    if (this.selectedCar === null) return;
+    input.value = this.selectedCar.name;
   }
 
   private upgradeCarHandler(): void {
@@ -66,24 +68,26 @@ export class Controls extends BaseComponent implements IControls {
     if (!(input instanceof HTMLInputElement)
       || input.value.trim() === '') return;
 
-    const newCarName = input.value;
-    const newCarColor = '#fff'; // todo
-    const id = this.upgradeCarBtn.getAttribute('data-id');
-    if (id === null) return;
+    if (this.selectedCar === null) return;
+    this.selectedCar.name = input.value;
+    this.selectedCar.color = '#fff'; // todo
+    // const { id } = this.selectedCar;
+    // if (id === null) return;
 
-    fetch(`${Urls.GARAGE}/${id}`, {
+    fetch(`${Urls.GARAGE}/${this.selectedCar.id}`, {
       method: 'PATCH',
-      body: JSON.stringify({ name: newCarName, color: newCarColor }),
+      body: JSON.stringify({ name: this.selectedCar.name, color: this.selectedCar.color }),
       headers: {
         'Content-Type': 'application/json',
       },
     })
       .then(async () => {
-        const updateTrackEvent = new CustomEvent('updateTrack', {
-          bubbles: true,
-          cancelable: true,
-        });
-        this.getElement().dispatchEvent(updateTrackEvent);
+        // const updateTrackEvent = new CustomEvent('updateTrack', {
+        //   bubbles: true,
+        //   cancelable: true,
+        // });
+        // this.getElement().dispatchEvent(updateTrackEvent);
+        this.selectedCar?.updateCar();
         dispatchUpdateWinnersEvent();
       })
       .catch((error) => {
@@ -93,7 +97,7 @@ export class Controls extends BaseComponent implements IControls {
         input.value = '';
         input.setAttribute('disabled', '');
         this.upgradeCarBtn.setAttribute('disabled', '');
-        this.upgradeCarBtn.removeAttribute('data-id');
+        this.selectedCar = null;
       });
   }
 

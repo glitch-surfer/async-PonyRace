@@ -104,8 +104,7 @@ export class Car extends BaseComponent implements ICar {
       bubbles: true,
       cancelable: true,
       detail: {
-        id: this.id,
-        carName: this.name,
+        car: this,
       },
     });
     this.getElement().dispatchEvent(selectEvent);
@@ -190,5 +189,10 @@ export class Car extends BaseComponent implements ICar {
     this.startBtn.removeAttribute('disabled');
     this.selectBtn.removeAttribute('disabled');
     this.removeBtn.removeAttribute('disabled');
+  }
+
+  public updateCar(): void {
+    this.setColor(this.color);
+    this.setName(this.name);
   }
 }

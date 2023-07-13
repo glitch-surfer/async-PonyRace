@@ -26,7 +26,6 @@ export class Garage extends BaseComponent implements IGarage {
     this.carsOnTrack += 1;
     this.controls.disableBtns();
     this.track.pagination.disableBtns();
-    
     // this.track.carsOnPage.forEach((car) => {
     //   car.disableBtns();
     // });
