@@ -6,6 +6,7 @@ import { carView } from './view/car-view';
 import { Urls } from '../../../../enums/urls';
 import { dispatchUpdateWinnersEvent } from '../../../../utils/dispatch-update-winner-event';
 import { getAnimationDuration } from '../../../../utils/get-animation-duration';
+import { deleteWinner } from '../../../../utils/api/delete-winner';
 
 export class Car extends BaseComponent implements ICar {
   public id: number;
@@ -85,8 +86,9 @@ export class Car extends BaseComponent implements ICar {
       .catch(() => {
         Error('trouble deleting car');
       });
-
-    dispatchUpdateWinnersEvent();
+    deleteWinner(this.id).then(() => {
+      dispatchUpdateWinnersEvent();
+    }).catch((error) => { Error(error.message); });
   }
 
   private selectCarHandler(): void {
@@ -99,8 +101,6 @@ export class Car extends BaseComponent implements ICar {
       },
     });
     this.getElement().dispatchEvent(selectEvent);
-
-    dispatchUpdateWinnersEvent();
   }
 
   public startCarHandler(): void {
