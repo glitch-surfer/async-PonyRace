@@ -148,8 +148,13 @@ export class Track extends BaseComponent implements ITrack {
       }
 
       new ModalWindow(this.winner!.name).appendModal();
+      // todo: without qerySelector
+      const reset = document.querySelector('.controls__reset-btn');
+      reset?.setAttribute('disabled', '');
+      //
     }
-    if (this.finishedCarCount === this.carsOnPage.length && this.winner !== null) {
+    if (this.finishedCarCount === this.carsOnPage.filter((car) => car.isRace).length
+      && this.winner !== null) {
       if (this.winner.wins === 0) {
         this.winner.wins += 1;
 
@@ -168,6 +173,10 @@ export class Track extends BaseComponent implements ITrack {
         }, this.winner.id);
         this.resetRaceHandler();
       }
+      // todo: without qerySelector
+      const reset = document.querySelector('.controls__reset-btn');
+      reset?.removeAttribute('disabled');
+      //
     }
   }
 
