@@ -12,7 +12,7 @@ import { Pagination } from '../../pagination/pagination';
 import { ModalWindow } from '../../modal/modal';
 import { createWinner } from '../../../utils/api/create-winner';
 import { updateWinner } from '../../../utils/api/update-winner';
-import { Urls } from '../../../enums/urls';
+import { getWinners } from '../../../utils/api/get-winners';
 
 export class Track extends BaseComponent implements ITrack {
   public carsInGarage: Car[] = [];
@@ -53,24 +53,23 @@ export class Track extends BaseComponent implements ITrack {
 
   public async fillTrackList(): Promise<void> {
     const cars = await getCars();
+    const winners = await getWinners();
     this.carsInGarage = [];
 
-    Promise.all(cars.map(async (carParams) => {
-      const { wins = 0, time = 0 } = await (await fetch(`${Urls.WINNERS}/${carParams.id}`)).json();
-      return { ...carParams, wins, time };
-    })).then((completedCars) => {
-      completedCars.forEach((car) => {
+    cars
+      .map((carParams) => {
+        const winnerParams = winners.find((winner) => winner.id === carParams.id);
+
+        if (winnerParams === undefined) return { ...carParams, wins: 0, time: 0 };
+
+        return { ...carParams, wins: winnerParams.wins, time: winnerParams.time };
+      })
+      .forEach((car) => {
         const newCar = new Car(car);
         this.carsInGarage.push(newCar);
       });
-    })
-      .then(() => {
-        this.renderTrack(this.pagination.currentPage);
-        this.title.textContent = setCount(Titles.WINNERS, this.carsInGarage);
-      })
-      .catch(() => {
-        this.title.textContent = 'no winners';
-      });
+    this.renderTrack(this.pagination.currentPage);
+    this.title.textContent = setCount(Titles.WINNERS, this.carsInGarage);
   }
 
   public renderTrack(page: number): void {
