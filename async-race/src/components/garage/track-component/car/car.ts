@@ -109,7 +109,6 @@ export class Car extends BaseComponent implements ICar {
 
   public startCarHandler(): void {
     const startCar = async (): Promise<void> => {
-      this.disableBtns();
       dispatchStartCarEvent();
       fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
         .then(async (response) => response.json())
@@ -165,7 +164,6 @@ export class Car extends BaseComponent implements ICar {
           Error('it`s not stoped');
         })
         .finally(() => {
-          this.enableBtns();
           dispatchStopCarEvent();
         });
     };
