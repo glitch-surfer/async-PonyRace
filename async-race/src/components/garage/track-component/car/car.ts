@@ -86,9 +86,11 @@ export class Car extends BaseComponent implements ICar {
       .catch(() => {
         Error('trouble deleting car');
       });
-    deleteWinner(this.id).then(() => {
-      dispatchUpdateWinnersEvent();
-    }).catch((error) => { Error(error.message); });
+    if (this.wins > 0) {
+      deleteWinner(this.id).then(() => {
+        dispatchUpdateWinnersEvent();
+      }).catch((error) => { Error(error.message); });
+    }
   }
 
   private selectCarHandler(): void {
