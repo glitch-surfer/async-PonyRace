@@ -7,6 +7,7 @@ import type { INewCar } from '../../../types/types';
 import { Numbers } from '../../../enums/numbers';
 import { getRandomName } from '../../../utils/get-random-name';
 import { getRandomColor } from '../../../utils/get-random-color';
+import { dispatchUpdateWinnersEvent } from '../../../utils/dispatch-update-winner-event';
 
 export class Controls extends BaseComponent implements IControls {
   constructor(
@@ -83,6 +84,7 @@ export class Controls extends BaseComponent implements IControls {
           cancelable: true,
         });
         this.getElement().dispatchEvent(updateTrackEvent);
+        dispatchUpdateWinnersEvent();
       })
       .catch((error) => {
         Error(error.message);

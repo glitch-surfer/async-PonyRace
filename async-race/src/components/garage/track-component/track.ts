@@ -54,17 +54,14 @@ export class Track extends BaseComponent implements ITrack {
   public async fillTrackList(): Promise<void> {
     const cars = await getCars();
     this.carsInGarage = [];
-    ///
+
     Promise.all(cars.map(async (carParams) => {
       const { wins = 0, time = 0 } = await (await fetch(`${Urls.WINNERS}/${carParams.id}`)).json();
-      console.log(wins, time);
-
       return { ...carParams, wins, time };
     })).then((completedCars) => {
       completedCars.forEach((car) => {
         const newCar = new Car(car);
         this.carsInGarage.push(newCar);
-        console.log(newCar);
       });
     })
       .then(() => {
@@ -74,14 +71,6 @@ export class Track extends BaseComponent implements ITrack {
       .catch(() => {
         this.title.textContent = 'no winners';
       });
-    ///
-
-    // cars.forEach((car) => {
-    //   const newCar = new Car(car);
-    //   this.carsInGarage.push(newCar);
-    // });
-    // this.title.textContent = setCount(Titles.GARAGE, this.carsInGarage);
-    // this.renderTrack(this.pagination.currentPage);
   }
 
   public renderTrack(page: number): void {
@@ -158,15 +147,6 @@ export class Track extends BaseComponent implements ITrack {
       }
 
       new ModalWindow(this.winner!.name).appendModal();
-
-      // const observer = new MutationObserver(() => {
-      //   this.resetRaceHandler();
-      //   observer.disconnect();
-      // });
-      // observer.observe(document.body, {
-      //   childList: true,
-      //   subtree: true,
-      // });
     }
     if (this.finishedCarCount === this.carsOnPage.length && this.winner !== null) {
       if (this.winner.wins === 0) {
@@ -177,6 +157,7 @@ export class Track extends BaseComponent implements ITrack {
           wins: this.winner.wins,
           time: this.winner.bestTime,
         });
+        this.resetRaceHandler();
       } else {
         this.winner.wins += 1;
 
@@ -184,6 +165,7 @@ export class Track extends BaseComponent implements ITrack {
           wins: this.winner.wins,
           time: this.winner.bestTime,
         }, this.winner.id);
+        this.resetRaceHandler();
       }
     }
   }

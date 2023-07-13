@@ -37,7 +37,7 @@ export class Winners extends BaseComponent implements IWinners {
       Error('no winners');
     });
 
-    document.addEventListener('updateWinners', () => { this.updateWinnersHandler(); });
+    document.addEventListener('updateWinners', () => { this.fillWinnersList().catch(() => Error('Oops')); });
   }
 
   public async fillWinnersList(): Promise<void> {
@@ -75,12 +75,5 @@ export class Winners extends BaseComponent implements IWinners {
       tableBody.append(this.winners[i].getElement());
       this.winnersOnPage.push(this.winners[i]);
     }
-  }
-
-  private updateWinnersHandler(): void {
-    console.log('updateWinners Table');
-    this.fillWinnersList().catch(() => {
-      this.table.textContent = 'no winners';
-    });
   }
 }
