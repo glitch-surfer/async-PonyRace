@@ -168,7 +168,6 @@ export class Controls extends BaseComponent implements IControls {
       cancelable: true,
     });
     this.getElement().dispatchEvent(startRaceEvent);
-    this.disableBtns();
   }
 
   public resetBtnHandler(): void {
@@ -177,19 +176,19 @@ export class Controls extends BaseComponent implements IControls {
       cancelable: true,
     });
     this.getElement().dispatchEvent(resetEvent);
-    setTimeout(() => {
-      this.enableBtns();
-    }, 2500);
   }
 
   public disableBtns(): void {
     this.raceBtn.setAttribute('disabled', '');
     this.generateCarsBtn.setAttribute('disabled', '');
     this.createCarBtn.setAttribute('disabled', '');
+    this.upgradeCarBtn.setAttribute('disabled', '');
   }
 
   public enableBtns(): void {
+    this.raceBtn.removeAttribute('disabled');
     this.generateCarsBtn.removeAttribute('disabled');
     this.createCarBtn.removeAttribute('disabled');
+    this.upgradeCarBtn.removeAttribute('disabled');
   }
 }

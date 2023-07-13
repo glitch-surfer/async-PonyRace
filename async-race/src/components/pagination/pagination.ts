@@ -20,4 +20,14 @@ export class Pagination extends BaseComponent implements IPagination {
   public setPage(): string {
     return `Page #${this.currentPage}`;
   }
+
+  public disableBtns(): void {
+    this.prevBtn.setAttribute('disabled', '');
+    this.nextBtn.setAttribute('disabled', '');
+  }
+
+  public enableBtns(): void {
+    this.prevBtn.removeAttribute('disabled');
+    this.nextBtn.removeAttribute('disabled');
+  }
 }

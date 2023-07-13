@@ -7,6 +7,8 @@ import { Urls } from '../../../../enums/urls';
 import { dispatchUpdateWinnersEvent } from '../../../../utils/dispatch-update-winner-event';
 import { getAnimationDuration } from '../../../../utils/get-animation-duration';
 import { deleteWinner } from '../../../../utils/api/delete-winner';
+import { dispatchStartCarEvent } from '../../../../utils/dispatch-start-car-event';
+import { dispatchStopCarEvent } from '../../../../utils/dispatch-stop-car-event';
 
 export class Car extends BaseComponent implements ICar {
   public id: number;
@@ -108,6 +110,7 @@ export class Car extends BaseComponent implements ICar {
   public startCarHandler(): void {
     const startCar = async (): Promise<void> => {
       this.disableBtns();
+      dispatchStartCarEvent();
       fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
         .then(async (response) => response.json())
         .then((data) => {
@@ -163,6 +166,7 @@ export class Car extends BaseComponent implements ICar {
         })
         .finally(() => {
           this.enableBtns();
+          dispatchStopCarEvent();
         });
     };
 

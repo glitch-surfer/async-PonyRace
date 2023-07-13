@@ -5,6 +5,8 @@ import type { IGarage } from './types/garage-types';
 import { garageView } from './view/garage-view';
 
 export class Garage extends BaseComponent implements IGarage {
+  private carsOnTrack = 0;
+
   constructor(
     public controls = new Controls(),
     public track = new Track(),
@@ -15,24 +17,22 @@ export class Garage extends BaseComponent implements IGarage {
       this.controls.getElement(),
       this.track.getElement(),
     );
-    this.raceBtnHandler();
+
+    document.body.addEventListener('startCar', () => { this.startCarController(); });
+    document.body.addEventListener('stopCar', () => { this.stopCarController(); });
   }
 
-  private raceBtnHandler(): void {
-    const btn = this.controls.raceBtn;
+  private startCarController(): void {
+    this.carsOnTrack += 1;
+    this.controls.disableBtns();
+    this.track.pagination.disableBtns();
+  }
 
-    const observer = new MutationObserver(() => {
-      const cars = this.track.carsOnPage;
-      if (cars.some((car) => car.animation !== null)) {
-        btn.setAttribute('disabled', '');
-      } else {
-        btn.removeAttribute('disabled');
-      }
-    });
-    observer.observe(this.track.getElement(), {
-      childList: true,
-      subtree: true,
-      attributeFilter: ['disabled'],
-    });
+  private stopCarController(): void {
+    this.carsOnTrack -= 1;
+    if (this.carsOnTrack === 0) {
+      this.controls.enableBtns();
+      this.track.pagination.enableBtns();
+    }
   }
 }
