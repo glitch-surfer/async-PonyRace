@@ -118,7 +118,6 @@ export class Car extends BaseComponent implements ICar {
         .then(async (response) => response.json())
         .then((data) => {
           const animationDuration = getAnimationDuration(data);
-
           this.animation = this.car.animate(
             [{ transform: `translateX(${(window.innerWidth * 0.9) - 140}px)` }],
             {
@@ -155,7 +154,7 @@ export class Car extends BaseComponent implements ICar {
     startCar().catch(() => { Error('it`s not started'); });
   }
 
-  private stopCarHandler(): void {
+  public stopCarHandler(): void {
     const stopCar = async (): Promise<void> => {
       this.stopBtn.setAttribute('disabled', '');
 

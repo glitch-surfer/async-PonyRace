@@ -127,12 +127,11 @@ export class Track extends BaseComponent implements ITrack {
   private resetRaceHandler(): void {
     this.winner = null;
     this.finishedCarCount = 0;
-    this.carsInGarage.filter((car) => car.animation !== null)
-      .forEach((car) => {
-        const finishedCar = car;
-        finishedCar.stopBtn.click();
-        finishedCar.isRace = false;
-      });
+    this.carsOnPage.forEach((car) => {
+      const finishedCar = car;
+      finishedCar.stopCarHandler();
+      finishedCar.isRace = false;
+    });
     this.fillTrackList().catch(() => { Error('no cars'); });
   }
 
