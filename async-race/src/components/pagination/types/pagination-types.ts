@@ -10,4 +10,7 @@ export interface IPagination extends IBaseComponent {
   currentPage: number
   prevBtn: HTMLElement
   nextBtn: HTMLElement
+  setPage: () => string
+  disableBtns: () => void
+  enableBtns: () => void
 }

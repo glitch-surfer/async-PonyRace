@@ -1,7 +1,6 @@
 import './styles/winners.scss';
 import { BaseComponent } from '../../utils/base-component';
 import type { IWinners } from './types/winners-types';
-import type { IPagination } from '../pagination/types/pagination-types';
 import { Pagination } from '../pagination/pagination';
 import { winnersView } from './view/winners-view';
 import { getWinners } from '../../utils/api/get-winners';
@@ -11,6 +10,7 @@ import { setCount } from '../../utils/set-count';
 import { Urls } from '../../enums/urls';
 import { Numbers } from '../../enums/numbers';
 import { clearElement } from '../../utils/clear-element';
+import type { IPagination } from '../pagination/types/pagination-types';
 
 export class Winners extends BaseComponent implements IWinners {
   private winners: Winner[] = [];
@@ -38,6 +38,7 @@ export class Winners extends BaseComponent implements IWinners {
     });
 
     document.addEventListener('updateWinners', () => { this.fillWinnersList().catch(() => Error('Oops')); });
+    this.addPaginationHandler();
   }
 
   public async fillWinnersList(): Promise<void> {
@@ -54,7 +55,7 @@ export class Winners extends BaseComponent implements IWinners {
       });
     })
       .then(() => {
-        this.renderWinners(1);
+        this.renderWinners(this.pagination.currentPage);
         this.title.textContent = setCount(Titles.WINNERS, this.winners);
       })
       .catch(() => {
@@ -75,5 +76,28 @@ export class Winners extends BaseComponent implements IWinners {
       tableBody.append(this.winners[i].getElement());
       this.winnersOnPage.push(this.winners[i]);
     }
+  }
+
+  private addPaginationHandler(): void {
+    // todo dublication
+    const paginationNextHandler = (): void => {
+      if (
+        this.pagination.currentPage < Math.ceil(this.winners.length / Numbers.WINNERS_ON_PAGE)
+      ) {
+        this.pagination.currentPage += 1;
+        this.renderWinners(this.pagination.currentPage);
+        this.subtitle.textContent = this.pagination.setPage();
+      }
+    };
+    this.pagination.nextBtn.addEventListener('click', paginationNextHandler);
+
+    const paginationPrevHandler = (): void => {
+      if (this.pagination.currentPage > 1) {
+        this.pagination.currentPage -= 1;
+        this.renderWinners(this.pagination.currentPage);
+        this.subtitle.textContent = this.pagination.setPage();
+      }
+    };
+    this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
   }
 }

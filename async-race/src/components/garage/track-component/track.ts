@@ -13,6 +13,7 @@ import { ModalWindow } from '../../modal/modal';
 import { createWinner } from '../../../utils/api/create-winner';
 import { updateWinner } from '../../../utils/api/update-winner';
 import { getWinners } from '../../../utils/api/get-winners';
+import type { IPagination } from '../../pagination/types/pagination-types';
 
 export class Track extends BaseComponent implements ITrack {
   public carsInGarage: Car[] = [];
@@ -27,7 +28,7 @@ export class Track extends BaseComponent implements ITrack {
     public title: HTMLElement = new BaseComponent(trackView.title).getElement(),
     public subtitle: HTMLElement = new BaseComponent(trackView.subtitle).getElement(),
     public trackList: HTMLElement = new BaseComponent(trackView.trackList).getElement(),
-    public pagination = new Pagination(),
+    public pagination: IPagination = new Pagination(),
   ) {
     super(trackView.wrapper);
 
