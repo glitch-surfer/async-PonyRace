@@ -71,7 +71,7 @@ export class Track extends BaseComponent implements ITrack {
         this.carsInGarage.push(newCar);
       });
     this.renderTrack(this.pagination.currentPage);
-    this.title.textContent = setCount(Titles.WINNERS, this.carsInGarage);
+    this.title.textContent = setCount(Titles.GARAGE, this.carsInGarage);
   }
 
   public renderTrack(page: number): void {
