@@ -23,6 +23,8 @@ export class Car extends BaseComponent implements ICar {
 
   public isRace: boolean = false;
 
+  public isStarted: boolean = false;
+
   public isDeleted: boolean = false;
 
   public wins: number;
@@ -113,6 +115,7 @@ export class Car extends BaseComponent implements ICar {
   public startCarHandler(): void {
     const startCar = async (): Promise<void> => {
       this.disableBtns();
+      this.isStarted = true;
       dispatchStartCarEvent();
       fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
         .then(async (response) => response.json())
@@ -157,6 +160,7 @@ export class Car extends BaseComponent implements ICar {
   public stopCarHandler(): void {
     const stopCar = async (): Promise<void> => {
       this.stopBtn.setAttribute('disabled', '');
+      this.isStarted = false;
 
       fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' })
         .then(() => {
