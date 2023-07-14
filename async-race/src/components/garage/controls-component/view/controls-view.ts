@@ -21,6 +21,13 @@ export const controlsView: IControlsParams = {
     tag: 'input',
     className: ['controls__create-input'],
   },
+  createCarColorInput: {
+    tag: 'input',
+    className: ['controls__create-input_color'],
+    attributes: {
+      type: 'color',
+    },
+  },
   createCarBtn: {
     tag: 'button',
     className: ['controls__create-btn', 'btn'],
@@ -31,6 +38,14 @@ export const controlsView: IControlsParams = {
     className: ['controls__upgrade-input'],
     attributes: {
       disabled: 'true',
+    },
+  },
+  upgradeCarColorInput: {
+    tag: 'input',
+    className: ['controls__upgrade-input_color'],
+    attributes: {
+      type: 'color',
+      disabled: '',
     },
   },
   upgradeCarBtn: {

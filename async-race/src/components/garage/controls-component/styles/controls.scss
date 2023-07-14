@@ -2,7 +2,7 @@
 
 .controls {
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(4, auto);
   align-items: center;
   justify-content: center;
   gap: 0.2rem;
@@ -21,8 +21,17 @@
   @extend %border;
 }
 
+.controls__create-input_color,
+.controls__upgrade-input_color {
+  @extend %border;
+}
+
 .controls__create-btn, 
 .controls__upgrade-btn,
 .controls__generate-btn {
   background-color: $btn-special-background-color;
+}
+
+.controls__race-btn {
+  grid-column: span 2;
 }

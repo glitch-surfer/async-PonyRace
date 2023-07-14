@@ -16,9 +16,13 @@ export class Controls extends BaseComponent implements IControls {
   constructor(
     public createCarInput: HTMLElement = new BaseComponent(controlsView.createCarInput)
       .getElement(),
+    public createCarColorInput: HTMLElement = new BaseComponent(controlsView.createCarColorInput)
+      .getElement(),
     public createCarBtn: HTMLElement = new BaseComponent(controlsView.createCarBtn)
       .getElement(),
     public upgradeCarInput: HTMLElement = new BaseComponent(controlsView.upgradeCarInput)
+      .getElement(),
+    public upgradeCarColorInput: HTMLElement = new BaseComponent(controlsView.upgradeCarColorInput)
       .getElement(),
     public upgradeCarBtn: HTMLElement = new BaseComponent(controlsView.upgradeCarBtn)
       .getElement(),
@@ -33,8 +37,10 @@ export class Controls extends BaseComponent implements IControls {
 
     this.getElement().append(
       this.createCarInput,
+      this.createCarColorInput,
       this.createCarBtn,
       this.upgradeCarInput,
+      this.upgradeCarColorInput,
       this.upgradeCarBtn,
       this.raceBtn,
       this.resetBtn,
@@ -50,29 +56,34 @@ export class Controls extends BaseComponent implements IControls {
   }
 
   private enableUpgradeCar(event: Event): void {
-    const input = this.upgradeCarInput;
+    const nameInput = this.upgradeCarInput;
+    const colorInput = this.upgradeCarColorInput;
     const btn = this.upgradeCarBtn;
-    if (!(input instanceof HTMLInputElement)
+
+    if (!(nameInput instanceof HTMLInputElement)
+      || !(colorInput instanceof HTMLInputElement)
       || !(event instanceof CustomEvent)) throw new Error('not input');
 
-    input.removeAttribute('disabled');
+    nameInput.removeAttribute('disabled');
+    colorInput.removeAttribute('disabled');
     btn.removeAttribute('disabled');
 
     this.selectedCar = event.detail.car;
     if (this.selectedCar === null) return;
-    input.value = this.selectedCar.name;
+    nameInput.value = this.selectedCar.name;
+    colorInput.value = this.selectedCar.color;
   }
 
   private upgradeCarHandler(): void {
-    const input = this.upgradeCarInput;
-    if (!(input instanceof HTMLInputElement)
-      || input.value.trim() === '') return;
+    const nameInput = this.upgradeCarInput;
+    const colorInput = this.upgradeCarColorInput;
+    if (!(nameInput instanceof HTMLInputElement)
+      || !(colorInput instanceof HTMLInputElement)
+      || nameInput.value.trim() === '') return;
 
     if (this.selectedCar === null) return;
-    this.selectedCar.name = input.value;
-    this.selectedCar.color = '#fff'; // todo
-    // const { id } = this.selectedCar;
-    // if (id === null) return;
+    this.selectedCar.name = nameInput.value;
+    this.selectedCar.color = colorInput.value;
 
     fetch(`${Urls.GARAGE}/${this.selectedCar.id}`, {
       method: 'PATCH',
@@ -94,8 +105,10 @@ export class Controls extends BaseComponent implements IControls {
         Error(error.message);
       })
       .finally(() => {
-        input.value = '';
-        input.setAttribute('disabled', '');
+        nameInput.value = '';
+        colorInput.value = '';
+        nameInput.setAttribute('disabled', '');
+        colorInput.setAttribute('disabled', '');
         this.upgradeCarBtn.setAttribute('disabled', '');
         this.selectedCar = null;
       });

@@ -4,8 +4,10 @@ export interface IControlsParams {
   wrapper: IParams
   controls: IParams
   createCarInput: IParams
+  createCarColorInput: IParams
   createCarBtn: IParams
   upgradeCarInput: IParams
+  upgradeCarColorInput: IParams
   upgradeCarBtn: IParams
   raceBtn: IParams
   resetBtn: IParams
