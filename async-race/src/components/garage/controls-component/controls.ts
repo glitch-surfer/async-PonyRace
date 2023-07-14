@@ -115,11 +115,14 @@ export class Controls extends BaseComponent implements IControls {
   }
 
   private createCarHandler(): void {
-    const input = this.createCarInput;
-    if (!(input instanceof HTMLInputElement)
-      || input.value.trim() === '') return;
-    const newCarName = input.value;
-    const newCarColor = '#fff';
+    const nameInput = this.createCarInput;
+    const colorInput = this.createCarColorInput;
+    if (!(nameInput instanceof HTMLInputElement)
+      || !(colorInput instanceof HTMLInputElement)
+      || nameInput.value.trim() === '') return;
+    const newCarName = nameInput.value;
+    const newCarColor = colorInput.value;
+
     const newCarParams: INewCar = {
       name: newCarName,
       color: newCarColor,
@@ -143,7 +146,8 @@ export class Controls extends BaseComponent implements IControls {
         Error(error.message);
       })
       .finally(() => {
-        input.value = '';
+        nameInput.value = '';
+        colorInput.value = '';
       });
   }
 
