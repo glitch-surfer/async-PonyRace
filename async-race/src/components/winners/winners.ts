@@ -38,12 +38,10 @@ export class Winners extends BaseComponent implements IWinners {
       this.pagination.getElement(),
     );
 
-    this.fillWinnersList().catch(() => {
-      Error('no winners');
-    });
+    this.fillWinnersList().catch(() => { Error('no winners'); });
 
-    document.addEventListener('updateWinners', () => { this.fillWinnersList().catch(() => Error('Oops')); });
     this.addPaginationHandler();
+    document.addEventListener('updateWinners', () => { this.fillWinnersList().catch(() => Error('Oops')); });
     this.table.addEventListener('click', (event) => { this.sortByWinsCount(event); });
     this.table.addEventListener('click', (event) => { this.sortByBestTime(event); });
   }
@@ -87,7 +85,6 @@ export class Winners extends BaseComponent implements IWinners {
   }
 
   private addPaginationHandler(): void {
-    // todo dublication
     const paginationNextHandler = (): void => {
       if (
         this.pagination.currentPage < Math.ceil(this.winners.length / Numbers.WINNERS_ON_PAGE)

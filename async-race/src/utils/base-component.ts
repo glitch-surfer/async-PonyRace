@@ -11,7 +11,6 @@ export class BaseComponent implements IBaseComponent {
     if (params.attributes !== undefined) this.setAttributes(params.attributes);
     if (params.text !== undefined) this.setText(params.text);
     if (params.children !== undefined) this.addChild(params.children);
-    if (params.link !== undefined) this.setElementLink();
     if (params.id !== undefined) this.setId(params.id);
   }
 
@@ -42,9 +41,5 @@ export class BaseComponent implements IBaseComponent {
 
   public getElement(): HTMLElement {
     return this.element;
-  }
-
-  private setElementLink(): void {
-    BaseComponent.elementLinks[`${this.element.tagName}.${this.element.classList[this.element.classList.length - 1]}`] = this.element;
   }
 }

@@ -12,8 +12,6 @@ export const updateWinner = (winner: Omit<IWinnerResponse, 'id'>, id: number): v
   })
     .then(() => {
       dispatchUpdateWinnersEvent();
-    }).catch((error) => {
-      Error(error.message);
     })
     .catch((error) => {
       Error(error.message);
