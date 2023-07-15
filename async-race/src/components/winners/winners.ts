@@ -11,11 +11,16 @@ import { Urls } from '../../enums/urls';
 import { Numbers } from '../../enums/numbers';
 import { clearElement } from '../../utils/clear-element';
 import type { IPagination } from '../pagination/types/pagination-types';
+import { QueryParams } from '../../enums/query-params';
 
 export class Winners extends BaseComponent implements IWinners {
   private winners: Winner[] = [];
 
   private winnersOnPage: Winner[] = [];
+
+  private currentSort: 'wins' | 'time' = QueryParams.WINS;
+
+  private currentOrder: 'ASC' | 'DESC' = QueryParams.DESC;
 
   pagination: IPagination = new Pagination();
 
@@ -39,10 +44,12 @@ export class Winners extends BaseComponent implements IWinners {
 
     document.addEventListener('updateWinners', () => { this.fillWinnersList().catch(() => Error('Oops')); });
     this.addPaginationHandler();
+    this.table.addEventListener('click', (event) => { this.sortByWinsCount(event); });
+    this.table.addEventListener('click', (event) => { this.sortByBestTime(event); });
   }
 
-  public async fillWinnersList(): Promise<void> {
-    const winners = await getWinners();
+  public async fillWinnersList(sort: 'wins' | 'time' = this.currentSort, order: 'ASC' | 'DESC' = this.currentOrder): Promise<void> {
+    const winners = await getWinners(sort, order);
     this.winners = [];
 
     Promise.all(winners.map(async (winner) => {
@@ -112,5 +119,39 @@ export class Winners extends BaseComponent implements IWinners {
       }
     };
     this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
+  }
+
+  private sortByWinsCount(event: MouseEvent): void {
+    const winsCell = event.target;
+    if (winsCell instanceof HTMLElement
+      && winsCell.classList.contains('winners__th_wins')) {
+      this.currentSort = QueryParams.WINS;
+      this.currentOrder = this.currentOrder === QueryParams.DESC
+        ? QueryParams.ASC
+        : QueryParams.DESC;
+      this.fillWinnersList().catch(() => { Error('no winners'); });
+      if (this.currentOrder === QueryParams.DESC) {
+        winsCell.textContent = Titles.WINS_DESC;
+      } else {
+        winsCell.textContent = Titles.WINS_ASC;
+      }
+    }
+  }
+
+  private sortByBestTime(event: MouseEvent): void {
+    const timeCell = event.target;
+    if (timeCell instanceof HTMLElement
+      && timeCell.classList.contains('winners__th_time')) {
+      this.currentSort = QueryParams.TIME;
+      this.currentOrder = this.currentOrder === QueryParams.DESC
+        ? QueryParams.ASC
+        : QueryParams.DESC;
+      this.fillWinnersList().catch(() => { Error('no winners'); });
+      if (this.currentOrder === QueryParams.DESC) {
+        timeCell.textContent = Titles.TIME_DESC;
+      } else {
+        timeCell.textContent = Titles.TIME_ASC;
+      }
+    }
   }
 }

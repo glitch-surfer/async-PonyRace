@@ -1,3 +1,4 @@
+import { Titles } from '../../../enums/titles';
 import type { IWinnersParams } from '../types/winners-types';
 
 export const winnersView: IWinnersParams = {
@@ -57,7 +58,7 @@ export const winnersView: IWinnersParams = {
                   attributes: {
                     scope: 'col',
                   },
-                  text: 'Wins',
+                  text: Titles.WINS_DESC,
                 },
                 {
                   tag: 'th',
@@ -65,7 +66,7 @@ export const winnersView: IWinnersParams = {
                   attributes: {
                     scope: 'col',
                   },
-                  text: 'Best Time (seconds)',
+                  text: Titles.TIME_ASC,
                 },
               ],
             },

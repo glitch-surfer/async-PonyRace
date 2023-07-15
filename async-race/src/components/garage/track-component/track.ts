@@ -14,6 +14,7 @@ import { createWinner } from '../../../utils/api/create-winner';
 import { updateWinner } from '../../../utils/api/update-winner';
 import { getWinners } from '../../../utils/api/get-winners';
 import type { IPagination } from '../../pagination/types/pagination-types';
+import { QueryParams } from '../../../enums/query-params';
 
 export class Track extends BaseComponent implements ITrack {
   public carsInGarage: Car[] = [];
@@ -55,7 +56,7 @@ export class Track extends BaseComponent implements ITrack {
 
   public async fillTrackList(): Promise<void> {
     const cars = await getCars();
-    const winners = await getWinners();
+    const winners = await getWinners(QueryParams.WINS, QueryParams.DESC);
     this.carsInGarage = [];
 
     cars
