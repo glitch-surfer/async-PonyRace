@@ -13,11 +13,11 @@ export class ModalWindow implements IModalWindow {
 
   title: HTMLElement;
 
-  constructor(winnerName: string) {
+  constructor(winnerName: string, time: number) {
     this.title = new BaseComponent({
       tag: 'h2',
       className: ['modal__title'],
-      text: `Winner is ${winnerName}`,
+      text: `${winnerName} is win in ${time} seconds!`,
     }).getElement();
 
     this.modal.prepend(this.title);

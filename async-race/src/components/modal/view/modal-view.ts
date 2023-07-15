@@ -9,10 +9,5 @@ export const modalParams: IParams = {
       className: ['btn-modal'],
       text: '✖',
     },
-    {
-      tag: 'P',
-      className: ['modal__text'],
-      text: 'Only stronges can go through this game.',
-    },
   ],
 };
