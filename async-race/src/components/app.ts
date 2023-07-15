@@ -1,13 +1,12 @@
 import './styles/base.scss';
 import type { IApp } from '../types/types';
-import { headerView } from './header/view/header-view';
 import { Header } from './header/header';
 import { Garage } from './garage/garage';
 import { Winners } from './winners/winners';
 
 export class App implements IApp {
   constructor(
-    public header = new Header(headerView),
+    public header = new Header(),
     private readonly main = document.createElement('main'),
     public garage = new Garage(),
     public winners = new Winners(),
