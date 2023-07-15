@@ -33,11 +33,7 @@ export class Track extends BaseComponent implements ITrack {
   ) {
     super(trackView.wrapper);
 
-    this.fillTrackList()
-      .catch(() => {
-        this.trackList.textContent = 'no cars in garage';
-        Error('no cars');
-      });
+    this.fillTrackList().catch(() => { Error('no cars'); });
 
     this.getElement().append(
       this.title,
@@ -47,11 +43,11 @@ export class Track extends BaseComponent implements ITrack {
     );
 
     this.addPaginationHandler();
-    document.addEventListener('updateTrack', () => { this.updateTrackHandler(); });
+    this.addCarWatchingHandler();
+    document.addEventListener('updateTrack', () => { this.fillTrackList().catch(() => Error('Oops')); });
     document.addEventListener('startRace', () => { this.startRaceHandler(); });
     document.addEventListener('resetRace', () => { this.resetRaceHandler(); });
     document.addEventListener('finishedCar', (event: Event) => { this.finishedCarHandler(event); });
-    this.addCarWatchingHandler();
   }
 
   public async fillTrackList(): Promise<void> {
@@ -62,7 +58,6 @@ export class Track extends BaseComponent implements ITrack {
     cars
       .map((carParams) => {
         const winnerParams = winners.find((winner) => winner.id === carParams.id);
-
         if (winnerParams === undefined) return { ...carParams, wins: 0, time: 0 };
 
         return { ...carParams, wins: winnerParams.wins, time: winnerParams.time };
@@ -80,6 +75,7 @@ export class Track extends BaseComponent implements ITrack {
 
     clearElement(this.trackList);
     this.carsOnPage = [];
+
     for (let i = (page * carsOnPage) - carsOnPage; i < (page * carsOnPage); i += 1) {
       if (this.carsInGarage[i] === undefined) break;
       this.trackList.append(this.carsInGarage[i].getElement());
@@ -121,14 +117,6 @@ export class Track extends BaseComponent implements ITrack {
     this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
   }
 
-  private updateTrackHandler(): void {
-    this.fillTrackList()
-      .catch(() => {
-        this.trackList.textContent = 'no cars in garage';
-        Error('no cars');
-      });
-  }
-
   private startRaceHandler(): void {
     this.carsOnPage.forEach((car) => {
       const readyCar = car;
@@ -151,6 +139,7 @@ export class Track extends BaseComponent implements ITrack {
   }
 
   private finishedCarHandler(event: Event): void {
+    const reset = document.querySelector('.controls__reset-btn');
     this.finishedCarCount += 1;
     if (event instanceof CustomEvent && this.winner === null && event.detail !== null) {
       const winner = event.detail.car;
@@ -161,12 +150,8 @@ export class Track extends BaseComponent implements ITrack {
       } else {
         winner.bestTime = bestTime < winner.bestTime ? bestTime : winner.bestTime;
       }
-
-      new ModalWindow(this.winner!.name).appendModal();
-      // todo: without qerySelector
-      const reset = document.querySelector('.controls__reset-btn');
+      new ModalWindow(winner.name, bestTime).appendModal();
       reset?.setAttribute('disabled', '');
-      //
     }
     if (this.finishedCarCount === this.carsOnPage.filter((car) => car.isRace).length
       && this.winner !== null) {
@@ -188,10 +173,7 @@ export class Track extends BaseComponent implements ITrack {
         }, this.winner.id);
         this.resetRaceHandler();
       }
-      // todo: without qerySelector
-      const reset = document.querySelector('.controls__reset-btn');
       reset?.removeAttribute('disabled');
-      //
     }
   }
 
