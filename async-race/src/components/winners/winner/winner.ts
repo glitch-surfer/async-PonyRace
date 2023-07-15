@@ -2,7 +2,7 @@ import { BaseComponent } from '../../../utils/base-component';
 import type { IWinner } from './types/winner-types';
 
 export class Winner extends BaseComponent implements IWinner {
-  position: number;
+  position: HTMLElement;
 
   color: string;
 
@@ -20,7 +20,10 @@ export class Winner extends BaseComponent implements IWinner {
       className: ['winner'],
     });
 
-    this.position = 1;
+    this.position = new BaseComponent({
+      tag: 'td',
+      className: ['winner__td_number'],
+    }).getElement();
     this.color = winnerParams.color;
     this.name = winnerParams.name;
     this.id = winnerParams.id;
@@ -32,11 +35,7 @@ export class Winner extends BaseComponent implements IWinner {
 
   private appendWinnerData(): void {
     this.getElement().append(
-      new BaseComponent({
-        tag: 'td',
-        className: ['winner__td_number'],
-        text: `${this.position}`,
-      }).getElement(),
+      this.position,
       new BaseComponent({
         tag: 'td',
         className: ['winner__td_car'],
@@ -58,5 +57,9 @@ export class Winner extends BaseComponent implements IWinner {
         text: this.time.toString(),
       }).getElement(),
     );
+  }
+
+  public setPosition(position: number): void {
+    this.position.textContent = position.toString();
   }
 }

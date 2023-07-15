@@ -1,5 +1,5 @@
 export interface IWinner {
-  position: number
+  position: HTMLElement
   color: string
   name: string
   id: number

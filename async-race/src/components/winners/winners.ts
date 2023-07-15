@@ -49,8 +49,9 @@ export class Winners extends BaseComponent implements IWinners {
       const carParams = await (await fetch(`${Urls.GARAGE}/${winner.id}`)).json();
       return { ...winner, ...carParams };
     })).then((winnersList) => {
-      winnersList.forEach((winner) => {
+      winnersList.forEach((winner, index) => {
         const newWinner = new Winner(winner);
+        newWinner.setPosition(index + 1);
         this.winners.push(newWinner);
       });
     })
