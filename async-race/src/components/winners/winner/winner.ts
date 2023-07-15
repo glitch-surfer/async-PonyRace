@@ -3,10 +3,6 @@ import { carView } from '../../garage/track-component/car/view/car-view';
 import type { IWinner } from './types/winner-types';
 
 export class Winner extends BaseComponent implements IWinner {
-  position: HTMLElement;
-
-  car: HTMLElement;
-
   color: string;
 
   name: string;
@@ -17,32 +13,34 @@ export class Winner extends BaseComponent implements IWinner {
 
   time: number;
 
-  constructor(winnerParams: IWinner) {
+  position: HTMLElement = new BaseComponent({
+    tag: 'td',
+    className: ['winner__td_number'],
+  }).getElement();
+
+  car: HTMLElement = new BaseComponent({
+    tag: 'td',
+    className: ['winner__td_car'],
+    children: [
+      carView.car,
+    ],
+  }).getElement();
+
+  constructor({
+    color, name, id, wins, time,
+  }: IWinner) {
     super({
       tag: 'tr',
       className: ['winner'],
     });
+    this.color = color;
+    this.name = name;
+    this.id = id;
+    this.wins = wins;
+    this.time = time;
 
-    this.position = new BaseComponent({
-      tag: 'td',
-      className: ['winner__td_number'],
-    }).getElement();
+    this.setColor(color);
 
-    this.car = new BaseComponent({
-      tag: 'td',
-      className: ['winner__td_car'],
-      children: [
-        carView.car,
-      ],
-    }).getElement();
-
-    this.color = winnerParams.color;
-    this.name = winnerParams.name;
-    this.id = winnerParams.id;
-    this.wins = winnerParams.wins;
-    this.time = winnerParams.time;
-
-    this.setColor(winnerParams.color);
     this.appendWinnerData();
   }
 
