@@ -92,8 +92,15 @@ export class Track extends BaseComponent implements ITrack {
         this.pagination.currentPage < Math.ceil(this.carsInGarage.length / Numbers.CARS_ON_PAGE)
       ) {
         this.pagination.currentPage += 1;
+        this.pagination.enablePrevBtn();
         this.renderTrack(this.pagination.currentPage);
         this.subtitle.textContent = this.pagination.setPage();
+
+        if (this.pagination.currentPage === Math.ceil(
+          this.carsInGarage.length / Numbers.CARS_ON_PAGE,
+        )) {
+          this.pagination.disableNextBtn();
+        }
       }
     };
     this.pagination.nextBtn.addEventListener('click', paginationNextHandler);
@@ -101,8 +108,13 @@ export class Track extends BaseComponent implements ITrack {
     const paginationPrevHandler = (): void => {
       if (this.pagination.currentPage > 1) {
         this.pagination.currentPage -= 1;
+        this.pagination.enableNextBtn();
         this.renderTrack(this.pagination.currentPage);
         this.subtitle.textContent = this.pagination.setPage();
+
+        if (this.pagination.currentPage === 1) {
+          this.pagination.disablePrevBtn();
+        }
       }
     };
     this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);

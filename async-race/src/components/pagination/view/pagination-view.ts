@@ -9,6 +9,9 @@ export const paginationView: IPaginationParams = {
     tag: 'button',
     className: ['pagination__prev', 'btn'],
     text: 'Prev',
+    attributes: {
+      disabled: '',
+    },
   },
   nextBtn: {
     tag: 'button',

@@ -22,12 +22,28 @@ export class Pagination extends BaseComponent implements IPagination {
   }
 
   public disableBtns(): void {
-    this.prevBtn.setAttribute('disabled', '');
-    this.nextBtn.setAttribute('disabled', '');
+    this.disableNextBtn();
+    this.disablePrevBtn();
   }
 
   public enableBtns(): void {
+    this.enableNextBtn();
+    this.enablePrevBtn();
+  }
+
+  public disablePrevBtn(): void {
+    this.prevBtn.setAttribute('disabled', '');
+  }
+
+  public disableNextBtn(): void {
+    this.nextBtn.setAttribute('disabled', '');
+  }
+
+  public enablePrevBtn(): void {
     this.prevBtn.removeAttribute('disabled');
+  }
+
+  public enableNextBtn(): void {
     this.nextBtn.removeAttribute('disabled');
   }
 }

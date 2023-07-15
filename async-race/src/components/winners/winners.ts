@@ -86,8 +86,15 @@ export class Winners extends BaseComponent implements IWinners {
         this.pagination.currentPage < Math.ceil(this.winners.length / Numbers.WINNERS_ON_PAGE)
       ) {
         this.pagination.currentPage += 1;
+        this.pagination.enablePrevBtn();
         this.renderWinners(this.pagination.currentPage);
         this.subtitle.textContent = this.pagination.setPage();
+
+        if (this.pagination.currentPage === Math.ceil(
+          this.winners.length / Numbers.WINNERS_ON_PAGE,
+        )) {
+          this.pagination.disableNextBtn();
+        }
       }
     };
     this.pagination.nextBtn.addEventListener('click', paginationNextHandler);
@@ -95,8 +102,13 @@ export class Winners extends BaseComponent implements IWinners {
     const paginationPrevHandler = (): void => {
       if (this.pagination.currentPage > 1) {
         this.pagination.currentPage -= 1;
+        this.pagination.enableNextBtn();
         this.renderWinners(this.pagination.currentPage);
         this.subtitle.textContent = this.pagination.setPage();
+
+        if (this.pagination.currentPage === 1) {
+          this.pagination.disablePrevBtn();
+        }
       }
     };
     this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
