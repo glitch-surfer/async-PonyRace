@@ -9,6 +9,7 @@ import { getAnimationDuration } from '../../../../utils/get-animation-duration';
 import { deleteWinner } from '../../../../utils/api/delete-winner';
 import { dispatchStartCarEvent } from '../../../../utils/dispatch-start-car-event';
 import { dispatchStopCarEvent } from '../../../../utils/dispatch-stop-car-event';
+import { dispatchFinishedCarEvent } from '../../../../utils/dispatch-finished-car-event';
 
 export class Car extends BaseComponent implements ICar {
   public id: number;
@@ -82,21 +83,16 @@ export class Car extends BaseComponent implements ICar {
     fetch(`${Urls.GARAGE}/${this.id}`, {
       method: 'DELETE',
     })
-      // .then(async () => {
-      //   const updateTrackEvent = new CustomEvent('updateTrack', {
-      //     bubbles: true,
-      //     cancelable: true,
-      //   });
-      //   this.getElement().dispatchEvent(updateTrackEvent);
-      // })
-      .catch(() => {
-        Error('trouble deleting car');
-      });
+      .catch(() => { Error('trouble deleting car'); });
+
     if (this.wins > 0) {
-      deleteWinner(this.id).then(() => {
-        dispatchUpdateWinnersEvent();
-      }).catch((error) => { Error(error.message); });
+      deleteWinner(this.id)
+        .then(() => {
+          dispatchUpdateWinnersEvent();
+        })
+        .catch((error) => { Error(error.message); });
     }
+
     this.getElement().remove();
     this.isDeleted = true;
   }
@@ -117,43 +113,32 @@ export class Car extends BaseComponent implements ICar {
       this.disableBtns();
       this.isStarted = true;
       dispatchStartCarEvent();
+
       fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
         .then(async (response) => response.json())
         .then((data) => {
           const animationDuration = getAnimationDuration(data);
           this.animation = this.car.animate(
             [{ transform: `translateX(${(window.innerWidth * 0.9) - 140}px)` }],
-            {
-              duration: animationDuration,
-              fill: 'forwards',
-            },
+            { duration: animationDuration, fill: 'forwards' },
           );
+
           fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' })
             .then((response) => {
               if (response.status === 500) this.animation?.pause();
               if (response.status === 500 && this.isRace) {
-                const event = new CustomEvent('finishedCar', {
-                  bubbles: true,
-                  cancelable: true,
-                });
-                this.getElement().dispatchEvent(event);
+                dispatchFinishedCarEvent();
               }
               if (response.status === 200 && this.isRace) {
-                const event = new CustomEvent('finishedCar', {
-                  bubbles: true,
-                  cancelable: true,
-                  detail: {
-                    car: this,
-                    time: Math.floor(animationDuration) / 100,
-                  },
-                });
-                this.getElement().dispatchEvent(event);
+                const formattedFinishTime = Math.floor(animationDuration / 100);
+                dispatchFinishedCarEvent(this, formattedFinishTime);
               }
-            }).catch(() => 'error');
+            }).catch(() => Error('error in drive mode'));
+
           this.stopBtn.removeAttribute('disabled');
-        })
-        .catch(() => { Error('it`s not started'); });
+        }).catch(() => { Error('it`s not started'); });
     };
+
     startCar().catch(() => { Error('it`s not started'); });
   }
 
@@ -176,10 +161,7 @@ export class Car extends BaseComponent implements ICar {
         });
     };
 
-    stopCar()
-      .catch(() => {
-        Error('it`s not stoped');
-      });
+    stopCar().catch(() => { Error('it`s not stoped'); });
   }
 
   public disableBtns(): void {

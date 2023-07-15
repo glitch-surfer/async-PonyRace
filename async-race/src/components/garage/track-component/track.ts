@@ -50,7 +50,7 @@ export class Track extends BaseComponent implements ITrack {
     document.addEventListener('updateTrack', () => { this.updateTrackHandler(); });
     document.addEventListener('startRace', () => { this.startRaceHandler(); });
     document.addEventListener('resetRace', () => { this.resetRaceHandler(); });
-    this.getElement().addEventListener('finishedCar', (event: Event) => { this.finishedCarHandler(event); });
+    document.addEventListener('finishedCar', (event: Event) => { this.finishedCarHandler(event); });
     this.addCarWatchingHandler();
   }
 
