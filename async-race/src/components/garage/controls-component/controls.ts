@@ -9,6 +9,7 @@ import { getRandomName } from '../../../utils/get-random-name';
 import { getRandomColor } from '../../../utils/get-random-color';
 import { dispatchUpdateWinnersEvent } from '../../../utils/dispatch-update-winner-event';
 import type { Car } from '../track-component/car/car';
+import { dispatchUpdateTrackEvent } from '../../../utils/dispatch-update-track-event';
 
 export class Controls extends BaseComponent implements IControls {
   private selectedCar: Car | null = null;
@@ -24,12 +25,9 @@ export class Controls extends BaseComponent implements IControls {
       .getElement(),
     public upgradeCarColorInput: HTMLElement = new BaseComponent(controlsView.upgradeCarColorInput)
       .getElement(),
-    public upgradeCarBtn: HTMLElement = new BaseComponent(controlsView.upgradeCarBtn)
-      .getElement(),
-    public raceBtn: HTMLElement = new BaseComponent(controlsView.raceBtn)
-      .getElement(),
-    public resetBtn: HTMLElement = new BaseComponent(controlsView.resetBtn)
-      .getElement(),
+    public upgradeCarBtn: HTMLElement = new BaseComponent(controlsView.upgradeCarBtn).getElement(),
+    public raceBtn: HTMLElement = new BaseComponent(controlsView.raceBtn).getElement(),
+    public resetBtn: HTMLElement = new BaseComponent(controlsView.resetBtn).getElement(),
     public generateCarsBtn: HTMLElement = new BaseComponent(controlsView.generateCarsBtn)
       .getElement(),
   ) {
@@ -50,7 +48,7 @@ export class Controls extends BaseComponent implements IControls {
     document.addEventListener('selectCar', (event) => { this.enableUpgradeCar(event); });
     this.upgradeCarBtn.addEventListener('click', () => { this.upgradeCarHandler(); });
     this.createCarBtn.addEventListener('click', () => { this.createCarHandler(); });
-    this.generateCarsBtn.addEventListener('click', () => { this.generateNewCars(); });
+    this.generateCarsBtn.addEventListener('click', () => { Controls.generateNewCars(); });
     this.raceBtn.addEventListener('click', () => { this.raceHandler(); });
     this.resetBtn.addEventListener('click', () => { this.resetBtnHandler(); });
   }
@@ -77,6 +75,7 @@ export class Controls extends BaseComponent implements IControls {
   private upgradeCarHandler(): void {
     const nameInput = this.upgradeCarInput;
     const colorInput = this.upgradeCarColorInput;
+
     if (!(nameInput instanceof HTMLInputElement)
       || !(colorInput instanceof HTMLInputElement)
       || nameInput.value.trim() === '') return;
@@ -93,11 +92,6 @@ export class Controls extends BaseComponent implements IControls {
       },
     })
       .then(async () => {
-        // const updateTrackEvent = new CustomEvent('updateTrack', {
-        //   bubbles: true,
-        //   cancelable: true,
-        // });
-        // this.getElement().dispatchEvent(updateTrackEvent);
         this.selectedCar?.updateCar();
         dispatchUpdateWinnersEvent();
       })
@@ -117,6 +111,7 @@ export class Controls extends BaseComponent implements IControls {
   private createCarHandler(): void {
     const nameInput = this.createCarInput;
     const colorInput = this.createCarColorInput;
+
     if (!(nameInput instanceof HTMLInputElement)
       || !(colorInput instanceof HTMLInputElement)
       || nameInput.value.trim() === '') return;
@@ -136,11 +131,7 @@ export class Controls extends BaseComponent implements IControls {
       },
     })
       .then(() => {
-        const updateTrackEvent = new CustomEvent('updateTrack', {
-          bubbles: true,
-          cancelable: true,
-        });
-        this.getElement().dispatchEvent(updateTrackEvent);
+        dispatchUpdateTrackEvent();
       })
       .catch((error) => {
         Error(error.message);
@@ -151,8 +142,9 @@ export class Controls extends BaseComponent implements IControls {
       });
   }
 
-  private generateNewCars(): void {
+  private static generateNewCars(): void {
     const newCars: Response[] = [];
+
     for (let i = 0; i < Numbers.GENERATE_CAR_COUNT; i += 1) {
       const newCarParams: INewCar = {
         name: getRandomName(),
@@ -172,11 +164,7 @@ export class Controls extends BaseComponent implements IControls {
         });
     }
     Promise.all(newCars).then(() => {
-      const updateTrackEvent = new CustomEvent('updateTrack', {
-        bubbles: true,
-        cancelable: true,
-      });
-      this.getElement().dispatchEvent(updateTrackEvent);
+      dispatchUpdateTrackEvent();
     })
       .catch((error) => {
         Error(error.message);
@@ -191,7 +179,7 @@ export class Controls extends BaseComponent implements IControls {
     this.getElement().dispatchEvent(startRaceEvent);
   }
 
-  public resetBtnHandler(): void {
+  private resetBtnHandler(): void {
     const resetEvent = new CustomEvent('resetRace', {
       bubbles: true,
       cancelable: true,
