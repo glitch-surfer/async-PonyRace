@@ -1,13 +1,21 @@
 @import '../../../styles/variables.scss';
 
-
+//placeholders
 %table-border {
   border-collapse: collapse;
   border: 2px solid $main-text-color;
   border-radius: $border-radius;
-
 }
 
+%head-hover {
+  cursor: pointer;
+
+  &:hover {
+    background-color: darken($btn-background-color, 20%);
+  }
+}
+
+//styles
 .winners {
   display: none;
 }
@@ -41,11 +49,12 @@
 .winners__th_wins {
   min-width: 67px;
   cursor: pointer;
+  @extend %head-hover
 }
 
 .winners__th_time {
   min-width: 98px;
-  cursor: pointer;
+  @extend %head-hover
 }
 
 .winner > td {
