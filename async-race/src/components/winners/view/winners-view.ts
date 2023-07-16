@@ -34,7 +34,7 @@ export const winnersView: IWinnersParams = {
                   attributes: {
                     scope: 'col',
                   },
-                  text: 'Number',
+                  text: '#',
                 },
                 {
                   tag: 'th',
@@ -42,7 +42,7 @@ export const winnersView: IWinnersParams = {
                   attributes: {
                     scope: 'col',
                   },
-                  text: 'Car',
+                  text: 'Pony',
                 },
                 {
                   tag: 'th',

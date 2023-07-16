@@ -3,7 +3,9 @@
 
 %table-border {
   border-collapse: collapse;
-  border: 1px solid black;
+  border: 2px solid $main-text-color;
+  border-radius: $border-radius;
+
 }
 
 .winners {
@@ -23,15 +25,31 @@
 
 .winners__table {
   margin: 0.5rem auto;
+  padding: 0.5rem;
   table-layout: fixed;
 }
 
-.winners__head-row > th {
-  padding: 0.2rem 0.4rem;
-  @extend %table-border;
+.winners__head-row {
+  background-color: $btn-background-color;
+
+  & > th {
+    padding: 0.2rem 0.4rem;
+    @extend %table-border;
+  }
+}
+
+.winners__th_wins {
+  min-width: 67px;
+  cursor: pointer;
+}
+
+.winners__th_time {
+  min-width: 98px;
+  cursor: pointer;
 }
 
 .winner > td {
   padding: 0.2rem 0.4rem;
   @extend %table-border;
+  text-align: center;
 }
