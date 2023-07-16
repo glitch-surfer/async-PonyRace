@@ -19,7 +19,7 @@ export const headerView: IHeaderParams = {
   garageBtn: {
     tag: 'button',
     className: ['garage-btn', 'btn'],
-    text: 'Garage',
+    text: 'Hippodrome',
     attributes: {
       disabled: '',
     },

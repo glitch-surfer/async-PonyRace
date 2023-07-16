@@ -8,7 +8,6 @@ export const trackView: ITrackParams = {
   title: {
     tag: 'h2',
     className: ['track__title'],
-    text: 'Garage',
   },
   subtitle: {
     tag: 'h3',

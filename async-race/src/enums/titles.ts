@@ -1,5 +1,5 @@
 export enum Titles {
-  GARAGE = 'Garage',
+  GARAGE = 'Hippodrome',
   WINNERS = 'Winners',
   WINS_ASC = 'Wins ↑',
   WINS_DESC = 'Wins ↓',
