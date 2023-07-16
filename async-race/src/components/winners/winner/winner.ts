@@ -1,4 +1,5 @@
 import { BaseComponent } from '../../../utils/base-component';
+import { img } from '../../garage/track-component/car/img/svg-string';
 import { carView } from '../../garage/track-component/car/view/car-view';
 import type { IWinner } from './types/winner-types';
 
@@ -71,6 +72,7 @@ export class Winner extends BaseComponent implements IWinner {
   }
 
   private setColor(color: string): void {
-    this.car.style.backgroundColor = color;
+    this.car.innerHTML = img;
+    (this.car.querySelector('.cls-19') as SVGElement).style.fill = color;
   }
 }

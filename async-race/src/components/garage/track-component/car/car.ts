@@ -1,4 +1,5 @@
 import './styles/car.scss';
+import { img } from './img/svg-string';
 import type { ICarResponse } from '../../../../types/types';
 import { BaseComponent } from '../../../../utils/base-component';
 import type { ICar } from './types/car-types';
@@ -72,7 +73,8 @@ export class Car extends BaseComponent implements ICar {
   }
 
   private setColor(color: string): void {
-    this.car.style.backgroundColor = color;
+    this.car.innerHTML = img;
+    (this.car.querySelector('.cls-19') as SVGElement).style.fill = color;
   }
 
   private setName(name: string): void {
