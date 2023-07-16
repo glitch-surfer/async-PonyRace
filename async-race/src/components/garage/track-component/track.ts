@@ -15,6 +15,7 @@ import { updateWinner } from '../../../utils/api/update-winner';
 import { getWinners } from '../../../utils/api/get-winners';
 import type { IPagination } from '../../pagination/types/pagination-types';
 import { QueryParams } from '../../../enums/query-params';
+import { checkFirstItemName } from '../../../utils/api/check-first-item-name';
 
 export class Track extends BaseComponent implements ITrack {
   public carsInGarage: Car[] = [];
@@ -32,8 +33,9 @@ export class Track extends BaseComponent implements ITrack {
     public pagination: IPagination = new Pagination(),
   ) {
     super(trackView.wrapper);
-
-    this.fillTrackList().catch(() => { Error('no cars'); });
+    checkFirstItemName()
+      .then(() => { this.fillTrackList().catch(() => Error('Oops')); })
+      .catch(() => Error('Oops'));
 
     this.getElement().append(
       this.title,

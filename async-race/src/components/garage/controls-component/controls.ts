@@ -10,6 +10,7 @@ import { getRandomColor } from '../../../utils/get-random-color';
 import { dispatchUpdateWinnersEvent } from '../../../utils/dispatch-update-winner-event';
 import type { Car } from '../track-component/car/car';
 import { dispatchUpdateTrackEvent } from '../../../utils/dispatch-update-track-event';
+import { updateCar } from '../../../utils/api/update-car';
 
 export class Controls extends BaseComponent implements IControls {
   private selectedCar: Car | null = null;
@@ -84,13 +85,11 @@ export class Controls extends BaseComponent implements IControls {
     this.selectedCar.name = nameInput.value;
     this.selectedCar.color = colorInput.value;
 
-    fetch(`${Urls.GARAGE}/${this.selectedCar.id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ name: this.selectedCar.name, color: this.selectedCar.color }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    updateCar(
+      this.selectedCar.name,
+      this.selectedCar.color,
+      this.selectedCar.id,
+    )
       .then(async () => {
         this.selectedCar?.updateCar();
         dispatchUpdateWinnersEvent();
