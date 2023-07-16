@@ -14,7 +14,7 @@
   }
 
   &:disabled {
-    background-color: cadetblue;
+    filter: grayscale(0.7);
     pointer-events: none;
   }
 }

@@ -9,6 +9,8 @@
 }
 
 body {
+  min-height: 100vh;
   background: url('../img/background.webp') no-repeat center;
   background-size: cover;
+  color: $main-text-color;
 }

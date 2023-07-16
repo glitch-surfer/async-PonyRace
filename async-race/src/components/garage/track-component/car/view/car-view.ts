@@ -8,12 +8,10 @@ export const carView: ICarParams = {
   selectBtn: {
     tag: 'button',
     className: ['car__select-btn', 'btn'],
-    text: 'Select',
   },
   removeBtn: {
     tag: 'button',
     className: ['car__remove-btn', 'btn'],
-    text: 'Remove',
   },
   title: {
     tag: 'h4',
@@ -22,12 +20,10 @@ export const carView: ICarParams = {
   startBtn: {
     tag: 'button',
     className: ['car__start-btn'],
-    text: 'A',
   },
   stopBtn: {
     tag: 'button',
     className: ['car__stop-btn'],
-    text: 'B',
     attributes: {
       disabled: '',
     },
