@@ -10,6 +10,8 @@
 
 body {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: url('../img/background.webp') no-repeat center;
   background-size: cover;
   color: $main-text-color;

@@ -3,6 +3,7 @@ import type { IApp } from '../types/types';
 import { Header } from './header/header';
 import { Garage } from './garage/garage';
 import { Winners } from './winners/winners';
+import { Footer } from './footer/footer';
 
 export class App implements IApp {
   constructor(
@@ -10,6 +11,7 @@ export class App implements IApp {
     private readonly main = document.createElement('main'),
     public garage = new Garage(),
     public winners = new Winners(),
+    private readonly footer = new Footer(),
   ) {
     this.main.append(this.garage.getElement(), this.winners.getElement());
     this.header.garageBtn.addEventListener('click', () => { this.garageBtnHandler(); });
@@ -17,7 +19,7 @@ export class App implements IApp {
   }
 
   public createView(): void {
-    document.body.append(this.header.getElement(), this.main);
+    document.body.append(this.header.getElement(), this.main, this.footer.getElement());
   }
 
   private garageBtnHandler(): void {
