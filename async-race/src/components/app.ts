@@ -1,4 +1,4 @@
-import './styles/base.scss';
+import '../styles/base.scss';
 import type { IApp } from '../types/types';
 import { Header } from './header/header';
 import { Garage } from './garage/garage';

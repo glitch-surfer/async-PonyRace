@@ -9,5 +9,6 @@
 }
 
 body {
-  background-color: $background-color;
+  background: url('../img/background.webp') no-repeat center;
+  background-size: cover;
 }
