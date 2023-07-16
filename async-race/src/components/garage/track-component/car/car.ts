@@ -112,12 +112,14 @@ export class Car extends BaseComponent implements ICar {
     const startCar = async (): Promise<void> => {
       this.disableBtns();
       this.isStarted = true;
+      const startTime = Date.now();
       dispatchStartCarEvent();
 
       fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
         .then(async (response) => response.json())
         .then((data) => {
           const animationDuration = getAnimationDuration(data);
+          const engineDelay = Date.now() - startTime;
           this.animation = this.car.animate(
             [{ transform: `translateX(${(window.innerWidth * 0.9) - 140}px)` }],
             { duration: animationDuration, fill: 'forwards' },
@@ -130,7 +132,7 @@ export class Car extends BaseComponent implements ICar {
                 dispatchFinishedCarEvent();
               }
               if (response.status === 200 && this.isRace) {
-                const formattedFinishTime = Math.floor(animationDuration / 100);
+                const formattedFinishTime = +((animationDuration + engineDelay) / 1000).toFixed(2);
                 dispatchFinishedCarEvent(this, formattedFinishTime);
               }
             }).catch(() => Error('error in drive mode'));
