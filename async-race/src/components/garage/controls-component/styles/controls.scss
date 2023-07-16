@@ -1,16 +1,27 @@
 @import '../../../../styles/variables.scss';
 
+//placeholders
+
+%input {
+  @extend %border;
+  background-color: transparent;
+
+  &:disabled {
+    background-color: lighten($btn-special-background-color, 30%);
+  }
+}
+
 .controls {
+  margin-bottom: 0.5rem;
   display: grid;
   grid-template-columns: repeat(4, auto);
   align-items: center;
   justify-content: center;
   gap: 0.2rem;
-  @extend %container-padding;
 }
 
 .controls__title {
-  grid-column: span 3;
+  grid-column: span 4;
   text-align: center;
 }
 
@@ -18,12 +29,12 @@
 .controls__upgrade-input {
   grid-column: span 2;
   align-self: stretch;
-  @extend %border;
+  @extend %input;
 }
 
 .controls__create-input_color,
 .controls__upgrade-input_color {
-  @extend %border;
+  @extend %input;
 }
 
 .controls__create-btn, 
