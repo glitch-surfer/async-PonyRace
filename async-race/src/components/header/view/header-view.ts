@@ -4,6 +4,13 @@ export const headerView: IHeaderParams = {
   header: {
     tag: 'header',
     className: ['header'],
+    children: [
+      {
+        tag: 'h1',
+        className: ['header__title'],
+        text: 'Async PonyRace',
+      },
+    ],
   },
   nav: {
     tag: 'nav',

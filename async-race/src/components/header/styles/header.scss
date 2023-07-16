@@ -4,6 +4,11 @@
   @extend %container-padding;
 }
 
+.header__title {
+  margin: 0.5rem;
+  text-align: center;
+}
+
 .nav {
   display: flex;
   align-items: center;
