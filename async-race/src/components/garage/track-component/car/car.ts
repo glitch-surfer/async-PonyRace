@@ -129,9 +129,10 @@ export class Car extends BaseComponent implements ICar {
 
           fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' })
             .then((response) => {
-              if (response.status === 500) this.animation?.pause();
-              if (response.status === 500 && this.isRace) {
-                dispatchFinishedCarEvent();
+              if (response.status === 500) {
+                this.animation?.pause();
+                this.car.style.animation = 'none';
+                if (this.isRace) dispatchFinishedCarEvent();
               }
               if (response.status === 200 && this.isRace) {
                 const formattedFinishTime = +((animationDuration + engineDelay) / 1000).toFixed(2);
@@ -155,6 +156,7 @@ export class Car extends BaseComponent implements ICar {
         .then(() => {
           this.animation?.cancel();
           this.animation = null;
+          this.car.style.animation = '';
         })
         .catch(() => {
           Error('it`s not stoped');
