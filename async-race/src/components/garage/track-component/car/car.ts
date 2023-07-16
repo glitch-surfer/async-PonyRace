@@ -123,7 +123,7 @@ export class Car extends BaseComponent implements ICar {
           const animationDuration = getAnimationDuration(data);
           const engineDelay = Date.now() - startTime;
           this.animation = this.car.animate(
-            [{ transform: `translateX(${(window.innerWidth * 0.9) - 140}px)` }],
+            [{ transform: `translateX(${(window.innerWidth * 0.9) - 60}px)` }],
             { duration: animationDuration, fill: 'forwards' },
           );
 
