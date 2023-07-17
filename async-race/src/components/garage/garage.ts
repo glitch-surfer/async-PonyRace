@@ -5,8 +5,6 @@ import type { IGarage } from './types/garage-types';
 import { garageView } from './view/garage-view';
 
 export class Garage extends BaseComponent implements IGarage {
-  private carsOnTrack = 0;
-
   constructor(
     public controls = new Controls(),
     public track = new Track(),
@@ -18,21 +16,49 @@ export class Garage extends BaseComponent implements IGarage {
       this.track.getElement(),
     );
 
-    document.body.addEventListener('startCar', () => { this.startCarController(); });
-    document.body.addEventListener('stopCar', () => { this.stopCarController(); });
+    this.controls.raceBtn.addEventListener('click', () => { this.startRaceHandler(); });
+    this.controls.resetBtn.addEventListener('click', () => { this.resetRaceHandler().catch(() => Error('Oops')); });
   }
 
-  private startCarController(): void {
-    this.carsOnTrack += 1;
+  private startRaceHandler(): void {
+    this.disableBtns();
+
+    this.resetRaceHandler()
+      .then(() => {
+        this.disableBtns();
+        this.track.carsOnPage.forEach((car) => {
+          const readyCar = car;
+          readyCar.isRace = true;
+          readyCar.startCarHandler();
+        });
+      }).catch(() => Error('Oops'));
+  }
+
+  private async resetRaceHandler(): Promise<void> {
+    const { resetBtn } = this.controls;
+    resetBtn.setAttribute('disabled', '');
+
+    const stoppedCars = this.track.carsOnPage
+      .map(async (car) => car.stopCarHandler());
+
+    return Promise.all(stoppedCars)
+      .then(async () => this.track.fillTrackList())
+      .catch(() => { Error('no cars'); })
+      .finally(() => {
+        resetBtn.removeAttribute('disabled');
+        this.enableBtns();
+        this.track.winner = null;
+        this.track.finishedCarCount = 0;
+      });
+  }
+
+  private disableBtns(): void {
     this.controls.disableBtns();
     this.track.pagination.disableBtns();
   }
 
-  private stopCarController(): void {
-    this.carsOnTrack -= 1;
-    if (this.carsOnTrack === 0) {
-      this.controls.enableBtns();
-      this.track.pagination.enableBtns();
-    }
+  private enableBtns(): void {
+    this.controls.enableBtns();
+    this.track.pagination.enableBtns();
   }
 }

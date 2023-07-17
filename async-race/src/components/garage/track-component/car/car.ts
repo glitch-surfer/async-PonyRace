@@ -8,8 +8,8 @@ import { Urls } from '../../../../enums/urls';
 import { dispatchUpdateWinnersEvent } from '../../../../utils/dispatch-update-winner-event';
 import { getAnimationDuration } from '../../../../utils/get-animation-duration';
 import { deleteWinner } from '../../../../utils/api/delete-winner';
-import { dispatchStartCarEvent } from '../../../../utils/dispatch-start-car-event';
-import { dispatchStopCarEvent } from '../../../../utils/dispatch-stop-car-event';
+// import { dispatchStartCarEvent } from '../../../../utils/dispatch-start-car-event';
+// import { dispatchStopCarEvent } from '../../../../utils/dispatch-stop-car-event';
 import { dispatchFinishedCarEvent } from '../../../../utils/dispatch-finished-car-event';
 
 export class Car extends BaseComponent implements ICar {
@@ -112,68 +112,60 @@ export class Car extends BaseComponent implements ICar {
   }
 
   public startCarHandler(): void {
-    const startCar = async (): Promise<void> => {
-      this.disableBtns();
-      this.isStarted = true;
-      const startTime = Date.now();
-      dispatchStartCarEvent();
+    let engineDelay: number;
+    let animationDuration: number;
 
-      fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
-        .then(async (response) => response.json())
-        .then((data) => {
-          const animationDuration = getAnimationDuration(data);
-          const engineDelay = Date.now() - startTime;
-          this.animation = this.car.animate(
-            [{ transform: `translateX(${(window.innerWidth * 0.9) - 60}px)` }],
-            { duration: animationDuration, fill: 'forwards' },
-          );
+    this.disableBtns();
+    this.isStarted = true;
+    const startTime = Date.now();
 
-          fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' })
-            .then((response) => {
-              if (response.status === 500) {
-                this.animation?.pause();
-                this.car.style.animation = 'none';
-                if (this.isRace) dispatchFinishedCarEvent();
-              }
-              if (response.status === 200 && this.isRace) {
-                const formattedFinishTime = +((animationDuration + engineDelay) / 1000).toFixed(2);
-                dispatchFinishedCarEvent(this, formattedFinishTime);
-              }
-              if (response.status === 404) this.stopCarHandler().catch(() => Error('Oops'));
-            }).catch(() => Error('error in drive mode'));
+    fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
+      .then(async (response) => response.json())
+      .then(async (data) => {
+        animationDuration = getAnimationDuration(data);
+        engineDelay = Date.now() - startTime;
+        this.animation = this.car.animate(
+          [{ transform: `translateX(${(window.innerWidth * 0.9) - 60}px)` }],
+          { duration: animationDuration, fill: 'forwards' },
+        );
+        this.stopBtn.removeAttribute('disabled');
 
-          this.stopBtn.removeAttribute('disabled');
-        }).catch(() => { Error('it`s not started'); });
-    };
-
-    startCar().catch(() => { Error('it`s not started'); });
+        return fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' });
+      })
+      .then((response) => {
+        if (response.status === 200 && this.isRace) {
+          const formattedFinishTime = +((animationDuration + engineDelay) / 1000).toFixed(2);
+          dispatchFinishedCarEvent(this, formattedFinishTime);
+          return;
+        }
+        if (response.status === 500) {
+          this.animation?.pause();
+          this.car.style.animation = 'none';
+        }
+        dispatchFinishedCarEvent();
+      })
+      .catch(() => {
+        Error('it`s not started');
+      });
   }
 
   public async stopCarHandler(): Promise<void> {
-    // const stopCar = async (): Promise<void> => {
-    if (this.isRace || this.isStarted) {
-      this.stopBtn.setAttribute('disabled', '');
-      this.isStarted = false;
-      this.isRace = false;
+    this.stopBtn.setAttribute('disabled', '');
 
-      return fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' })
-        .then(() => {
-          this.animation?.cancel();
-          this.animation = null;
-          this.car.style.animation = '';
-        })
-        .catch(() => {
-          Error('it`s not stoped');
-        })
-        .finally(() => {
-          this.enableBtns();
-          dispatchStopCarEvent();
-        });
-    }
-    return Promise.resolve();
-    // };
+    return fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' })
+      .then(() => {
+        this.animation?.cancel();
+        this.animation = null;
+        this.car.style.animation = '';
 
-    // stopCar().catch(() => { Error('it`s not stoped'); });
+        this.isStarted = false;
+        this.isRace = false;
+
+        this.enableBtns();
+      })
+      .catch(() => {
+        Error('it`s not stoped');
+      });
   }
 
   public disableBtns(): void {

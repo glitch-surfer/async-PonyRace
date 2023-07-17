@@ -25,7 +25,7 @@ export class Track extends BaseComponent implements ITrack {
 
   public winner: Car | null = null;
 
-  private finishedCarCount = 0;
+  public finishedCarCount = 0;
 
   constructor(
     public title: HTMLElement = new BaseComponent(trackView.title).getElement(),
@@ -53,13 +53,6 @@ export class Track extends BaseComponent implements ITrack {
     this.addPaginationHandler();
     this.addCarWatchingHandler();
     document.addEventListener('updateTrack', () => { this.fillTrackList().catch(() => Error('Oops')); });
-    document.addEventListener('click', (event) => { this.startRaceHandler(event); });
-    document.addEventListener('click', (event) => {
-      const resetBtn = event.target;
-      if (!(resetBtn instanceof HTMLElement)
-        || !resetBtn.classList.contains('controls__reset-btn')) return;
-      this.resetRaceHandler(resetBtn);
-    });
     document.addEventListener('finishedCar', (event: Event) => { this.finishedCarHandler(event); });
   }
 
@@ -75,10 +68,12 @@ export class Track extends BaseComponent implements ITrack {
 
         return { ...carParams, wins: winnerParams.wins, time: winnerParams.time };
       })
-      .forEach((car) => {
-        const newCar = new Car(car);
-        this.carsInGarage.push(newCar);
-      });
+      .reduce((acc, car, index) => {
+        const carsInGarage = acc;
+        carsInGarage[index] = new Car(car);
+        return carsInGarage;
+      }, this.carsInGarage);
+
     this.renderTrack(this.pagination.currentPage);
     this.title.textContent = setCount(Titles.GARAGE, this.carsInGarage);
   }
@@ -91,6 +86,7 @@ export class Track extends BaseComponent implements ITrack {
 
     for (let i = (page * carsOnPage) - carsOnPage; i < (page * carsOnPage); i += 1) {
       if (this.carsInGarage[i] === undefined) break;
+
       this.trackList.append(this.carsInGarage[i].getElement());
       this.carsOnPage.push(this.carsInGarage[i]);
     }
@@ -130,32 +126,6 @@ export class Track extends BaseComponent implements ITrack {
     this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
   }
 
-  private startRaceHandler(event: MouseEvent): void {
-    const raceBtn = event.target;
-    if (!(raceBtn instanceof HTMLElement)
-      || !raceBtn.classList.contains('controls__race-btn')) return;
-    this.carsOnPage.forEach((car) => {
-      const readyCar = car;
-      readyCar.startCarHandler();
-      readyCar.isRace = true;
-    });
-  }
-
-  private resetRaceHandler(resetBtn: HTMLElement): void {
-    resetBtn.setAttribute('disabled', '');
-
-    this.winner = null;
-    this.finishedCarCount = 0;
-    const stoppedCars = this.carsOnPage
-      .filter((car) => car.isStarted)
-      .map(async (car) => car.stopCarHandler());
-
-    Promise.all(stoppedCars)
-      .then(async () => this.fillTrackList())
-      .catch(() => { Error('no cars'); })
-      .finally(() => { resetBtn.removeAttribute('disabled'); });
-  }
-
   private finishedCarHandler(event: Event): void {
     const resetBtn = document.querySelector('.controls__reset-btn');
     if (!(resetBtn instanceof HTMLElement)) throw new Error('reset not button');
@@ -173,8 +143,7 @@ export class Track extends BaseComponent implements ITrack {
       new ModalWindow(winner.name, bestTime).appendModal();
       resetBtn.setAttribute('disabled', '');
     }
-    if (this.finishedCarCount === this.carsOnPage.filter((car) => car.isRace).length
-      && this.winner !== null) {
+    if (this.finishedCarCount === this.carsOnPage.length && this.winner !== null) {
       if (this.winner.wins === 0) {
         this.winner.wins += 1;
 
@@ -183,7 +152,6 @@ export class Track extends BaseComponent implements ITrack {
           wins: this.winner.wins,
           time: this.winner.bestTime,
         });
-        this.resetRaceHandler(resetBtn);
       } else {
         this.winner.wins += 1;
 
@@ -191,7 +159,6 @@ export class Track extends BaseComponent implements ITrack {
           wins: this.winner.wins,
           time: this.winner.bestTime,
         }, this.winner.id);
-        this.resetRaceHandler(resetBtn);
       }
       resetBtn.removeAttribute('disabled');
     }
