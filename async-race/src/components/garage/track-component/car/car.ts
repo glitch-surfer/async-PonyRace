@@ -85,15 +85,16 @@ export class Car extends BaseComponent implements ICar {
     fetch(`${Urls.GARAGE}/${this.id}`, {
       method: 'DELETE',
     })
+      .then(() => {
+        if (this.wins > 0) {
+          deleteWinner(this.id)
+            .then(() => {
+              dispatchUpdateWinnersEvent();
+            })
+            .catch((error) => { Error(error.message); });
+        }
+      })
       .catch(() => { Error('trouble deleting car'); });
-
-    if (this.wins > 0) {
-      deleteWinner(this.id)
-        .then(() => {
-          dispatchUpdateWinnersEvent();
-        })
-        .catch((error) => { Error(error.message); });
-    }
 
     this.getElement().remove();
     this.isDeleted = true;
