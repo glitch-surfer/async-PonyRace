@@ -15,7 +15,8 @@ import { updateWinner } from '../../../utils/api/update-winner';
 import { getWinners } from '../../../utils/api/get-winners';
 import type { IPagination } from '../../pagination/types/pagination-types';
 import { QueryParams } from '../../../enums/query-params';
-import { checkFirstItemName } from '../../../utils/api/check-first-item-name';
+import { changeInitialNames, isNeedToUpdateInitialNames } from '../../../utils/api/check-first-item-name';
+import { dispatchUpdateWinnersEvent } from '../../../utils/dispatch-update-winner-event';
 
 export class Track extends BaseComponent implements ITrack {
   public carsInGarage: Car[] = [];
@@ -33,9 +34,14 @@ export class Track extends BaseComponent implements ITrack {
     public pagination: IPagination = new Pagination(),
   ) {
     super(trackView.wrapper);
-    checkFirstItemName()
-      .then(() => { this.fillTrackList().catch(() => Error('Oops')); })
-      .catch(() => Error('Oops'));
+    isNeedToUpdateInitialNames()
+      .then(async (result) => {
+        if (result) return changeInitialNames();
+        return Promise.resolve();
+      })
+      .then(async () => this.fillTrackList())
+      .catch(() => Error('Oops'))
+      .finally(() => { dispatchUpdateWinnersEvent(); });
 
     this.getElement().append(
       this.title,

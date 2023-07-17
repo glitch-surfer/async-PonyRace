@@ -3,17 +3,12 @@ import { getRandomColor } from '../get-random-color';
 import { getRandomName } from '../get-random-name';
 import { updateCar } from './update-car';
 
-export const checkFirstItemName = async (): Promise<void> => {
+export const isNeedToUpdateInitialNames = async (): Promise<boolean> => {
   const firstPony = await (await fetch(`${Urls.GARAGE}/1`)).json();
-  const startItemCount = 4;
-  if (firstPony.name === 'Tesla') {
-    for (let i = 1; i <= startItemCount; i += 1) {
-      updateCar(
-        getRandomName(),
-        getRandomColor(),
-        i,
-      )
-        .catch((error) => { Error(error.message); });
-    }
-  }
+  return firstPony.name === 'Tesla';
+};
+
+export const changeInitialNames = async (): Promise<Response[]> => {
+  const ids = [1, 2, 3, 4];
+  return Promise.all(ids.map(async (id) => updateCar(getRandomName(), getRandomColor(), id)));
 };
