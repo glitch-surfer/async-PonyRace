@@ -146,11 +146,6 @@ export class Track extends BaseComponent implements ITrack {
 
     this.winner = null;
     this.finishedCarCount = 0;
-    this.carsOnPage
-      .forEach((car) => {
-        const finishedCar = car;
-        finishedCar.isRace = false;
-      });
     const stoppedCars = this.carsOnPage
       .filter((car) => car.isStarted)
       .map(async (car) => car.stopCarHandler());
@@ -164,6 +159,7 @@ export class Track extends BaseComponent implements ITrack {
   private finishedCarHandler(event: Event): void {
     const resetBtn = document.querySelector('.controls__reset-btn');
     if (!(resetBtn instanceof HTMLElement)) throw new Error('reset not button');
+
     this.finishedCarCount += 1;
     if (event instanceof CustomEvent && this.winner === null && event.detail !== null) {
       const winner = event.detail.car;

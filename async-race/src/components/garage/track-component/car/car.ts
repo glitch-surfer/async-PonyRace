@@ -139,6 +139,7 @@ export class Car extends BaseComponent implements ICar {
                 const formattedFinishTime = +((animationDuration + engineDelay) / 1000).toFixed(2);
                 dispatchFinishedCarEvent(this, formattedFinishTime);
               }
+              if (response.status === 404) this.stopCarHandler().catch(() => Error('Oops'));
             }).catch(() => Error('error in drive mode'));
 
           this.stopBtn.removeAttribute('disabled');
@@ -150,22 +151,26 @@ export class Car extends BaseComponent implements ICar {
 
   public async stopCarHandler(): Promise<void> {
     // const stopCar = async (): Promise<void> => {
-    this.stopBtn.setAttribute('disabled', '');
-    this.isStarted = false;
+    if (this.isRace || this.isStarted) {
+      this.stopBtn.setAttribute('disabled', '');
+      this.isStarted = false;
+      this.isRace = false;
 
-    return fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' })
-      .then(() => {
-        this.animation?.cancel();
-        this.animation = null;
-        this.car.style.animation = '';
-      })
-      .catch(() => {
-        Error('it`s not stoped');
-      })
-      .finally(() => {
-        this.enableBtns();
-        dispatchStopCarEvent();
-      });
+      return fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' })
+        .then(() => {
+          this.animation?.cancel();
+          this.animation = null;
+          this.car.style.animation = '';
+        })
+        .catch(() => {
+          Error('it`s not stoped');
+        })
+        .finally(() => {
+          this.enableBtns();
+          dispatchStopCarEvent();
+        });
+    }
+    return Promise.resolve();
     // };
 
     // stopCar().catch(() => { Error('it`s not stoped'); });
