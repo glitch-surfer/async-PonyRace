@@ -53,7 +53,7 @@ export class Track extends BaseComponent implements ITrack {
     this.addPaginationHandler();
     this.addCarWatchingHandler();
     document.addEventListener('updateTrack', () => { this.fillTrackList().catch(() => Error('Oops')); });
-    document.addEventListener('startRace', () => { this.startRaceHandler(); });
+    document.addEventListener('click', (event) => { this.startRaceHandler(event); });
     document.addEventListener('click', (event) => {
       const resetBtn = event.target;
       if (!(resetBtn instanceof HTMLElement)
@@ -130,7 +130,10 @@ export class Track extends BaseComponent implements ITrack {
     this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
   }
 
-  private startRaceHandler(): void {
+  private startRaceHandler(event: MouseEvent): void {
+    const raceBtn = event.target;
+    if (!(raceBtn instanceof HTMLElement)
+      || !raceBtn.classList.contains('controls__race-btn')) return;
     this.carsOnPage.forEach((car) => {
       const readyCar = car;
       readyCar.startCarHandler();
