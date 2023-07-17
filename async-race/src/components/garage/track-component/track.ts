@@ -54,7 +54,12 @@ export class Track extends BaseComponent implements ITrack {
     this.addCarWatchingHandler();
     document.addEventListener('updateTrack', () => { this.fillTrackList().catch(() => Error('Oops')); });
     document.addEventListener('startRace', () => { this.startRaceHandler(); });
-    document.addEventListener('resetRace', () => { this.resetRaceHandler(); });
+    document.addEventListener('click', (event) => {
+      const resetBtn = event.target;
+      if (!(resetBtn instanceof HTMLElement)
+        || !resetBtn.classList.contains('controls__reset-btn')) return;
+      this.resetRaceHandler(resetBtn);
+    });
     document.addEventListener('finishedCar', (event: Event) => { this.finishedCarHandler(event); });
   }
 
@@ -133,21 +138,28 @@ export class Track extends BaseComponent implements ITrack {
     });
   }
 
-  private resetRaceHandler(): void {
+  private resetRaceHandler(resetBtn: HTMLElement): void {
+    resetBtn.setAttribute('disabled', '');
+
     this.winner = null;
     this.finishedCarCount = 0;
-    this.carsOnPage
+    const stoppedCars = this.carsOnPage
       .filter((car) => car.isStarted)
-      .forEach((car) => {
+      .map(async (car) => {
         const finishedCar = car;
-        finishedCar.stopCarHandler();
         finishedCar.isRace = false;
+        return finishedCar.stopCarHandler();
       });
-    this.fillTrackList().catch(() => { Error('no cars'); });
+
+    Promise.all(stoppedCars)
+      .then(async () => this.fillTrackList())
+      .catch(() => { Error('no cars'); })
+      .finally(() => { resetBtn.removeAttribute('disabled'); });
   }
 
   private finishedCarHandler(event: Event): void {
-    const reset = document.querySelector('.controls__reset-btn');
+    const resetBtn = document.querySelector('.controls__reset-btn');
+    if (!(resetBtn instanceof HTMLElement)) throw new Error('reset not button');
     this.finishedCarCount += 1;
     if (event instanceof CustomEvent && this.winner === null && event.detail !== null) {
       const winner = event.detail.car;
@@ -159,7 +171,7 @@ export class Track extends BaseComponent implements ITrack {
         winner.bestTime = bestTime < winner.bestTime ? bestTime : winner.bestTime;
       }
       new ModalWindow(winner.name, bestTime).appendModal();
-      reset?.setAttribute('disabled', '');
+      resetBtn.setAttribute('disabled', '');
     }
     if (this.finishedCarCount === this.carsOnPage.filter((car) => car.isRace).length
       && this.winner !== null) {
@@ -171,7 +183,7 @@ export class Track extends BaseComponent implements ITrack {
           wins: this.winner.wins,
           time: this.winner.bestTime,
         });
-        this.resetRaceHandler();
+        this.resetRaceHandler(resetBtn);
       } else {
         this.winner.wins += 1;
 
@@ -179,9 +191,9 @@ export class Track extends BaseComponent implements ITrack {
           wins: this.winner.wins,
           time: this.winner.bestTime,
         }, this.winner.id);
-        this.resetRaceHandler();
+        this.resetRaceHandler(resetBtn);
       }
-      reset?.removeAttribute('disabled');
+      resetBtn.removeAttribute('disabled');
     }
   }
 

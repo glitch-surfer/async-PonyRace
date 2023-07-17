@@ -69,7 +69,7 @@ export class Car extends BaseComponent implements ICar {
     this.removeBtn.addEventListener('click', () => { this.removeCarHandler(); });
     this.selectBtn.addEventListener('click', () => { this.selectCarHandler(); });
     this.startBtn.addEventListener('click', () => { this.startCarHandler(); });
-    this.stopBtn.addEventListener('click', () => { this.stopCarHandler(); });
+    this.stopBtn.addEventListener('click', () => { this.stopCarHandler().catch(() => Error('Oops')); });
   }
 
   private setColor(color: string): void {
@@ -147,27 +147,27 @@ export class Car extends BaseComponent implements ICar {
     startCar().catch(() => { Error('it`s not started'); });
   }
 
-  public stopCarHandler(): void {
-    const stopCar = async (): Promise<void> => {
-      this.stopBtn.setAttribute('disabled', '');
-      this.isStarted = false;
+  public async stopCarHandler(): Promise<void> {
+    // const stopCar = async (): Promise<void> => {
+    this.stopBtn.setAttribute('disabled', '');
+    this.isStarted = false;
 
-      fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' })
-        .then(() => {
-          this.animation?.cancel();
-          this.animation = null;
-          this.car.style.animation = '';
-        })
-        .catch(() => {
-          Error('it`s not stoped');
-        })
-        .finally(() => {
-          this.enableBtns();
-          dispatchStopCarEvent();
-        });
-    };
+    return fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' })
+      .then(() => {
+        this.animation?.cancel();
+        this.animation = null;
+        this.car.style.animation = '';
+      })
+      .catch(() => {
+        Error('it`s not stoped');
+      })
+      .finally(() => {
+        this.enableBtns();
+        dispatchStopCarEvent();
+      });
+    // };
 
-    stopCar().catch(() => { Error('it`s not stoped'); });
+    // stopCar().catch(() => { Error('it`s not stoped'); });
   }
 
   public disableBtns(): void {
