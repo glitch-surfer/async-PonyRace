@@ -160,9 +160,11 @@ export class Controls extends BaseComponent implements IControls {
           Error(error.message);
         });
     }
-    Promise.all(newCars).then(() => {
-      dispatchUpdateTrackEvent();
-    })
+
+    Promise.all(newCars)
+      .then(() => {
+        dispatchUpdateTrackEvent();
+      })
       .catch((error) => {
         Error(error.message);
       });

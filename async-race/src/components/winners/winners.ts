@@ -54,18 +54,19 @@ export class Winners extends BaseComponent implements IWinners {
       const carParams = await (await fetch(`${Urls.GARAGE}/${winner.id}`)).json();
       return { ...winner, ...carParams };
     })).then((winnersList) => {
-      winnersList.forEach((winner, index) => {
+      winnersList.reduce((acc, winner, index) => {
         const newWinner = new Winner(winner);
         newWinner.setPosition(index + 1);
-        this.winners.push(newWinner);
-      });
+        acc[index] = newWinner;
+        return acc;
+      }, this.winners);
     })
       .then(() => {
         this.renderWinners(this.pagination.currentPage);
         this.title.textContent = setCount(Titles.WINNERS, this.winners);
       })
       .catch(() => {
-        this.table.textContent = 'no winners';
+        Error('no winners');
       });
   }
 
@@ -120,13 +121,17 @@ export class Winners extends BaseComponent implements IWinners {
 
   private sortByWinsCount(event: MouseEvent): void {
     const winsCell = event.target;
+
     if (winsCell instanceof HTMLElement
       && winsCell.classList.contains('winners__th_wins')) {
       this.currentSort = QueryParams.WINS;
       this.currentOrder = this.currentOrder === QueryParams.DESC
         ? QueryParams.ASC
         : QueryParams.DESC;
-      this.fillWinnersList().catch(() => { Error('no winners'); });
+
+      this.fillWinnersList()
+        .catch(() => { Error('no winners'); });
+
       if (this.currentOrder === QueryParams.DESC) {
         winsCell.textContent = Titles.WINS_DESC;
       } else {
@@ -137,13 +142,16 @@ export class Winners extends BaseComponent implements IWinners {
 
   private sortByBestTime(event: MouseEvent): void {
     const timeCell = event.target;
+
     if (timeCell instanceof HTMLElement
       && timeCell.classList.contains('winners__th_time')) {
       this.currentSort = QueryParams.TIME;
       this.currentOrder = this.currentOrder === QueryParams.DESC
         ? QueryParams.ASC
         : QueryParams.DESC;
+
       this.fillWinnersList().catch(() => { Error('no winners'); });
+
       if (this.currentOrder === QueryParams.DESC) {
         timeCell.textContent = Titles.TIME_DESC;
       } else {
