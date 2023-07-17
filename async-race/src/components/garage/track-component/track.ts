@@ -146,13 +146,14 @@ export class Track extends BaseComponent implements ITrack {
 
     this.winner = null;
     this.finishedCarCount = 0;
-    const stoppedCars = this.carsOnPage
-      .filter((car) => car.isStarted)
-      .map(async (car) => {
+    this.carsOnPage
+      .forEach((car) => {
         const finishedCar = car;
         finishedCar.isRace = false;
-        return finishedCar.stopCarHandler();
       });
+    const stoppedCars = this.carsOnPage
+      .filter((car) => car.isStarted)
+      .map(async (car) => car.stopCarHandler());
 
     Promise.all(stoppedCars)
       .then(async () => this.fillTrackList())
