@@ -8,9 +8,8 @@ import { Urls } from '../../../../enums/urls';
 import { dispatchUpdateWinnersEvent } from '../../../../utils/dispatch-update-winner-event';
 import { getAnimationDuration } from '../../../../utils/get-animation-duration';
 import { deleteWinner } from '../../../../utils/api/delete-winner';
-// import { dispatchStartCarEvent } from '../../../../utils/dispatch-start-car-event';
-// import { dispatchStopCarEvent } from '../../../../utils/dispatch-stop-car-event';
 import { dispatchFinishedCarEvent } from '../../../../utils/dispatch-finished-car-event';
+import { setTraceAnimation } from '../../../../utils/set-trace-animation';
 
 export class Car extends BaseComponent implements ICar {
   public id: number;
@@ -28,6 +27,8 @@ export class Car extends BaseComponent implements ICar {
   public isStarted: boolean = false;
 
   public isDeleted: boolean = false;
+
+  public isEngineStopped: boolean = false;
 
   public wins: number;
 
@@ -75,6 +76,7 @@ export class Car extends BaseComponent implements ICar {
   private setColor(color: string): void {
     this.car.innerHTML = img;
     (this.car.querySelector('.cls-19') as SVGElement).style.fill = color;
+    this.car.style.filter = `drop-shadow(0 0 1rem ${color})`;
   }
 
   private setName(name: string): void {
@@ -114,20 +116,22 @@ export class Car extends BaseComponent implements ICar {
   public startCarHandler(): void {
     let engineDelay: number;
     let animationDuration: number;
+    const startTime = Date.now();
 
     this.disableBtns();
     this.isStarted = true;
-    const startTime = Date.now();
 
     fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
       .then(async (response) => response.json())
       .then(async (data) => {
+        const animationDistance = (window.innerWidth * 0.9) - 60;
         animationDuration = getAnimationDuration(data);
         engineDelay = Date.now() - startTime;
         this.animation = this.car.animate(
-          [{ transform: `translateX(${(window.innerWidth * 0.9) - 60}px)` }],
+          [{ transform: `translateX(${animationDistance}px)` }],
           { duration: animationDuration, fill: 'forwards' },
         );
+        setTraceAnimation(this.color, animationDistance, animationDuration, this);
         this.stopBtn.removeAttribute('disabled');
 
         return fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' });
@@ -141,12 +145,11 @@ export class Car extends BaseComponent implements ICar {
         if (response.status === 500) {
           this.animation?.pause();
           this.car.style.animation = 'none';
+          this.isEngineStopped = true;
         }
         dispatchFinishedCarEvent();
       })
-      .catch(() => {
-        Error('it`s not started');
-      });
+      .catch(() => { Error('it`s not started'); });
   }
 
   public async stopCarHandler(): Promise<void> {
@@ -160,6 +163,7 @@ export class Car extends BaseComponent implements ICar {
 
         this.isStarted = false;
         this.isRace = false;
+        this.isEngineStopped = false;
 
         this.enableBtns();
       })
