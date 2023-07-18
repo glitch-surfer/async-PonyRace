@@ -1,7 +1,8 @@
 import './trace.scss';
 import { BaseComponent } from '../../../../../utils/base-component';
+import type { ITrace } from './trace-types';
 
-export class Trace {
+export class Trace implements ITrace {
   public trace = new BaseComponent({
     tag: 'div',
     className: ['trace'],

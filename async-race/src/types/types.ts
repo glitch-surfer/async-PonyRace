@@ -20,6 +20,7 @@ export interface IApp {
   header: IHeader
   garage: IGarage
   winners: IWinners
+  createView: () => void
 }
 
 export interface ICarResponse {

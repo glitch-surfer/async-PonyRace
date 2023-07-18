@@ -23,4 +23,7 @@ export interface ICar {
   startBtn: HTMLElement
   stopBtn: HTMLElement
   car: HTMLElement
+  isStarted: boolean
+  isDeleted: boolean
+  isEngineStopped: boolean
 }

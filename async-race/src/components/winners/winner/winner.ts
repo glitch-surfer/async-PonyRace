@@ -4,22 +4,22 @@ import { carView } from '../../garage/track-component/car/view/car-view';
 import type { IWinner } from './types/winner-types';
 
 export class Winner extends BaseComponent implements IWinner {
-  color: string;
+  public color: string;
 
-  name: string;
+  public name: string;
 
-  id: number;
+  public id: number;
 
-  wins: number;
+  public wins: number;
 
-  time: number;
+  public time: number;
 
-  position: HTMLElement = new BaseComponent({
+  public position: HTMLElement = new BaseComponent({
     tag: 'td',
     className: ['winner__td_number'],
   }).getElement();
 
-  car: HTMLElement = new BaseComponent({
+  public car: HTMLElement = new BaseComponent({
     tag: 'td',
     className: ['winner__td_car'],
     children: [

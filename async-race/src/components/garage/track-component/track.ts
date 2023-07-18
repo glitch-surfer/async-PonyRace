@@ -77,7 +77,7 @@ export class Track extends BaseComponent implements ITrack {
     this.title.textContent = setCount(Titles.GARAGE, this.carsInGarage);
   }
 
-  public renderTrack(page: number): void {
+  private renderTrack(page: number): void {
     const carsOnPage = Numbers.CARS_ON_PAGE;
 
     clearElement(this.trackList);

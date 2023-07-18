@@ -4,14 +4,14 @@ import type { IModalWindow } from './types/modal-types';
 import { modalParams } from './view/modal-view';
 
 export class ModalWindow implements IModalWindow {
-  overlay: HTMLElement = new BaseComponent({
+  private readonly overlay: HTMLElement = new BaseComponent({
     tag: 'div',
     className: ['overlay'],
   }).getElement();
 
-  modal: HTMLElement = new BaseComponent(modalParams).getElement();
+  private readonly modal: HTMLElement = new BaseComponent(modalParams).getElement();
 
-  title: HTMLElement;
+  private readonly title: HTMLElement;
 
   constructor(winnerName: string, time: number) {
     this.title = new BaseComponent({

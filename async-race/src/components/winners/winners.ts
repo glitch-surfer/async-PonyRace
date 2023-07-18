@@ -46,21 +46,22 @@ export class Winners extends BaseComponent implements IWinners {
     this.table.addEventListener('click', (event) => { this.sortByBestTime(event); });
   }
 
-  public async fillWinnersList(sort: 'wins' | 'time' = this.currentSort, order: 'ASC' | 'DESC' = this.currentOrder): Promise<void> {
+  private async fillWinnersList(sort: 'wins' | 'time' = this.currentSort, order: 'ASC' | 'DESC' = this.currentOrder): Promise<void> {
     const winners = await getWinners(sort, order);
     this.winners = [];
 
     Promise.all(winners.map(async (winner) => {
       const carParams = await (await fetch(`${Urls.GARAGE}/${winner.id}`)).json();
       return { ...winner, ...carParams };
-    })).then((winnersList) => {
-      winnersList.reduce((acc, winner, index) => {
-        const newWinner = new Winner(winner);
-        newWinner.setPosition(index + 1);
-        acc[index] = newWinner;
-        return acc;
-      }, this.winners);
-    })
+    }))
+      .then((winnersList) => {
+        winnersList.reduce((acc, winner, index) => {
+          const newWinner = new Winner(winner);
+          newWinner.setPosition(index + 1);
+          acc[index] = newWinner;
+          return acc;
+        }, this.winners);
+      })
       .then(() => {
         this.renderWinners(this.pagination.currentPage);
         this.title.textContent = setCount(Titles.WINNERS, this.winners);
@@ -70,7 +71,7 @@ export class Winners extends BaseComponent implements IWinners {
       });
   }
 
-  public renderWinners(page: number): void {
+  private renderWinners(page: number): void {
     const winnersPerPage = Numbers.WINNERS_ON_PAGE;
     const tableBody = this.table.getElementsByTagName('tbody')[0];
 
