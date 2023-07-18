@@ -4,7 +4,9 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
+  pointer-events: none;
   animation: fade 2s linear;
+  animation-fill-mode: forwards;
 }
 
 @keyframes fade {

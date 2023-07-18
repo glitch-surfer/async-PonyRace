@@ -22,13 +22,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: $modal-background-color;
+  background-color: $overlay-color;
   border-radius: $border-radius;
   overflow: auto;
 }
 
 .modal__title {
   text-align: center;
+  font-size: 2rem;
+  color: darken($btn-background-color, 10%);
 }
 
 .btn-modal {

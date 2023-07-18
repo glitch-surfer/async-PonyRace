@@ -154,6 +154,7 @@ export class Car extends BaseComponent implements ICar {
 
   public async stopCarHandler(): Promise<void> {
     this.stopBtn.setAttribute('disabled', '');
+    this.isEngineStopped = true;
 
     return fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' })
       .then(() => {

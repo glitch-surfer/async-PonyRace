@@ -51,7 +51,6 @@ export class Track extends BaseComponent implements ITrack {
     );
 
     this.addPaginationHandler();
-    this.addCarWatchingHandler();
     document.addEventListener('updateTrack', () => { this.fillTrackList().catch(() => Error('Oops')); });
     document.addEventListener('finishedCar', (event: Event) => { this.finishedCarHandler(event); });
   }
@@ -162,13 +161,5 @@ export class Track extends BaseComponent implements ITrack {
       }
       resetBtn.removeAttribute('disabled');
     }
-  }
-
-  private addCarWatchingHandler(): void {
-    const observer = new MutationObserver(() => {
-      this.carsOnPage = this.carsOnPage.filter((car) => !car.isDeleted);
-      this.carsInGarage = this.carsInGarage.filter((car) => !car.isDeleted);
-    });
-    observer.observe(this.trackList, { childList: true });
   }
 }
