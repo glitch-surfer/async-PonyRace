@@ -16,7 +16,6 @@ import { getWinners } from '../../../utils/api/get-winners';
 import type { IPagination } from '../../pagination/types/pagination-types';
 import { QueryParams } from '../../../enums/query-params';
 import { changeInitialNames, isNeedToUpdateInitialNames } from '../../../utils/api/check-first-item-name';
-import { dispatchUpdateWinnersEvent } from '../../../utils/dispatch-update-winner-event';
 
 export class Track extends BaseComponent implements ITrack {
   public carsInGarage: Car[] = [];
@@ -34,14 +33,12 @@ export class Track extends BaseComponent implements ITrack {
     public pagination: IPagination = new Pagination(),
   ) {
     super(trackView.wrapper);
-    isNeedToUpdateInitialNames()
-      .then(async (result) => {
-        if (result) return changeInitialNames();
-        return Promise.resolve();
-      })
-      .then(async () => this.fillTrackList())
-      .catch(() => Error('Oops'))
-      .finally(() => { dispatchUpdateWinnersEvent(); });
+    const checkInitials = async (): Promise<void> => {
+      const result = await isNeedToUpdateInitialNames();
+      if (result) await changeInitialNames();
+      await this.fillTrackList();
+    };
+    checkInitials().catch(() => Error('Oops'));
 
     this.getElement().append(
       this.title,
@@ -51,8 +48,8 @@ export class Track extends BaseComponent implements ITrack {
     );
 
     this.addPaginationHandler();
-    document.addEventListener('updateTrack', () => { this.fillTrackList().catch(() => Error('Oops')); });
-    document.addEventListener('finishedCar', (event: Event) => { this.finishedCarHandler(event); });
+    document.addEventListener('updateTrack', () => { this.fillTrackList().catch(() => new Error('Filltracklist error')); });
+    document.addEventListener('finishedCar', (event: Event) => { this.finishedCarHandler(event).catch(() => new Error('Finished car error')); });
   }
 
   public async fillTrackList(): Promise<void> {
@@ -125,9 +122,8 @@ export class Track extends BaseComponent implements ITrack {
     this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
   }
 
-  private finishedCarHandler(event: Event): void {
-    const resetBtn = document.querySelector('.controls__reset-btn');
-    if (!(resetBtn instanceof HTMLElement)) throw new Error('reset not button');
+  private async finishedCarHandler(event: Event): Promise<void> {
+    const resetBtn = document.querySelector('.controls__reset-btn') as HTMLElement;
 
     this.finishedCarCount += 1;
     if (event instanceof CustomEvent && this.winner === null && event.detail !== null) {
@@ -146,7 +142,7 @@ export class Track extends BaseComponent implements ITrack {
       if (this.winner.wins === 0) {
         this.winner.wins += 1;
 
-        createWinner({
+        await createWinner({
           id: this.winner.id,
           wins: this.winner.wins,
           time: this.winner.bestTime,
@@ -154,7 +150,7 @@ export class Track extends BaseComponent implements ITrack {
       } else {
         this.winner.wins += 1;
 
-        updateWinner({
+        await updateWinner({
           wins: this.winner.wins,
           time: this.winner.bestTime,
         }, this.winner.id);

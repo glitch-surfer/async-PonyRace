@@ -67,10 +67,10 @@ export class Car extends BaseComponent implements ICar {
       this.car,
     );
 
-    this.removeBtn.addEventListener('click', () => { this.removeCarHandler(); });
+    this.removeBtn.addEventListener('click', () => { this.removeCarHandler().catch(() => Error('Remove car error')); });
     this.selectBtn.addEventListener('click', () => { this.selectCarHandler(); });
-    this.startBtn.addEventListener('click', () => { this.startCarHandler(); });
-    this.stopBtn.addEventListener('click', () => { this.stopCarHandler().catch(() => Error('Oops')); });
+    this.startBtn.addEventListener('click', () => { this.startCarHandler().catch(() => Error('Start car error')); });
+    this.stopBtn.addEventListener('click', () => { this.stopCarHandler().catch(() => Error('Stop car error')); });
   }
 
   private setColor(color: string): void {
@@ -83,21 +83,14 @@ export class Car extends BaseComponent implements ICar {
     this.title.textContent = name;
   }
 
-  private removeCarHandler(): void {
-    fetch(`${Urls.GARAGE}/${this.id}`, {
+  private async removeCarHandler(): Promise<void> {
+    await fetch(`${Urls.GARAGE}/${this.id}`, {
       method: 'DELETE',
-    })
-      .then(() => {
-        if (this.wins > 0) {
-          deleteWinner(this.id)
-            .then(() => {
-              dispatchUpdateWinnersEvent();
-            })
-            .catch((error) => { Error(error.message); });
-        }
-      })
-      .catch(() => { Error('trouble deleting car'); });
-
+    });
+    if (this.wins > 0) {
+      await deleteWinner(this.id);
+      dispatchUpdateWinnersEvent();
+    }
     this.getElement().remove();
     this.isDeleted = true;
   }
@@ -113,64 +106,58 @@ export class Car extends BaseComponent implements ICar {
     this.getElement().dispatchEvent(selectEvent);
   }
 
-  public startCarHandler(): void {
-    let engineDelay: number;
-    let animationDuration: number;
+  public async startCarHandler(): Promise<void> {
     const startTime = Date.now();
+    const animationDistance = (window.innerWidth * 0.9) - 60;
 
     this.disableBtns();
     this.isStarted = true;
 
-    fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' })
-      .then(async (response) => response.json())
-      .then(async (data) => {
-        const animationDistance = (window.innerWidth * 0.9) - 60;
-        animationDuration = getAnimationDuration(data);
-        engineDelay = Date.now() - startTime;
-        this.animation = this.car.animate(
-          [{ transform: `translateX(${animationDistance}px)` }],
-          { duration: animationDuration, fill: 'forwards' },
-        );
-        setTraceAnimation(this.color, animationDistance, animationDuration, this);
-        this.stopBtn.removeAttribute('disabled');
+    const startResponse = await fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' });
+    const data = await startResponse.json();
 
-        return fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' });
-      })
-      .then((response) => {
-        if (response.status === 200 && this.isRace) {
-          const formattedFinishTime = +((animationDuration + engineDelay) / 1000).toFixed(2);
-          dispatchFinishedCarEvent(this, formattedFinishTime);
-          return;
-        }
-        if (response.status === 500) {
-          this.animation?.pause();
-          this.car.style.animation = 'none';
-          this.isEngineStopped = true;
-        }
-        dispatchFinishedCarEvent();
-      })
-      .catch(() => { Error('it`s not started'); });
+    const animationDuration = getAnimationDuration(data);
+    const engineDelay = Date.now() - startTime;
+
+    this.animation = this.car.animate(
+      [
+        { transform: `translateX(${animationDistance}px)` },
+      ],
+      { duration: animationDuration, fill: 'forwards' },
+    );
+    setTraceAnimation(this.color, animationDistance, animationDuration, this);
+
+    this.stopBtn.removeAttribute('disabled');
+
+    const driveResponse = await fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' });
+    if (driveResponse.status === 200 && this.isRace) {
+      const formattedFinishTime = +((animationDuration + engineDelay) / 1000).toFixed(2);
+      dispatchFinishedCarEvent(this, formattedFinishTime);
+      return;
+    }
+    if (driveResponse.status === 500) {
+      this.animation?.pause();
+      this.car.style.animation = 'none';
+      this.isEngineStopped = true;
+    }
+    dispatchFinishedCarEvent();
   }
 
   public async stopCarHandler(): Promise<void> {
     this.stopBtn.setAttribute('disabled', '');
     this.isEngineStopped = true;
 
-    return fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' })
-      .then(() => {
-        this.animation?.cancel();
-        this.animation = null;
-        this.car.style.animation = '';
+    await fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' });
 
-        this.isStarted = false;
-        this.isRace = false;
-        this.isEngineStopped = false;
+    this.animation?.cancel();
+    this.animation = null;
+    this.car.style.animation = '';
 
-        this.enableBtns();
-      })
-      .catch(() => {
-        Error('it`s not stoped');
-      });
+    this.isStarted = false;
+    this.isRace = false;
+    this.isEngineStopped = false;
+
+    this.enableBtns();
   }
 
   public disableBtns(): void {

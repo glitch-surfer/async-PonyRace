@@ -16,22 +16,21 @@ export class Garage extends BaseComponent implements IGarage {
       this.track.getElement(),
     );
 
-    this.controls.raceBtn.addEventListener('click', () => { this.startRaceHandler(); });
-    this.controls.resetBtn.addEventListener('click', () => { this.resetRaceHandler().catch(() => Error('Oops')); });
+    this.controls.raceBtn.addEventListener('click', () => { this.startRaceHandler().catch(() => Error('Start race error')); });
+    this.controls.resetBtn.addEventListener('click', () => { this.resetRaceHandler().catch(() => Error('Reset race error')); });
   }
 
-  private startRaceHandler(): void {
+  private async startRaceHandler(): Promise<void> {
     this.disableBtns();
 
-    this.resetRaceHandler()
-      .then(() => {
-        this.disableBtns();
-        this.track.carsOnPage.forEach((car) => {
-          const readyCar = car;
-          readyCar.isRace = true;
-          readyCar.startCarHandler();
-        });
-      }).catch(() => Error('Oops'));
+    await this.resetRaceHandler();
+
+    this.disableBtns();
+    this.track.carsOnPage.map(async (car) => {
+      const readyCar = car;
+      readyCar.isRace = true;
+      await readyCar.startCarHandler();
+    });
   }
 
   private async resetRaceHandler(): Promise<void> {
@@ -41,15 +40,14 @@ export class Garage extends BaseComponent implements IGarage {
     const stoppedCars = this.track.carsOnPage
       .map(async (car) => car.stopCarHandler());
 
-    return Promise.all(stoppedCars)
-      .then(async () => this.track.fillTrackList())
-      .catch(() => { Error('no cars'); })
-      .finally(() => {
-        resetBtn.removeAttribute('disabled');
-        this.enableBtns();
-        this.track.winner = null;
-        this.track.finishedCarCount = 0;
-      });
+    await Promise.all(stoppedCars);
+
+    await this.track.fillTrackList();
+
+    resetBtn.removeAttribute('disabled');
+    this.enableBtns();
+    this.track.winner = null;
+    this.track.finishedCarCount = 0;
   }
 
   private disableBtns(): void {

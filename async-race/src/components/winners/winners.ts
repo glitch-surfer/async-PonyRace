@@ -41,7 +41,7 @@ export class Winners extends BaseComponent implements IWinners {
     this.fillWinnersList().catch(() => { Error('no winners'); });
 
     this.addPaginationHandler();
-    document.addEventListener('updateWinners', () => { this.fillWinnersList().catch(() => Error('Oops')); });
+    document.addEventListener('updateWinners', () => { this.fillWinnersList().catch(() => Error('Fillwinnerslist error')); });
     this.table.addEventListener('click', (event) => { this.sortByWinsCount(event); });
     this.table.addEventListener('click', (event) => { this.sortByBestTime(event); });
   }
@@ -50,25 +50,22 @@ export class Winners extends BaseComponent implements IWinners {
     const winners = await getWinners(sort, order);
     this.winners = [];
 
-    Promise.all(winners.map(async (winner) => {
+    const mergedDataPromiseList = winners.map(async (winner) => {
       const carParams = await (await fetch(`${Urls.GARAGE}/${winner.id}`)).json();
       return { ...winner, ...carParams };
-    }))
-      .then((winnersList) => {
-        winnersList.reduce((acc, winner, index) => {
-          const newWinner = new Winner(winner);
-          newWinner.setPosition(index + 1);
-          acc[index] = newWinner;
-          return acc;
-        }, this.winners);
-      })
-      .then(() => {
-        this.renderWinners(this.pagination.currentPage);
-        this.title.textContent = setCount(Titles.WINNERS, this.winners);
-      })
-      .catch(() => {
-        Error('no winners');
-      });
+    });
+
+    const winnersList = await Promise.all(mergedDataPromiseList);
+
+    winnersList.reduce((acc, winner, index) => {
+      const newWinner = new Winner(winner);
+      newWinner.setPosition(index + 1);
+      acc[index] = newWinner;
+      return acc;
+    }, this.winners);
+
+    this.renderWinners(this.pagination.currentPage);
+    this.title.textContent = setCount(Titles.WINNERS, this.winners);
   }
 
   private renderWinners(page: number): void {
@@ -130,8 +127,7 @@ export class Winners extends BaseComponent implements IWinners {
         ? QueryParams.ASC
         : QueryParams.DESC;
 
-      this.fillWinnersList()
-        .catch(() => { Error('no winners'); });
+      this.fillWinnersList().catch(() => { Error('no winners'); });
 
       if (this.currentOrder === QueryParams.DESC) {
         winsCell.textContent = Titles.WINS_DESC;

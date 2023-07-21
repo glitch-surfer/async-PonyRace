@@ -47,9 +47,9 @@ export class Controls extends BaseComponent implements IControls {
     );
 
     document.addEventListener('selectCar', (event) => { this.enableUpgradeCar(event); });
-    this.upgradeCarBtn.addEventListener('click', () => { this.upgradeCarHandler(); });
-    this.createCarBtn.addEventListener('click', () => { this.createCarHandler(); });
-    this.generateCarsBtn.addEventListener('click', () => { Controls.generateNewCars(); });
+    this.upgradeCarBtn.addEventListener('click', () => { this.upgradeCarHandler().catch(() => Error('Update car error')); });
+    this.createCarBtn.addEventListener('click', () => { this.createCarHandler().catch(() => Error('Create car error')); });
+    this.generateCarsBtn.addEventListener('click', () => { Controls.generateNewCars().catch(() => Error('Generate cars error')); });
   }
 
   private enableUpgradeCar(event: Event): void {
@@ -71,7 +71,7 @@ export class Controls extends BaseComponent implements IControls {
     colorInput.value = this.selectedCar.color;
   }
 
-  private upgradeCarHandler(): void {
+  private async upgradeCarHandler(): Promise<void> {
     const nameInput = this.upgradeCarInput;
     const colorInput = this.upgradeCarColorInput;
 
@@ -83,29 +83,25 @@ export class Controls extends BaseComponent implements IControls {
     this.selectedCar.name = nameInput.value;
     this.selectedCar.color = colorInput.value;
 
-    updateCar(
+    await updateCar(
       this.selectedCar.name,
       this.selectedCar.color,
       this.selectedCar.id,
-    )
-      .then(async () => {
-        this.selectedCar?.updateCar();
-        dispatchUpdateWinnersEvent();
-      })
-      .catch((error) => {
-        Error(error.message);
-      })
-      .finally(() => {
-        nameInput.value = '';
-        colorInput.value = '';
-        nameInput.setAttribute('disabled', '');
-        colorInput.setAttribute('disabled', '');
-        this.upgradeCarBtn.setAttribute('disabled', '');
-        this.selectedCar = null;
-      });
+    );
+
+    this.selectedCar?.updateCar();
+    dispatchUpdateWinnersEvent();
+
+    nameInput.value = '';
+    colorInput.value = '';
+
+    nameInput.setAttribute('disabled', '');
+    colorInput.setAttribute('disabled', '');
+    this.upgradeCarBtn.setAttribute('disabled', '');
+    this.selectedCar = null;
   }
 
-  private createCarHandler(): void {
+  private async createCarHandler(): Promise<void> {
     const nameInput = this.createCarInput;
     const colorInput = this.createCarColorInput;
 
@@ -120,54 +116,42 @@ export class Controls extends BaseComponent implements IControls {
       color: newCarColor,
     };
 
-    fetch(Urls.GARAGE, {
+    await fetch(Urls.GARAGE, {
       method: 'POST',
       body: JSON.stringify(newCarParams),
       headers: {
         'Content-Type': 'application/json',
       },
-    })
-      .then(() => {
-        dispatchUpdateTrackEvent();
-      })
-      .catch((error) => {
-        Error(error.message);
-      })
-      .finally(() => {
-        nameInput.value = '';
-        colorInput.value = '';
-      });
+    });
+
+    dispatchUpdateTrackEvent();
+
+    nameInput.value = '';
+    colorInput.value = '';
   }
 
-  private static generateNewCars(): void {
-    const newCars: Response[] = [];
+  private static async generateNewCars(): Promise<void> {
+    const newCars = Array(Numbers.GENERATE_CAR_COUNT)
+      .fill(null)
+      .map(async () => {
+        const newCarParams: INewCar = {
+          name: getRandomName(),
+          color: getRandomColor(),
+        };
 
-    for (let i = 0; i < Numbers.GENERATE_CAR_COUNT; i += 1) {
-      const newCarParams: INewCar = {
-        name: getRandomName(),
-        color: getRandomColor(),
-      };
-
-      fetch(Urls.GARAGE, {
-        method: 'POST',
-        body: JSON.stringify(newCarParams),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((newCar) => newCars.push(newCar))
-        .catch((error) => {
-          Error(error.message);
+        const newCar = await fetch(Urls.GARAGE, {
+          method: 'POST',
+          body: JSON.stringify(newCarParams),
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
-    }
 
-    Promise.all(newCars)
-      .then(() => {
-        dispatchUpdateTrackEvent();
-      })
-      .catch((error) => {
-        Error(error.message);
+        return newCar;
       });
+
+    await Promise.all(newCars);
+    dispatchUpdateTrackEvent();
   }
 
   public disableBtns(): void {
