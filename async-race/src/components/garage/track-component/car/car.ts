@@ -8,7 +8,7 @@ import { Urls } from '../../../../enums/urls';
 import { dispatchUpdateWinnersEvent } from '../../../../utils/dispatch-update-winner-event';
 import { getAnimationDuration } from '../../../../utils/get-animation-duration';
 import { deleteWinner } from '../../../../utils/api/delete-winner';
-import { dispatchFinishedCarEvent } from '../../../../utils/dispatch-finished-car-event';
+import { dispatchFinishedCarEvent, dispatchFinishedEvent } from '../../../../utils/dispatch-finished-car-event';
 import { setTraceAnimation } from '../../../../utils/set-trace-animation';
 
 export class Car extends BaseComponent implements ICar {
@@ -140,7 +140,7 @@ export class Car extends BaseComponent implements ICar {
       this.car.style.animation = 'none';
       this.isEngineStopped = true;
     }
-    dispatchFinishedCarEvent();
+    dispatchFinishedEvent();
   }
 
   public async stopCarHandler(): Promise<void> {

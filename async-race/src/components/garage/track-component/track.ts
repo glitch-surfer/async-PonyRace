@@ -127,7 +127,7 @@ export class Track extends BaseComponent implements ITrack {
 
     this.finishedCarCount += 1;
     if (event instanceof CustomEvent && this.winner === null && event.detail !== null) {
-      const winner = event.detail.car;
+      const winner: Car = event.detail.car;
       const bestTime = event.detail.time;
       this.winner = winner;
       if (winner.bestTime === 0) {
