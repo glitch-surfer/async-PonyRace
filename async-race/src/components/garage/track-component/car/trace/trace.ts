@@ -10,12 +10,6 @@ export class Trace implements ITrace {
 
   constructor(color: string) {
     this.setColor(color);
-
-    this.trace.addEventListener('DOMNodeInserted', () => {
-      setTimeout(() => {
-        this.trace.remove();
-      }, 2000);
-    });
   }
 
   public draw(x: number): void {

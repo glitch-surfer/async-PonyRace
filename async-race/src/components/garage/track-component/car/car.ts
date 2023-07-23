@@ -62,6 +62,8 @@ export class Car extends BaseComponent implements ICar {
     this.selectBtn.addEventListener('click', () => { this.selectCarHandler(); });
     this.startBtn.addEventListener('click', () => { this.startCarHandler().catch(() => Error('Start car error')); });
     this.stopBtn.addEventListener('click', () => { this.stopCarHandler().catch(() => Error('Stop car error')); });
+
+    this.traceObserver();
   }
 
   private setColor(color: string): void {
@@ -166,5 +168,23 @@ export class Car extends BaseComponent implements ICar {
   public updateCar(): void {
     this.setColor(this.color);
     this.setName(this.name);
+  }
+
+  private traceObserver(): void {
+    const observer = new MutationObserver((mutationList) => {
+      if (mutationList[0].type === 'childList') {
+        mutationList[0].target.childNodes.forEach((node) => {
+          if (node instanceof HTMLElement && node.classList.contains('trace')) {
+            setTimeout(() => {
+              node.remove();
+            }, 2000);
+          }
+        });
+      }
+    });
+
+    observer.observe(this.getElement(), {
+      childList: true,
+    });
   }
 }

@@ -57,6 +57,7 @@ export class Track extends BaseComponent implements ITrack {
   public async fillTrackList(): Promise<void> {
     const cars = await getCars();
     const winners = await getWinners(QueryParams.WINS, QueryParams.DESC);
+
     this.carsInGarage = carsInGarageDataAdapter(cars, winners);
 
     this.renderTrack(this.pagination.currentPage);
