@@ -9,7 +9,5 @@ export class CarState implements ICarState {
 
   public isStarted: boolean = false;
 
-  public isDeleted: boolean = false;
-
   public isEngineStopped: boolean = false;
 }

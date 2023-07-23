@@ -85,7 +85,6 @@ export class Car extends BaseComponent implements ICar {
       dispatchUpdateWinnersEvent();
     }
     this.getElement().remove();
-    this.carState.isDeleted = true;
   }
 
   private selectCarHandler(): void {

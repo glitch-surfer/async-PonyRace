@@ -30,6 +30,5 @@ export interface ICarState {
   animation: Animation | null
   isRace: boolean
   isStarted: boolean
-  isDeleted: boolean
   isEngineStopped: boolean
 }
