@@ -49,7 +49,8 @@ export class Track extends BaseComponent implements ITrack {
 
     this.addPaginationHandler();
     document.addEventListener('updateTrack', () => { this.fillTrackList().catch(() => new Error('Filltracklist error')); });
-    document.addEventListener('finishedCar', (event: Event) => { this.finishedCarHandler(event).catch(() => new Error('Finished car error')); });
+    document.addEventListener('finishedCar', (event: Event) => { this.setWinnerHandler(event); });
+    document.addEventListener('finishedCar', () => { this.finishRaceHandler().catch(() => new Error('Finished car error')); });
   }
 
   public async fillTrackList(): Promise<void> {
@@ -122,23 +123,32 @@ export class Track extends BaseComponent implements ITrack {
     this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
   }
 
-  private async finishedCarHandler(event: Event): Promise<void> {
-    const resetBtn = document.querySelector('.controls__reset-btn') as HTMLElement;
-
-    this.finishedCarCount += 1;
+  private setWinnerHandler(event: Event): void {
     if (event instanceof CustomEvent && this.winner === null && event.detail !== null) {
+      const resetBtn = document.querySelector('.controls__reset-btn') as HTMLElement;
       const winner: Car = event.detail.car;
       const bestTime = event.detail.time;
+
       this.winner = winner;
+
       if (winner.bestTime === 0) {
         winner.bestTime = bestTime;
       } else {
         winner.bestTime = bestTime < winner.bestTime ? bestTime : winner.bestTime;
       }
+
       new ModalWindow(winner.name, bestTime).appendModal();
+
       resetBtn.setAttribute('disabled', '');
     }
+  }
+
+  private async finishRaceHandler(): Promise<void> {
+    this.finishedCarCount += 1;
+
     if (this.finishedCarCount === this.carsOnPage.length && this.winner !== null) {
+      const resetBtn = document.querySelector('.controls__reset-btn') as HTMLElement;
+
       if (this.winner.wins === 0) {
         this.winner.wins += 1;
 
@@ -155,6 +165,7 @@ export class Track extends BaseComponent implements ITrack {
           time: this.winner.bestTime,
         }, this.winner.id);
       }
+
       resetBtn.removeAttribute('disabled');
     }
   }
