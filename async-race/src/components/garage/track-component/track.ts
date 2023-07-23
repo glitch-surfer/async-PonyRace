@@ -1,7 +1,7 @@
 import './styles/track.scss';
 import { getCars } from '../../../utils/api/get-cars';
 import { BaseComponent } from '../../../utils/base-component';
-import { Car } from './car/car';
+import type { Car } from './car/car';
 import type { ITrack } from './types/track-types';
 import { clearElement } from '../../../utils/clear-element';
 import { setCount } from '../../../utils/set-count';
@@ -16,6 +16,7 @@ import { getWinners } from '../../../utils/api/get-winners';
 import type { IPagination } from '../../pagination/types/pagination-types';
 import { QueryParams } from '../../../enums/query-params';
 import { changeInitialNames, isNeedToUpdateInitialNames } from '../../../utils/api/check-first-item-name';
+import { carsInGarageDataAdapter } from '../../../utils/cars-in-garage-data-adapter';
 
 export class Track extends BaseComponent implements ITrack {
   public carsInGarage: Car[] = [];
@@ -56,20 +57,7 @@ export class Track extends BaseComponent implements ITrack {
   public async fillTrackList(): Promise<void> {
     const cars = await getCars();
     const winners = await getWinners(QueryParams.WINS, QueryParams.DESC);
-    this.carsInGarage = [];
-
-    cars
-      .map((carParams) => {
-        const winnerParams = winners.find((winner) => winner.id === carParams.id);
-        if (winnerParams === undefined) return { ...carParams, wins: 0, time: 0 };
-
-        return { ...carParams, wins: winnerParams.wins, time: winnerParams.time };
-      })
-      .reduce((acc, car, index) => {
-        const carsInGarage = acc;
-        carsInGarage[index] = new Car(car);
-        return carsInGarage;
-      }, this.carsInGarage);
+    this.carsInGarage = carsInGarageDataAdapter(cars, winners);
 
     this.renderTrack(this.pagination.currentPage);
     this.title.textContent = setCount(Titles.GARAGE, this.carsInGarage);
