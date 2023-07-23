@@ -4,14 +4,14 @@ import type { IWinners } from './types/winners-types';
 import { Pagination } from '../pagination/pagination';
 import { winnersView } from './view/winners-view';
 import { getWinners } from '../../utils/api/get-winners';
-import { Winner } from './winner/winner';
+import type { Winner } from './winner/winner';
 import { Titles } from '../../enums/titles';
 import { setCount } from '../../utils/set-count';
-import { Urls } from '../../enums/urls';
 import { Numbers } from '../../enums/numbers';
 import { clearElement } from '../../utils/clear-element';
 import type { IPagination } from '../pagination/types/pagination-types';
 import { QueryParams } from '../../enums/query-params';
+import { winnersDataAdapter } from '../../utils/winners-data-adapter';
 
 export class Winners extends BaseComponent implements IWinners {
   private winners: Winner[] = [];
@@ -48,21 +48,8 @@ export class Winners extends BaseComponent implements IWinners {
 
   private async fillWinnersList(sort: 'wins' | 'time' = this.currentSort, order: 'ASC' | 'DESC' = this.currentOrder): Promise<void> {
     const winners = await getWinners(sort, order);
-    this.winners = [];
 
-    const mergedDataPromiseList = winners.map(async (winner) => {
-      const carParams = await (await fetch(`${Urls.GARAGE}/${winner.id}`)).json();
-      return { ...winner, ...carParams };
-    });
-
-    const winnersList = await Promise.all(mergedDataPromiseList);
-
-    winnersList.reduce((acc, winner, index) => {
-      const newWinner = new Winner(winner);
-      newWinner.setPosition(index + 1);
-      acc[index] = newWinner;
-      return acc;
-    }, this.winners);
+    this.winners = await winnersDataAdapter(winners);
 
     this.renderWinners(this.pagination.currentPage);
     this.title.textContent = setCount(Titles.WINNERS, this.winners);
