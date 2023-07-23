@@ -10,6 +10,7 @@ import { getAnimationDuration } from '../../../../utils/get-animation-duration';
 import { deleteWinner } from '../../../../utils/api/delete-winner';
 import { dispatchFinishedCarEvent, dispatchFinishedEvent } from '../../../../utils/dispatch-finished-car-event';
 import { setTraceAnimation } from '../../../../utils/set-trace-animation';
+import { CarState } from './car-state/car-state';
 
 export class Car extends BaseComponent implements ICar {
   public id: number;
@@ -18,21 +19,11 @@ export class Car extends BaseComponent implements ICar {
 
   public color: string;
 
-  public selected: boolean = false;
-
-  public animation: Animation | null = null;
-
-  public isRace: boolean = false;
-
-  public isStarted: boolean = false;
-
-  public isDeleted: boolean = false;
-
-  public isEngineStopped: boolean = false;
-
   public wins: number;
 
   public bestTime: number;
+
+  public carState = new CarState();
 
   public selectBtn: HTMLElement = new BaseComponent(carView.selectBtn).getElement();
 
@@ -92,7 +83,7 @@ export class Car extends BaseComponent implements ICar {
       dispatchUpdateWinnersEvent();
     }
     this.getElement().remove();
-    this.isDeleted = true;
+    this.carState.isDeleted = true;
   }
 
   private selectCarHandler(): void {
@@ -111,7 +102,7 @@ export class Car extends BaseComponent implements ICar {
     const animationDistance = (window.innerWidth * 0.9) - 60;
 
     this.disableBtns();
-    this.isStarted = true;
+    this.carState.isStarted = true;
 
     const startResponse = await fetch(`${Urls.ENGINE}?id=${this.id}&status=started`, { method: 'PATCH' });
     const data = await startResponse.json();
@@ -119,7 +110,7 @@ export class Car extends BaseComponent implements ICar {
     const animationDuration = getAnimationDuration(data);
     const engineDelay = Date.now() - startTime;
 
-    this.animation = this.car.animate(
+    this.carState.animation = this.car.animate(
       [
         { transform: `translateX(${animationDistance}px)` },
       ],
@@ -130,32 +121,32 @@ export class Car extends BaseComponent implements ICar {
     this.stopBtn.removeAttribute('disabled');
 
     const driveResponse = await fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' });
-    if (driveResponse.status === 200 && this.isRace) {
+    if (driveResponse.status === 200 && this.carState.isRace) {
       const formattedFinishTime = +((animationDuration + engineDelay) / 1000).toFixed(2);
       dispatchFinishedCarEvent(this, formattedFinishTime);
       return;
     }
     if (driveResponse.status === 500) {
-      this.animation?.pause();
+      this.carState.animation?.pause();
       this.car.style.animation = 'none';
-      this.isEngineStopped = true;
+      this.carState.isEngineStopped = true;
     }
     dispatchFinishedEvent();
   }
 
   public async stopCarHandler(): Promise<void> {
     this.stopBtn.setAttribute('disabled', '');
-    this.isEngineStopped = true;
+    this.carState.isEngineStopped = true;
 
     await fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' });
 
-    this.animation?.cancel();
-    this.animation = null;
+    this.carState.animation?.cancel();
+    this.carState.animation = null;
     this.car.style.animation = '';
 
-    this.isStarted = false;
-    this.isRace = false;
-    this.isEngineStopped = false;
+    this.carState.isStarted = false;
+    this.carState.isRace = false;
+    this.carState.isEngineStopped = false;
 
     this.enableBtns();
   }

@@ -28,7 +28,7 @@ export class Garage extends BaseComponent implements IGarage {
     this.disableBtns();
     this.track.carsOnPage.map(async (car) => {
       const readyCar = car;
-      readyCar.isRace = true;
+      readyCar.carState.isRace = true;
       await readyCar.startCarHandler();
     });
   }

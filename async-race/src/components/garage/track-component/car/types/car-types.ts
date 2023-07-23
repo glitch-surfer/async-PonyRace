@@ -16,13 +16,19 @@ export interface ICar {
   color: string
   wins: number
   bestTime: number
-  selected: boolean
   selectBtn: HTMLElement
   removeBtn: HTMLElement
   title: HTMLElement
   startBtn: HTMLElement
   stopBtn: HTMLElement
   car: HTMLElement
+  carState: ICarState
+}
+
+export interface ICarState {
+  selected: boolean
+  animation: Animation | null
+  isRace: boolean
   isStarted: boolean
   isDeleted: boolean
   isEngineStopped: boolean

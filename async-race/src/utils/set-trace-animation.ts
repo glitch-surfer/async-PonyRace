@@ -21,7 +21,7 @@ export const setTraceAnimation = (
     trace.draw(coveredDistance);
     car.getElement().append(trace.trace);
 
-    if (Date.now() < endAnimationTime && !car.isEngineStopped) {
+    if (Date.now() < endAnimationTime && !car.carState.isEngineStopped) {
       setTimeout(() => {
         requestAnimationFrame(traceAnimation);
       }, animationDelay * speedCoefficient);
