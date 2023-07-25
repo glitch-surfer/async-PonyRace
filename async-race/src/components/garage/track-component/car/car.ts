@@ -11,6 +11,7 @@ import { deleteWinner } from '../../../../utils/api/delete-winner';
 import { dispatchFinishedCarEvent, dispatchFinishedEvent } from '../../../../utils/dispatch-finished-car-event';
 import { setTraceAnimation } from '../../../../utils/set-trace-animation';
 import { CarState } from './car-state/car-state';
+import { dispatchUpdateTrackEvent } from '../../../../utils/dispatch-update-track-event';
 
 export class Car extends BaseComponent implements ICar {
   public id: number;
@@ -84,6 +85,8 @@ export class Car extends BaseComponent implements ICar {
       await deleteWinner(this.id);
       dispatchUpdateWinnersEvent();
     }
+
+    dispatchUpdateTrackEvent();
     this.getElement().remove();
   }
 
