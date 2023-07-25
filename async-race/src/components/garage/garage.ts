@@ -22,6 +22,7 @@ export class Garage extends BaseComponent implements IGarage {
 
   private async startRaceHandler(): Promise<void> {
     this.disableBtns();
+    this.track.getElement().style.pointerEvents = 'none';
 
     await this.resetRaceHandler();
 
@@ -31,6 +32,7 @@ export class Garage extends BaseComponent implements IGarage {
       readyCar.carState.isRace = true;
       await readyCar.startCarHandler();
     });
+    this.track.getElement().style.pointerEvents = '';
   }
 
   private async resetRaceHandler(): Promise<void> {
