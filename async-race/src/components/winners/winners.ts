@@ -12,6 +12,7 @@ import { clearElement } from '../../utils/clear-element';
 import type { IPagination } from '../pagination/types/pagination-types';
 import { QueryParams } from '../../enums/query-params';
 import { winnersDataAdapter } from '../../utils/winners-data-adapter';
+import { disableBtns, enableBtns } from '../../utils/handle-btns';
 
 export class Winners extends BaseComponent implements IWinners {
   private winners: Winner[] = [];
@@ -76,12 +77,12 @@ export class Winners extends BaseComponent implements IWinners {
       if (
         this.pagination.currentPage < maxPageCount) {
         this.pagination.currentPage += 1;
-        this.pagination.enablePrevBtn();
+        enableBtns([this.pagination.prevBtn]);
         this.renderWinners(this.pagination.currentPage);
         this.subtitle.textContent = this.pagination.setPage();
 
         if (this.pagination.currentPage === maxPageCount) {
-          this.pagination.disableNextBtn();
+          disableBtns([this.pagination.nextBtn]);
         }
       }
     };
@@ -90,12 +91,12 @@ export class Winners extends BaseComponent implements IWinners {
     const paginationPrevHandler = (): void => {
       if (this.pagination.currentPage > 1) {
         this.pagination.currentPage -= 1;
-        this.pagination.enableNextBtn();
+        enableBtns([this.pagination.nextBtn]);
         this.renderWinners(this.pagination.currentPage);
         this.subtitle.textContent = this.pagination.setPage();
 
         if (this.pagination.currentPage === 1) {
-          this.pagination.disablePrevBtn();
+          disableBtns([this.pagination.prevBtn]);
         }
       }
     };
