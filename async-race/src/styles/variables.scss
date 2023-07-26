@@ -1,17 +1,13 @@
-// Colors
 $main-text-color: #a22581;
 $btn-color: $main-text-color;
-$btn-background-color: rgba(233, 243, 61, 0.838);
-$btn-special-background-color: rgba(212, 83, 178, 0.762);
-$start-btn-color: rgba(97, 230, 70, 0.768);
-$stop-btn-color: rgba(219, 98, 23, 0.856);
-$overlay-color: rgba(212, 83, 178, 0.362);
+$btn-background-color: rgba(233 243 61 0.838);
+$btn-special-background-color: rgba(212 83 178 0.762);
+$start-btn-color: rgba(97 230 70 0.768);
+$stop-btn-color: rgba(219 98 23 0.856);
+$overlay-color: rgba(212 83 178 0.362);
 $modal-background-color: $btn-background-color;
-
-// Constants
 $border-radius: 5px;
 
-// placeholders
 %container-padding {
   padding: 0.5rem;
 }

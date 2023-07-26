@@ -3,6 +3,7 @@
   background-color: $btn-background-color;
   color: $btn-color;
   cursor: pointer;
+  
   @extend %border;
 
   &:hover {

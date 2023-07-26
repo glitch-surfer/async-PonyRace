@@ -1,13 +1,12 @@
-@import '../../../../styles/variables.scss';
-
-//placeholders
+@import '../../../../styles/variables';
 
 %input {
   @extend %border;
+
   background-color: transparent;
 
   &:disabled {
-    background-color: lighten($btn-special-background-color, 30%);
+    background-color: color.adjust($btn-special-background-color, 30%);
   }
 }
 
@@ -29,6 +28,7 @@
 .controls__upgrade-input {
   grid-column: span 2;
   align-self: stretch;
+
   @extend %input;
 }
 

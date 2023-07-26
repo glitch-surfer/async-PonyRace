@@ -1,6 +1,5 @@
-@import '../../../../../styles/variables.scss';
+@import '../../../../../styles/variables';
 
-// placeholders
 %race-btn {
   cursor: pointer;
   width: 1.5rem;
@@ -18,7 +17,6 @@
   }
 }
 
-// styles
 .car {
   display: grid;
   grid-template-columns: repeat(3, auto);
@@ -29,6 +27,7 @@
 
 .car__remove-btn {
   @extend %race-btn;
+
   background: url('../img/remove.svg') no-repeat center transparent;
   background-size: contain;
   background-color: $btn-special-background-color;
@@ -36,6 +35,7 @@
 
 .car__select-btn {
   @extend %race-btn;
+
   background: url('../img/select.svg') no-repeat center transparent;
   background-size: contain;
   background-color: $btn-special-background-color;
@@ -43,6 +43,7 @@
 
 .car__start-btn {
   @extend %race-btn;
+  
   background: url('../img/start.svg') no-repeat center transparent;
   background-size: contain;
   background-color: $start-btn-color;
@@ -50,6 +51,7 @@
 
 .car__stop-btn {
   @extend %race-btn;
+
   background: url('../img/stop.svg') no-repeat center transparent;
   background-size: contain;
   background-color: $stop-btn-color;
@@ -61,7 +63,6 @@
   animation: 0.5s infinite riding;
 }
 
-// animation
 @keyframes riding {
   0% {
     transform: translateY(0);

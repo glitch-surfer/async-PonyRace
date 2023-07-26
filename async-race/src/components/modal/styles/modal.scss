@@ -1,4 +1,4 @@
-@import '../../../styles/variables.scss';
+@import '../../../styles/variables';
 
 .overlay {
   position: fixed;
@@ -30,7 +30,7 @@
 .modal__title {
   text-align: center;
   font-size: 2rem;
-  color: darken($btn-background-color, 10%);
+  color: color.adjust($btn-background-color, -10%);
 }
 
 .btn-modal {
@@ -46,6 +46,6 @@
   border: none;
 
   &:hover {
-    color: lighten($btn-color, 10%);
+    color: color.adjust($btn-color, 10%);
   }
 }
