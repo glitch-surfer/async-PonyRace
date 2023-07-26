@@ -80,17 +80,15 @@ export class Track extends BaseComponent implements ITrack {
 
   private addPaginationHandler(): void {
     const paginationNextHandler = (): void => {
+      const maxPageCount = Math.ceil(this.carsInGarage.length / Numbers.CARS_ON_PAGE);
       if (
-        this.pagination.currentPage < Math.ceil(this.carsInGarage.length / Numbers.CARS_ON_PAGE)
-      ) {
+        this.pagination.currentPage < maxPageCount) {
         this.pagination.currentPage += 1;
         this.pagination.enablePrevBtn();
         this.renderTrack(this.pagination.currentPage);
         this.subtitle.textContent = this.pagination.setPage();
 
-        if (this.pagination.currentPage === Math.ceil(
-          this.carsInGarage.length / Numbers.CARS_ON_PAGE,
-        )) {
+        if (this.pagination.currentPage === maxPageCount) {
           this.pagination.disableNextBtn();
         }
       }
