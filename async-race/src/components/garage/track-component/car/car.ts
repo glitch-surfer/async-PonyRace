@@ -12,6 +12,7 @@ import { dispatchFinishedCarEvent, dispatchFinishedEvent } from '../../../../uti
 import { setTraceAnimation } from '../../../../utils/set-trace-animation';
 import { CarState } from './car-state/car-state';
 import { dispatchUpdateTrackEvent } from '../../../../utils/dispatch-update-track-event';
+import { disableBtns, enableBtns } from '../../../../utils/handle-btns';
 
 export class Car extends BaseComponent implements ICar {
   public id: number;
@@ -122,7 +123,7 @@ export class Car extends BaseComponent implements ICar {
     );
     setTraceAnimation(this.color, animationDistance, animationDuration, this);
 
-    this.stopBtn.removeAttribute('disabled');
+    enableBtns([this.stopBtn]);
 
     const driveResponse = await fetch(`${Urls.ENGINE}?id=${this.id}&status=drive`, { method: 'PATCH' });
     if (driveResponse.status === 200 && this.carState.isRace) {
@@ -139,7 +140,7 @@ export class Car extends BaseComponent implements ICar {
   }
 
   public async stopCarHandler(): Promise<void> {
-    this.stopBtn.setAttribute('disabled', '');
+    disableBtns([this.stopBtn]);
     this.carState.isEngineStopped = true;
 
     await fetch(`${Urls.ENGINE}?id=${this.id}&status=stopped`, { method: 'PATCH' });
@@ -156,15 +157,11 @@ export class Car extends BaseComponent implements ICar {
   }
 
   public disableBtns(): void {
-    this.startBtn.setAttribute('disabled', '');
-    this.selectBtn.setAttribute('disabled', '');
-    this.removeBtn.setAttribute('disabled', '');
+    disableBtns([this.startBtn, this.selectBtn, this.removeBtn]);
   }
 
   public enableBtns(): void {
-    this.startBtn.removeAttribute('disabled');
-    this.selectBtn.removeAttribute('disabled');
-    this.removeBtn.removeAttribute('disabled');
+    enableBtns([this.startBtn, this.selectBtn, this.removeBtn]);
   }
 
   public updateCar(): void {

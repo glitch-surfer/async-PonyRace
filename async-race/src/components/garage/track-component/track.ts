@@ -17,6 +17,7 @@ import type { IPagination } from '../../pagination/types/pagination-types';
 import { QueryParams } from '../../../enums/query-params';
 import { changeInitialNames, isNeedToUpdateInitialNames } from '../../../utils/api/check-first-item-name';
 import { carsInGarageDataAdapter } from '../../../utils/cars-in-garage-data-adapter';
+import { disableBtns, enableBtns } from '../../../utils/handle-btns';
 
 export class Track extends BaseComponent implements ITrack {
   public carsInGarage: Car[] = [];
@@ -84,12 +85,12 @@ export class Track extends BaseComponent implements ITrack {
       if (
         this.pagination.currentPage < maxPageCount) {
         this.pagination.currentPage += 1;
-        this.pagination.enablePrevBtn();
+        enableBtns([this.pagination.prevBtn]);
         this.renderTrack(this.pagination.currentPage);
         this.subtitle.textContent = this.pagination.setPage();
 
         if (this.pagination.currentPage === maxPageCount) {
-          this.pagination.disableNextBtn();
+          disableBtns([this.pagination.nextBtn]);
         }
       }
     };
@@ -98,12 +99,12 @@ export class Track extends BaseComponent implements ITrack {
     const paginationPrevHandler = (): void => {
       if (this.pagination.currentPage > 1) {
         this.pagination.currentPage -= 1;
-        this.pagination.enableNextBtn();
+        enableBtns([this.pagination.nextBtn]);
         this.renderTrack(this.pagination.currentPage);
         this.subtitle.textContent = this.pagination.setPage();
 
         if (this.pagination.currentPage === 1) {
-          this.pagination.disablePrevBtn();
+          disableBtns([this.pagination.prevBtn]);
         }
       }
     };
@@ -129,7 +130,7 @@ export class Track extends BaseComponent implements ITrack {
 
     new ModalWindow(winner.name, bestTime).appendModal();
 
-    resetBtn.setAttribute('disabled', '');
+    disableBtns([resetBtn]);
   }
 
   private async finishRaceHandler(): Promise<void> {
@@ -155,7 +156,7 @@ export class Track extends BaseComponent implements ITrack {
         }, this.winner.id);
       }
 
-      resetBtn.removeAttribute('disabled');
+      enableBtns([resetBtn]);
     }
   }
 }

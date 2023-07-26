@@ -2,6 +2,7 @@ import './styles/pagination.scss';
 import { BaseComponent } from '../../utils/base-component';
 import type { IPagination } from './types/pagination-types';
 import { paginationView } from './view/pagination-view';
+import { disableBtns, enableBtns } from '../../utils/handle-btns';
 
 export class Pagination extends BaseComponent implements IPagination {
   constructor(
@@ -22,28 +23,10 @@ export class Pagination extends BaseComponent implements IPagination {
   }
 
   public disableBtns(): void {
-    this.disableNextBtn();
-    this.disablePrevBtn();
+    disableBtns([this.prevBtn, this.nextBtn]);
   }
 
   public enableBtns(): void {
-    this.enableNextBtn();
-    this.enablePrevBtn();
-  }
-
-  public disablePrevBtn(): void {
-    this.prevBtn.setAttribute('disabled', '');
-  }
-
-  public disableNextBtn(): void {
-    this.nextBtn.setAttribute('disabled', '');
-  }
-
-  public enablePrevBtn(): void {
-    this.prevBtn.removeAttribute('disabled');
-  }
-
-  public enableNextBtn(): void {
-    this.nextBtn.removeAttribute('disabled');
+    enableBtns([this.prevBtn, this.nextBtn]);
   }
 }

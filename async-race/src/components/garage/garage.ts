@@ -1,4 +1,5 @@
 import { BaseComponent } from '../../utils/base-component';
+import { disableBtns, enableBtns } from '../../utils/handle-btns';
 import { Controls } from './controls-component/controls';
 import { Track } from './track-component/track';
 import type { IGarage } from './types/garage-types';
@@ -37,7 +38,7 @@ export class Garage extends BaseComponent implements IGarage {
 
   private async resetRaceHandler(): Promise<void> {
     const { resetBtn } = this.controls;
-    resetBtn.setAttribute('disabled', '');
+    disableBtns([resetBtn]);
 
     const stoppedCars = this.track.carsOnPage
       .map(async (car) => car.stopCarHandler());
@@ -46,7 +47,7 @@ export class Garage extends BaseComponent implements IGarage {
 
     await this.track.fillTrackList();
 
-    resetBtn.removeAttribute('disabled');
+    enableBtns([resetBtn]);
     this.enableBtns();
     this.track.winner = null;
     this.track.finishedCarCount = 0;

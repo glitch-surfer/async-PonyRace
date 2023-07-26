@@ -13,8 +13,4 @@ export interface IPagination extends IBaseComponent {
   setPage: () => string
   disableBtns: () => void
   enableBtns: () => void
-  disablePrevBtn: () => void
-  disableNextBtn: () => void
-  enablePrevBtn: () => void
-  enableNextBtn: () => void
 }

@@ -11,6 +11,7 @@ import { dispatchUpdateWinnersEvent } from '../../../utils/dispatch-update-winne
 import type { Car } from '../track-component/car/car';
 import { dispatchUpdateTrackEvent } from '../../../utils/dispatch-update-track-event';
 import { updateCar } from '../../../utils/api/update-car';
+import { disableBtns, enableBtns } from '../../../utils/handle-btns';
 
 export class Controls extends BaseComponent implements IControls {
   private selectedCar: Car | null = null;
@@ -61,9 +62,7 @@ export class Controls extends BaseComponent implements IControls {
       || !(colorInput instanceof HTMLInputElement)
       || !(event instanceof CustomEvent)) throw new Error('not input');
 
-    nameInput.removeAttribute('disabled');
-    colorInput.removeAttribute('disabled');
-    btn.removeAttribute('disabled');
+    enableBtns([nameInput, colorInput, btn]);
 
     this.selectedCar = event.detail.car;
     if (this.selectedCar === null) return;
@@ -95,9 +94,7 @@ export class Controls extends BaseComponent implements IControls {
     nameInput.value = '';
     colorInput.value = '';
 
-    nameInput.setAttribute('disabled', '');
-    colorInput.setAttribute('disabled', '');
-    this.upgradeCarBtn.setAttribute('disabled', '');
+    disableBtns([nameInput, colorInput, this.upgradeCarBtn]);
     this.selectedCar = null;
   }
 
@@ -155,15 +152,10 @@ export class Controls extends BaseComponent implements IControls {
   }
 
   public disableBtns(): void {
-    this.raceBtn.setAttribute('disabled', '');
-    this.generateCarsBtn.setAttribute('disabled', '');
-    this.createCarBtn.setAttribute('disabled', '');
-    this.upgradeCarBtn.setAttribute('disabled', '');
+    disableBtns([this.raceBtn, this.generateCarsBtn, this.createCarBtn, this.upgradeCarBtn]);
   }
 
   public enableBtns(): void {
-    this.raceBtn.removeAttribute('disabled');
-    this.generateCarsBtn.removeAttribute('disabled');
-    this.createCarBtn.removeAttribute('disabled');
+    enableBtns([this.raceBtn, this.generateCarsBtn, this.createCarBtn]);
   }
 }

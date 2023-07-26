@@ -4,6 +4,7 @@ import { Header } from './header/header';
 import { Garage } from './garage/garage';
 import { Winners } from './winners/winners';
 import { Footer } from './footer/footer';
+import { disableBtns, enableBtns } from '../utils/handle-btns';
 
 export class App implements IApp {
   constructor(
@@ -25,14 +26,14 @@ export class App implements IApp {
   private garageBtnHandler(): void {
     this.garage.getElement().style.display = 'block';
     this.winners.getElement().style.display = 'none';
-    this.header.garageBtn.setAttribute('disabled', '');
-    this.header.winnersBtn.removeAttribute('disabled');
+    disableBtns([this.header.garageBtn]);
+    enableBtns([this.header.winnersBtn]);
   }
 
   private winnersBtnHandler(): void {
     this.winners.getElement().style.display = 'block';
     this.garage.getElement().style.display = 'none';
-    this.header.winnersBtn.setAttribute('disabled', '');
-    this.header.garageBtn.removeAttribute('disabled');
+    disableBtns([this.header.winnersBtn]);
+    enableBtns([this.header.garageBtn]);
   }
 }
