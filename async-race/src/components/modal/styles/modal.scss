@@ -30,7 +30,7 @@
 .modal__title {
   text-align: center;
   font-size: 2rem;
-  color: color.adjust($btn-background-color, -10%);
+  color: darkern($btn-background-color, 10%);
 }
 
 .btn-modal {
@@ -46,6 +46,6 @@
   border: none;
 
   &:hover {
-    color: color.adjust($btn-color, 10%);
+    color: lighten($btn-color, 10%);
   }
 }

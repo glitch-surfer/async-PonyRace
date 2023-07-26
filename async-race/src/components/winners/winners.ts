@@ -10,21 +10,19 @@ import { setCount } from '../../utils/set-count';
 import { Numbers } from '../../enums/numbers';
 import { clearElement } from '../../utils/clear-element';
 import type { IPagination } from '../pagination/types/pagination-types';
-import { QueryParams } from '../../enums/query-params';
 import { winnersDataAdapter } from '../../utils/winners-data-adapter';
 import { disableBtns, enableBtns } from '../../utils/handle-btns';
 import { getItemsOnPage } from '../../utils/get-items-on-page';
+import { TableController } from './table-controller/table-controller';
 
 export class Winners extends BaseComponent implements IWinners {
   private winners: Winner[] = [];
 
   private winnersOnPage: Winner[] = [];
 
-  private currentSort: 'wins' | 'time' = QueryParams.WINS;
-
-  private currentOrder: 'ASC' | 'DESC' = QueryParams.DESC;
-
   pagination: IPagination = new Pagination();
+
+  tableController = new TableController();
 
   constructor(
     public title = new BaseComponent(winnersView.title).getElement(),
@@ -44,11 +42,11 @@ export class Winners extends BaseComponent implements IWinners {
 
     this.addPaginationHandler();
     document.addEventListener('updateWinners', () => { this.fillWinnersList().catch(() => Error('Fillwinnerslist error')); });
-    this.table.addEventListener('click', (event) => { this.sortByWinsCount(event); });
-    this.table.addEventListener('click', (event) => { this.sortByBestTime(event); });
+    this.table.addEventListener('click', (event) => { this.tableController.sortByWinsCount(event); this.fillWinnersList().catch(() => { Error('no winners'); }); });
+    this.table.addEventListener('click', (event) => { this.tableController.sortByBestTime(event); this.fillWinnersList().catch(() => { Error('no winners'); }); });
   }
 
-  private async fillWinnersList(sort: 'wins' | 'time' = this.currentSort, order: 'ASC' | 'DESC' = this.currentOrder): Promise<void> {
+  private async fillWinnersList(sort: 'wins' | 'time' = this.tableController.currentSort, order: 'ASC' | 'DESC' = this.tableController.currentOrder): Promise<void> {
     const winners = await getWinners(sort, order);
 
     this.winners = await winnersDataAdapter(winners);
@@ -100,45 +98,5 @@ export class Winners extends BaseComponent implements IWinners {
       }
     };
     this.pagination.prevBtn.addEventListener('click', paginationPrevHandler);
-  }
-
-  private sortByWinsCount(event: MouseEvent): void {
-    const winsCell = event.target;
-
-    if (winsCell instanceof HTMLElement
-      && winsCell.classList.contains('winners__th_wins')) {
-      this.currentSort = QueryParams.WINS;
-      this.currentOrder = this.currentOrder === QueryParams.DESC
-        ? QueryParams.ASC
-        : QueryParams.DESC;
-
-      this.fillWinnersList().catch(() => { Error('no winners'); });
-
-      if (this.currentOrder === QueryParams.DESC) {
-        winsCell.textContent = Titles.WINS_DESC;
-      } else {
-        winsCell.textContent = Titles.WINS_ASC;
-      }
-    }
-  }
-
-  private sortByBestTime(event: MouseEvent): void {
-    const timeCell = event.target;
-
-    if (timeCell instanceof HTMLElement
-      && timeCell.classList.contains('winners__th_time')) {
-      this.currentSort = QueryParams.TIME;
-      this.currentOrder = this.currentOrder === QueryParams.DESC
-        ? QueryParams.ASC
-        : QueryParams.DESC;
-
-      this.fillWinnersList().catch(() => { Error('no winners'); });
-
-      if (this.currentOrder === QueryParams.DESC) {
-        timeCell.textContent = Titles.TIME_DESC;
-      } else {
-        timeCell.textContent = Titles.TIME_ASC;
-      }
-    }
   }
 }

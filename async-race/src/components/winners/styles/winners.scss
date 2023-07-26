@@ -10,7 +10,7 @@
   cursor: pointer;
 
   &:hover {
-    background-color: color.adjust($btn-background-color, -20%);
+    background-color: darken($btn-background-color, 20%);
   }
 }
 
