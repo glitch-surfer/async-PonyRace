@@ -3,8 +3,6 @@ import type { IParams, IBaseComponent } from '../types/types';
 export class BaseComponent implements IBaseComponent {
   private readonly element: HTMLElement;
 
-  static elementLinks: Record<string, HTMLElement> = {};
-
   constructor(params: IParams) {
     this.element = document.createElement(params.tag);
     if (params.className !== undefined) this.setStyles(params.className);
