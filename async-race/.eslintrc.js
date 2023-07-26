@@ -7,12 +7,14 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'airbnb-base',
-    'airbnb-typescript/base'],
+    'airbnb-typescript/base',
+    'plugin:css/recommended',],
 
   overrides: [
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
+  plugins: ['@typescript-eslint',
+    'css'],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
