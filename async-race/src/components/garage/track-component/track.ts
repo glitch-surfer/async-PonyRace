@@ -111,23 +111,25 @@ export class Track extends BaseComponent implements ITrack {
   }
 
   private setWinnerHandler(event: Event): void {
-    if (event instanceof CustomEvent && this.winner === null && event.detail !== null) {
-      const resetBtn = document.querySelector('.controls__reset-btn') as HTMLElement;
-      const winner: Car = event.detail.car;
-      const bestTime = event.detail.time;
+    if (!(event instanceof CustomEvent)
+    || this.winner !== null
+      || event.detail === null) return;
 
-      this.winner = winner;
+    const resetBtn = document.querySelector('.controls__reset-btn') as HTMLElement;
+    const winner: Car = event.detail.car;
+    const bestTime = event.detail.time;
 
-      if (winner.bestTime === 0) {
-        winner.bestTime = bestTime;
-      } else {
-        winner.bestTime = bestTime < winner.bestTime ? bestTime : winner.bestTime;
-      }
+    this.winner = winner;
 
-      new ModalWindow(winner.name, bestTime).appendModal();
-
-      resetBtn.setAttribute('disabled', '');
+    if (winner.bestTime === 0) {
+      winner.bestTime = bestTime;
+    } else {
+      winner.bestTime = bestTime < winner.bestTime ? bestTime : winner.bestTime;
     }
+
+    new ModalWindow(winner.name, bestTime).appendModal();
+
+    resetBtn.setAttribute('disabled', '');
   }
 
   private async finishRaceHandler(): Promise<void> {
