@@ -18,6 +18,7 @@ import { QueryParams } from '../../../enums/query-params';
 import { changeInitialNames, isNeedToUpdateInitialNames } from '../../../utils/api/check-first-item-name';
 import { carsInGarageDataAdapter } from '../../../utils/cars-in-garage-data-adapter';
 import { disableBtns, enableBtns } from '../../../utils/handle-btns';
+import { getItemsOnPage } from '../../../utils/get-items-on-page';
 
 export class Track extends BaseComponent implements ITrack {
   public carsInGarage: Car[] = [];
@@ -69,14 +70,11 @@ export class Track extends BaseComponent implements ITrack {
     const carsOnPage = Numbers.CARS_ON_PAGE;
 
     clearElement(this.trackList);
-    this.carsOnPage = [];
+    this.carsOnPage = getItemsOnPage(page, carsOnPage, this.carsInGarage);
 
-    for (let i = (page * carsOnPage) - carsOnPage; i < (page * carsOnPage); i += 1) {
-      if (this.carsInGarage[i] === undefined) break;
-
-      this.trackList.append(this.carsInGarage[i].getElement());
-      this.carsOnPage.push(this.carsInGarage[i]);
-    }
+    this.carsOnPage.forEach((car) => {
+      this.trackList.append(car.getElement());
+    });
   }
 
   private addPaginationHandler(): void {

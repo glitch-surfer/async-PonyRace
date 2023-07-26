@@ -13,6 +13,7 @@ import type { IPagination } from '../pagination/types/pagination-types';
 import { QueryParams } from '../../enums/query-params';
 import { winnersDataAdapter } from '../../utils/winners-data-adapter';
 import { disableBtns, enableBtns } from '../../utils/handle-btns';
+import { getItemsOnPage } from '../../utils/get-items-on-page';
 
 export class Winners extends BaseComponent implements IWinners {
   private winners: Winner[] = [];
@@ -61,14 +62,12 @@ export class Winners extends BaseComponent implements IWinners {
     const tableBody = this.table.getElementsByTagName('tbody')[0];
 
     clearElement(tableBody);
-    this.winnersOnPage = [];
 
-    for (let i = (page * winnersPerPage) - winnersPerPage; i < (page * winnersPerPage); i += 1) {
-      if (this.winners[i] === undefined) break;
+    this.winnersOnPage = getItemsOnPage(page, winnersPerPage, this.winners);
 
-      tableBody.append(this.winners[i].getElement());
-      this.winnersOnPage.push(this.winners[i]);
-    }
+    this.winnersOnPage.forEach((winner) => {
+      tableBody.append(winner.getElement());
+    });
   }
 
   private addPaginationHandler(): void {
