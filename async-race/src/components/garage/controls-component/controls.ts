@@ -12,17 +12,14 @@ import type { Car } from '../track-component/car/car';
 import { dispatchUpdateTrackEvent } from '../../../utils/dispatch-update-track-event';
 import { updateCar } from '../../../utils/api/update-car';
 import { disableBtns, enableBtns } from '../../../utils/handle-btns';
+import { CarCreator } from './controls-items/create-car/create-car';
 
 export class Controls extends BaseComponent implements IControls {
   private selectedCar: Car | null = null;
 
+  carCreator = new CarCreator();
+
   constructor(
-    public createCarInput: HTMLElement = new BaseComponent(controlsView.createCarInput)
-      .getElement(),
-    public createCarColorInput: HTMLElement = new BaseComponent(controlsView.createCarColorInput)
-      .getElement(),
-    public createCarBtn: HTMLElement = new BaseComponent(controlsView.createCarBtn)
-      .getElement(),
     public upgradeCarInput: HTMLElement = new BaseComponent(controlsView.upgradeCarInput)
       .getElement(),
     public upgradeCarColorInput: HTMLElement = new BaseComponent(controlsView.upgradeCarColorInput)
@@ -36,9 +33,7 @@ export class Controls extends BaseComponent implements IControls {
     super(controlsView.wrapper);
 
     this.getElement().append(
-      this.createCarInput,
-      this.createCarColorInput,
-      this.createCarBtn,
+      ...this.carCreator.getElements(),
       this.upgradeCarInput,
       this.upgradeCarColorInput,
       this.upgradeCarBtn,
@@ -49,7 +44,6 @@ export class Controls extends BaseComponent implements IControls {
 
     document.addEventListener('selectCar', (event) => { this.enableUpgradeCar(event); });
     this.upgradeCarBtn.addEventListener('click', () => { this.upgradeCarHandler().catch(() => Error('Update car error')); });
-    this.createCarBtn.addEventListener('click', () => { this.createCarHandler().catch(() => Error('Create car error')); });
     this.generateCarsBtn.addEventListener('click', () => { Controls.generateNewCars().catch(() => Error('Generate cars error')); });
   }
 
@@ -98,35 +92,6 @@ export class Controls extends BaseComponent implements IControls {
     this.selectedCar = null;
   }
 
-  private async createCarHandler(): Promise<void> {
-    const nameInput = this.createCarInput;
-    const colorInput = this.createCarColorInput;
-
-    if (!(nameInput instanceof HTMLInputElement)
-      || !(colorInput instanceof HTMLInputElement)
-      || nameInput.value.trim() === '') return;
-    const newCarName = nameInput.value;
-    const newCarColor = colorInput.value;
-
-    const newCarParams: INewCar = {
-      name: newCarName,
-      color: newCarColor,
-    };
-
-    await fetch(Urls.GARAGE, {
-      method: 'POST',
-      body: JSON.stringify(newCarParams),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    dispatchUpdateTrackEvent();
-
-    nameInput.value = '';
-    colorInput.value = '';
-  }
-
   private static async generateNewCars(): Promise<void> {
     const newCars = Array(Numbers.GENERATE_CAR_COUNT)
       .fill(null)
@@ -152,10 +117,12 @@ export class Controls extends BaseComponent implements IControls {
   }
 
   public disableBtns(): void {
-    disableBtns([this.raceBtn, this.generateCarsBtn, this.createCarBtn, this.upgradeCarBtn]);
+    disableBtns(
+      [this.raceBtn, this.generateCarsBtn, this.carCreator.createCarBtn, this.upgradeCarBtn],
+    );
   }
 
   public enableBtns(): void {
-    enableBtns([this.raceBtn, this.generateCarsBtn, this.createCarBtn]);
+    enableBtns([this.raceBtn, this.generateCarsBtn, this.carCreator.createCarBtn]);
   }
 }
