@@ -2,15 +2,10 @@ import './styles/controls.scss';
 import { BaseComponent } from '../../../utils/base-component';
 import type { IControls } from './types/controls-types';
 import { controlsView } from './view/controls-view';
-import { Urls } from '../../../enums/urls';
-import type { INewCar } from '../../../types/types';
-import { Numbers } from '../../../enums/numbers';
-import { getRandomName } from '../../../utils/get-random-name';
-import { getRandomColor } from '../../../utils/get-random-color';
-import { dispatchUpdateTrackEvent } from '../../../utils/dispatch-update-track-event';
 import { disableBtns, enableBtns } from '../../../utils/handle-btns';
 import { CarCreator } from './controls-items/car-creator/car-creator';
 import { CarUpdater } from './controls-items/car-updater/car-updater';
+import { generateNewCars } from '../../../utils/api/generateNewCars';
 
 export class Controls extends BaseComponent implements IControls {
   carCreator = new CarCreator();
@@ -33,31 +28,7 @@ export class Controls extends BaseComponent implements IControls {
       this.generateCarsBtn,
     );
 
-    this.generateCarsBtn.addEventListener('click', () => { Controls.generateNewCars().catch(() => Error('Generate cars error')); });
-  }
-
-  private static async generateNewCars(): Promise<void> {
-    const newCars = Array(Numbers.GENERATE_CAR_COUNT)
-      .fill(null)
-      .map(async () => {
-        const newCarParams: INewCar = {
-          name: getRandomName(),
-          color: getRandomColor(),
-        };
-
-        const newCar = await fetch(Urls.GARAGE, {
-          method: 'POST',
-          body: JSON.stringify(newCarParams),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        return newCar;
-      });
-
-    await Promise.all(newCars);
-    dispatchUpdateTrackEvent();
+    this.generateCarsBtn.addEventListener('click', () => { generateNewCars().catch(() => Error('Generate cars error')); });
   }
 
   public disableBtns(): void {
