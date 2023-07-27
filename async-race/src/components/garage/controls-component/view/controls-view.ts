@@ -17,29 +17,6 @@ export const controlsView: IControlsParams = {
     tag: 'div',
     className: ['controls'],
   },
-  upgradeCarInput: {
-    tag: 'input',
-    className: ['controls__upgrade-input'],
-    attributes: {
-      disabled: 'true',
-    },
-  },
-  upgradeCarColorInput: {
-    tag: 'input',
-    className: ['controls__upgrade-input_color'],
-    attributes: {
-      type: 'color',
-      disabled: '',
-    },
-  },
-  upgradeCarBtn: {
-    tag: 'button',
-    className: ['controls__upgrade-btn', 'btn'],
-    text: 'Upgrade',
-    attributes: {
-      disabled: 'true',
-    },
-  },
   raceBtn: {
     tag: 'button',
     className: ['controls__race-btn', 'btn'],

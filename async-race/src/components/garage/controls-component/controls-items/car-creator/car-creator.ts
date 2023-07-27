@@ -2,8 +2,8 @@ import { Urls } from '../../../../../enums/urls';
 import type { INewCar } from '../../../../../types/types';
 import { BaseComponent } from '../../../../../utils/base-component';
 import { dispatchUpdateTrackEvent } from '../../../../../utils/dispatch-update-track-event';
-import type { ICarCreator } from './create-car-types';
-import { carCreatorView } from './create-car-view';
+import type { ICarCreator } from './car-creator-types';
+import { carCreatorView } from './car-creator-view';
 
 export class CarCreator implements ICarCreator {
   createCarInput: HTMLInputElement = new BaseComponent(carCreatorView.createCarInput)

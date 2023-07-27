@@ -4,6 +4,7 @@ export interface ICarCreator {
   createCarInput: HTMLElement
   createCarColorInput: HTMLElement
   createCarBtn: HTMLElement
+  getElements: () => HTMLElement[]
 }
 
 export interface ICreateCarParams {

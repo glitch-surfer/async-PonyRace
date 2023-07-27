@@ -1,4 +1,4 @@
-import type { ICreateCarParams } from './create-car-types';
+import type { ICreateCarParams } from './car-creator-types';
 
 export const carCreatorView: ICreateCarParams = {
   createCarInput: {
