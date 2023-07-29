@@ -28,10 +28,11 @@ export class Garage extends BaseComponent implements IGarage {
     await this.resetRaceHandler();
 
     this.disableBtns();
-    this.track.carsOnPage.map(async (car) => {
+    this.track.carsOnPage.forEach((car) => {
       const readyCar = car;
       readyCar.carState.isRace = true;
-      await readyCar.startCarHandler();
+      readyCar.startCarHandler()
+        .catch(() => Error('Start car error'));
     });
     this.track.getElement().style.pointerEvents = '';
   }

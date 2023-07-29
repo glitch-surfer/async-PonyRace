@@ -39,7 +39,7 @@ export class Track extends BaseComponent implements ITrack {
     const checkInitials = async (): Promise<void> => {
       const result = await isNeedToUpdateInitialNames();
       if (result) await changeInitialNames();
-      await this.fillTrackList();
+      return this.fillTrackList();
     };
     checkInitials().catch(() => Error('Oops'));
 

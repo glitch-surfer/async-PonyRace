@@ -14,7 +14,7 @@ export const generateNewCars = async (): Promise<void> => {
         color: getRandomColor(),
       };
 
-      const newCar = await fetch(Urls.GARAGE, {
+      const newCar = fetch(Urls.GARAGE, {
         method: 'POST',
         body: JSON.stringify(newCarParams),
         headers: {
