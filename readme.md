@@ -1,5 +1,7 @@
 # This is cute Async-PonyRace game!
 
+[deploy](https://glitch-surfer.github.io/async-PonyRace/deploy/)
+
 ## used: 
 - TS (strict)
 - Webpack
@@ -68,5 +70,6 @@ Race animation:
 - Enjoy
 
 All functionality of app available when start this server locally: [repo](https://github.com/mikhama/async-race-api).
+
 
 
