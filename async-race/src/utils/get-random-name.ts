@@ -1,0 +1,75 @@
+const firstNames = [
+  'Luna',
+  'Stella',
+  'Aurora',
+  'Willow',
+  'Rainbow',
+  'Pearl',
+  'Daisy',
+  'Blossom',
+  'Coral',
+  'Sapphire',
+  'Amethyst',
+  'Rose',
+  'Buttercup',
+  'Crystal',
+  'Phoenix',
+  'Lily',
+  'Ruby',
+  'Iris',
+  'Jasmine',
+  'Hazel',
+  'Violet',
+  'Ivy',
+  'Poppy',
+  'Skye',
+  'Meadow',
+  'Coco',
+  'Lola',
+  'Sugar',
+  'Honey',
+  'Peaches',
+];
+
+const lastNames = [
+  'Moon',
+  'Star',
+  'Sky',
+  'Mist',
+  'Whisper',
+  'Breeze',
+  'Song',
+  'Glimmer',
+  'Flame',
+  'Shimmer',
+  'Dawn',
+  'Dusk',
+  'Rain',
+  'Meadow',
+  'Blossom',
+  'Petal',
+  'Sparkle',
+  'Crystal',
+  'Dew',
+  'Wish',
+  'Glow',
+  'Velvet',
+  'Sugar',
+  'Dream',
+  'Magic',
+  'Feather',
+  'Silk',
+  'Grace',
+  'Gem',
+  'Harmony',
+];
+
+const getRndInteger = (min: number, max: number): number => Math.floor(
+  Math.random() * (max - min + 1),
+) + min;
+
+export const getRandomName = (): string => {
+  const randomName = firstNames[getRndInteger(0, firstNames.length - 1)];
+  const randomSurename = lastNames[getRndInteger(0, lastNames.length - 1)];
+  return `${randomName} ${randomSurename}`;
+};

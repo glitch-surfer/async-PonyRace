@@ -1,0 +1,66 @@
+@import '../../../styles/variables';
+
+%table-border {
+  border-collapse: collapse;
+  border: 2px solid $main-text-color;
+  border-radius: $border-radius;
+}
+
+%head-hover {
+  cursor: pointer;
+
+  &:hover {
+    background-color: darken($btn-background-color, 20%);
+  }
+}
+
+.winners {
+  display: none;
+}
+
+.winners__title {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  border-bottom: 2px solid $main-text-color;
+}
+
+.winners__subtitle {
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.winners__table {
+  margin: 0.5rem auto;
+  padding: 0.5rem;
+  table-layout: fixed;
+}
+
+.winners__head-row {
+  background-color: $btn-background-color;
+
+  & > th {
+    padding: 0.2rem 0.4rem;
+
+    @extend %table-border;
+  }
+}
+
+.winners__th_wins {
+  min-width: 67px;
+  cursor: pointer;
+
+  @extend %head-hover
+}
+
+.winners__th_time {
+  min-width: 98px;
+
+  @extend %head-hover
+}
+
+.winner > td {
+  padding: 0.2rem 0.4rem;
+  text-align: center;
+  
+  @extend %table-border;
+}

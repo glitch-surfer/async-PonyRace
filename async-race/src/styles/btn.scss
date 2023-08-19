@@ -1,0 +1,21 @@
+.btn {
+  padding: 0.3rem 0.6rem;
+  background-color: $btn-background-color;
+  color: $btn-color;
+  cursor: pointer;
+  
+  @extend %border;
+
+  &:hover {
+    transform: scale(1.03);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    filter: grayscale(0.7);
+    pointer-events: none;
+  }
+}

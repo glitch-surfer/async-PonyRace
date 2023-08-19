@@ -1,0 +1,18 @@
+.trace {
+  position: absolute;
+  top: 40%;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: fade 2s linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fade {
+  to {
+    scale: 2;
+    filter: hue-rotate(60deg);
+    opacity: 0.1;
+  }
+}

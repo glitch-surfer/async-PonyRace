@@ -1,0 +1,74 @@
+@import '../../../../../styles/variables';
+
+%race-btn {
+  cursor: pointer;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid $main-text-color;
+  border-radius: $border-radius;
+
+  &:hover {
+    transform: scale(1.03);
+  }
+
+  &:disabled {
+    filter: grayscale(0.7);
+    pointer-events: none;
+  }
+}
+
+.car {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.2rem;
+}
+
+.car__remove-btn {
+  @extend %race-btn;
+
+  background: url('../img/remove.svg') no-repeat center transparent;
+  background-size: contain;
+  background-color: $btn-special-background-color;
+}
+
+.car__select-btn {
+  @extend %race-btn;
+
+  background: url('../img/select.svg') no-repeat center transparent;
+  background-size: contain;
+  background-color: $btn-special-background-color;
+}
+
+.car__start-btn {
+  @extend %race-btn;
+  
+  background: url('../img/start.svg') no-repeat center transparent;
+  background-size: contain;
+  background-color: $start-btn-color;
+}
+
+.car__stop-btn {
+  @extend %race-btn;
+
+  background: url('../img/stop.svg') no-repeat center transparent;
+  background-size: contain;
+  background-color: $stop-btn-color;
+}
+
+.car__img {
+  width: 3rem;
+  height: 3rem;
+  animation: 0.5s infinite riding;
+}
+
+@keyframes riding {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(10px);
+  }
+}
