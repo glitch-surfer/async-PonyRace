@@ -1,11 +1,10 @@
 # This is cute Async-PonyRace game!
-All functionality of app available wheh start this server locally: [repo](https://github.com/mikhama/async-race-api).
 
 ## used: 
-- ts(strict)
-- webpack
-- eslint(air-bnb)
-- scss
+- TS (strict)
+- Webpack
+- ESlint (air-bnb)
+- SCSS (semantic layout, adaptive, CSS GRID, FLEXBOX)
 - Web animations API
 
 ## Key skills
@@ -58,3 +57,16 @@ Race animation:
 - Application is SPA.
 - Eslint with Airbnb style guide should be used. Some particular eslint-rules can be disabled or changed only after agreement with a mentor. There shouldn't be any eslint errors or warnings.
 - Code divided to small functions with a clear names and purposes. Each function should be less or equal to 40 lines.
+
+### How to start server & enjoy game?
+
+- Use node 14.x or higher.
+- Clone this repo: $ git clone https://github.com/mikhama/async-race-api.git. (or download async-race-api folder here)
+- Go to downloaded folder: $ cd async-race-api
+- Install dependencies: $ npm install.
+- Start server: $ npm start
+- Enjoy
+
+All functionality of app available when start this server locally: [repo](https://github.com/mikhama/async-race-api).
+
+
